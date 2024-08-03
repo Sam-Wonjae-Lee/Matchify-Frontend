@@ -1,8 +1,15 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Background from '@/components/background'
+import axios from 'axios'
 
 const Entry: NextPage = () => {
+
+    const handleSpotifyAuth = async () => {
+        const response = await axios.get("http://localhost:8888/spotify/auth");
+        console.log(response.data)
+        window.location.href = response.data;
+    }
 
   return (
     <div className="h-screen w-screen">
@@ -16,7 +23,7 @@ const Entry: NextPage = () => {
         <div className="text-center w-2/3 z-10 mt-10">
           <p>Meet new people and attend events based on your music tastes using your Spotify profile!</p>
         </div>
-        <button className="w-2/3 bg-spotify-green h-10 z-10 rounded text-center z-10 mt-10">
+        <button className="w-2/3 bg-spotify-green h-10 z-10 rounded text-center z-10 mt-10" onClick={handleSpotifyAuth}>
           <div className="flex w-full h-full z-10">
             <div className="flex w-full items-center justify-center">
               <p>Continue With Spotify</p>
