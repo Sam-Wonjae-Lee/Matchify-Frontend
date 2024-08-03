@@ -2,8 +2,11 @@ import type { NextPage } from 'next'
 import { useState } from 'react'
 import Background from '@/components/background'
 import Head from 'next/head'
+import { useRouter } from 'next/router';
 
 const CreateProfile: NextPage = () => {
+
+  const router = useRouter();
 
   // toggles between first and second page
   const [firstHalfDone, setFirstHalfDone] = useState(false);
@@ -26,6 +29,7 @@ const CreateProfile: NextPage = () => {
     console.log(dob);
     console.log(gender);
     console.log(bio);
+    router.push("/login_success?isCreation=true");
   }
 
   return (

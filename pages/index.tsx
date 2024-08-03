@@ -33,7 +33,7 @@ const Entry: NextPage = () => {
         </div>
 
         {/* Continue With Spotify Button */}
-        <button className="w-1/3 bg-spotify-green h-10 z-10 rounded text-center z-10 mt-10" onClick={handleSpotifyAuth}>
+        <button className="w-2/3 bg-spotify-green h-10 z-10 rounded text-center z-10 mt-10" onClick={handleSpotifyAuth}>
           <div className="flex w-full h-full z-10">
             <div className="flex w-full items-center justify-center">
               <p className="text-white">Continue With Spotify</p>
