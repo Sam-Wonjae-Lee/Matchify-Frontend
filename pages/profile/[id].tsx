@@ -50,7 +50,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                 </button>
                 {/* Just realized we should use vh and vw for larger elements for different mobile dimensions*/}
                 <div className="w-full mt-[2vh]">
-                   <p className="text-white font-bold text-2xl">{id == viewer ? "View Own Profile" : name + "'s Profile"}</p>
+                   {viewer && name && (<p className="text-white font-bold text-2xl">{id == viewer ? "View Own Profile" : name + "'s Profile"}</p>)}
                 </div>
 
                 {/* Centred Items */}
@@ -111,9 +111,18 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                     </div>
 
                     {/* Tab Content */}
-                    <div className="w-full mt-10 overflow-default">
+                    <div className="w-full mt-5 overflow-default">
                         {activeTab === 'profile' && (
                             <div className="ml-5 ml-5">
+                                {viewer && (viewer != id) && (<div>
+                                    <p className="font-bold text-spotify-green">Matchify:</p>
+                                    <ul className="list-disc">
+                                        <li className="ml-5">You're both racist</li>
+                                        <li className="ml-5">You both are misogynists</li>
+                                        <li className="ml-5">You don't have a bugatti</li>
+                                    </ul>
+                                </div>)}
+                                
                                 <p className="text-white font-bold">Bio:</p>
                                 {bio && (<p className="text-white break-words">{bio}</p>)}
 
