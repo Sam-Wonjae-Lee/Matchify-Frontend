@@ -21,19 +21,21 @@ const LoginSuccess = () => {
             <Head>
                 <title>Login Success</title>
                 <meta name="description" content="Profile Creation Screen"/>
+                <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
             </Head>
             <Background image="/bg1.jpg" alt="Concert Background"></Background>
+            <div className="dark-overlay"></div>
             {isCreation && (<div className="flex flex-col items-center justify-center h-full w-full">
                 <img src="/green_checkmark.png" alt="green check mark" className="z-10 w-26 h-26"></img>
-                <h2 className="z-10 font-bold text-3xl">Well Done!</h2>
-                <p className="w-2/3 text-center mt-5 z-10">You have successfully created your Matchify account!</p>
-                <button className="w-2/3 bg-spotify-green h-14 z-10 rounded text-center mt-20" onClick={() => console.log("NOT IMPLEMENTED YET")}>Home</button>
+                <h2 className="z-10 font-bold text-3xl text-white">Well Done!</h2>
+                <p className="w-2/3 text-center mt-5 z-10 text-white">You have successfully created your Matchify account!</p>
+                <button className="w-2/3 bg-spotify-green h-14 z-10 rounded text-center mt-20 text-white" onClick={() => console.log("NOT IMPLEMENTED YET")}>Home</button>
             </div>)}
             {!isCreation && (<div className="flex flex-col items-center justify-center h-full w-full">
                 <img src="/green_checkmark.png" alt="green check mark" className="z-10 w-26 h-26"></img>
-                <h2 className="z-10 font-bold text-3xl">Logged In!</h2>
-                <p className="w-2/3 text-center mt-5 z-10">You have successfully logged in to your Matchify account!</p>
-                <button className="w-2/3 bg-spotify-green h-14 z-10 rounded text-center mt-20" onClick={() => console.log("NOT IMPLEMENTED YET")}>Home</button>
+                <h2 className="z-10 font-bold text-3xl text-white">Logged In!</h2>
+                <p className="w-2/3 text-center mt-5 z-10 text-white">You have successfully logged in to your Matchify account!</p>
+                <button className="w-2/3 bg-spotify-green h-14 z-10 rounded text-center mt-20 text-white" onClick={() => console.log("NOT IMPLEMENTED YET")}>Home</button>
             </div>)}
         </div>
     );

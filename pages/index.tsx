@@ -16,14 +16,14 @@ const Entry: NextPage = () => {
       <Head>
         <title>Welcome to Matchify</title>
         <meta name="description" content="Entry point"/>
-        <link rel="icon" href="matchify_logo.png" type="image/gif" sizes="16x16"></link>
+        <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
       </Head>
       <Background image="/bg1.jpg" alt="Concert Background"></Background>
       {/* Make background image darker */}
       <div className="dark-overlay"></div>
       <div className="flex flex-col h-full w-full justify-center items-center z-10">
         <div className="z-10">
-          <img src="matchify_logo.png"></img>
+          <img src="matchify_logo.svg"></img>
         </div>
         <div className="text-center w-2/3 z-10 mt-10">
           <p className="text-white text-3xl font-bold">Matchify</p>
