@@ -1,8 +1,11 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Background from '@/components/background'
+import { useState } from 'react'
 
 const ViewOwnProfie = () => {
+    const [activeTab, setActiveTab] = useState('profile');
+
     return (
         <div className="h-screen w-screen" style={{ backgroundColor: '#282828' }}>
             <Head>
@@ -59,22 +62,55 @@ const ViewOwnProfie = () => {
                         </button>
                     </div>
                     
-                    {/* Profile, Playlist, Activity */}
+                    {/* Profile, Playlist, Activity Tabs */}
                     <div className="flex w-full justify-around mt-10">
-                        {/* Profile */}
-                        <div>
-                            <p className="text-white text-2xl font-bold underline">Profile</p>
-                        </div>
+                        <button
+                            className={`text-xl font-bold underline ${activeTab === 'profile' ? 'text-white' : 'text-gray-500'}`}
+                            onClick={() => setActiveTab('profile')}
+                        >
+                            Profile
+                        </button>
+                        <button
+                            className={`text-xl font-bold underline ${activeTab === 'playlist' ? 'text-white' : 'text-gray-500'}`}
+                            onClick={() => setActiveTab('playlist')}
+                        >
+                            Playlist
+                        </button>
+                        <button
+                            className={`text-xl font-bold underline ${activeTab === 'activity' ? 'text-white' : 'text-gray-500'}`}
+                            onClick={() => setActiveTab('activity')}
+                        >
+                            Activity
+                        </button>
+                    </div>
 
-                        {/* Playlist */}
-                        <div>
-                            <p className="text-white text-2xl font-bold underline">Playlist</p>
-                        </div>
+                    {/* Tab Content */}
+                    <div className="w-full mt-10">
+                        {activeTab === 'profile' && (
+                            <div className="ml-5">
+                                <p className="text-white font-bold">Bio:</p>
+                                <p className="text-white">Bio info here</p>
 
-                        {/* Activity */}
-                        <div>
-                            <p className="text-white text-2xl font-bold underline">Activity</p>
-                        </div>
+                                <p className="text-white font-bold">Age:</p>
+                                <p className="text-white">Age info here</p>
+
+                                <p className="text-white font-bold">Gender:</p>
+                                <p className="text-white">Gender info here</p>
+
+                                <p className="text-white font-bold">Location:</p>
+                                <p className="text-white">Location info here</p>
+                            </div>
+                        )}
+                        {activeTab === 'playlist' && (
+                            <div>
+                                <p className="text-white">Playlist Content Here</p>
+                            </div>
+                        )}
+                        {activeTab === 'activity' && (
+                            <div>
+                                <p className="text-white">Activity Content Here</p>
+                            </div>
+                        )}
                     </div>
                     
                 </div>
