@@ -21,6 +21,34 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
     // I say we use sessionStorage to store the user id for their duration on the app
     const [viewer, setViewer] = useState("Anon");
 
+    const [isEditing, setIsEditing] = useState(false);  // Track if form in edit mode
+    const [profile, setProfile] = useState({
+        bio: "I love smoking",
+        age: 25,
+        gender: "Male",
+        location: "New York"
+    });
+
+    // Toggles isEditing flag
+    const handleEditClick = () => {
+        setIsEditing(!isEditing);
+    };
+
+    // Updates profileText that stores the value
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setProfile(prevProfile => ({
+            ...prevProfile,
+            [name]: value
+        }));
+    };
+
+    const handleFormSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Handle form submission logic here, e.g., send data to server
+        setIsEditing(false);
+    };
+
     useEffect(() => {
         // Anon will be default viewer
         setViewer(sessionStorage.getItem("user_id") || "Anon");
@@ -72,7 +100,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                     </button>
 
                     <div className="flex w-3/4 justify-between mt-[2vh]">
-                        <button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2">
+                        <button onClick={handleEditClick} className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2">
                             <div className="flex w-full h-full z-10">
                                 <div className="flex w-full items-center justify-center">
                                     <p className="text-white">Edit Profile</p>
@@ -89,7 +117,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                     </div>
                     
                     {/* Profile, Playlist, Activity Tabs */}
-                    <div className="flex w-full justify-around mt-[2vh]">
+                    <div className="flex space-x-4">
                         <button
                             className={`text-xl font-bold underline ${activeTab === 'profile' ? 'text-white' : 'text-gray-500'}`}
                             onClick={() => setActiveTab('profile')}
@@ -112,29 +140,71 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
 
                     {/* Tab Content */}
                     <div className="w-full mt-5 overflow-default">
-                        {activeTab === 'profile' && (
-                            <div className="ml-5 ml-5">
-                                {viewer && (viewer != id) && (<div>
-                                    <p className="font-bold text-spotify-green">Matchify:</p>
-                                    <ul className="list-disc">
-                                        <li className="ml-5">You're both racist</li>
-                                        <li className="ml-5">You both are misogynists</li>
-                                        <li className="ml-5">You don't have a bugatti</li>
-                                    </ul>
-                                </div>)}
-                                
-                                <p className="text-white font-bold">Bio:</p>
-                                {bio && (<p className="text-white break-words">{bio}</p>)}
-
-                                <p className="w-full text-white font-bold">Age:</p>
-                                {age && (<p className="text-white break-words">{age}</p>)}
-
-                                <p className="text-white font-bold">Gender:</p>
-                                {gender && (<p className="text-white break-words">{gender}</p>)}
-
-                                <p className="text-white font-bold">Location:</p>
-                                {location && (<p className="text-white break-words">{location}</p>)}
-                            </div>
+                        {isEditing ? (
+                            <form onSubmit={handleFormSubmit} className="ml-5">
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Bio:</label>
+                                    <input
+                                        type="text"
+                                        name="bio"
+                                        value={profile.bio}
+                                        onChange={handleInputChange}
+                                        className="w-full p-2 border border-gray-300 rounded"
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Age:</label>
+                                    <input
+                                        type="number"
+                                        name="age"
+                                        value={profile.age}
+                                        onChange={handleInputChange}
+                                        className="w-full p-2 border border-gray-300 rounded"
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Gender:</label>
+                                    <select
+                                        name="gender"
+                                        value={profile.gender}
+                                        onChange={handleInputChange}
+                                        className="w-full p-2 border border-gray-300 rounded"
+                                    >
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Location:</label>
+                                    <input
+                                        type="text"
+                                        name="location"
+                                        value={profile.location}
+                                        onChange={handleInputChange}
+                                        className="w-full p-2 border border-gray-300 rounded"
+                                    />
+                                </div>
+                                <button type="submit" className="bg-spotify-green text-white p-2 rounded">Save</button>
+                            </form>
+                        ) : (
+                            activeTab === 'profile' && (
+                                <div className="ml-5">
+                                    {viewer && viewer !== id && (
+                                        <div>
+                                            {/* Your existing profile content here */}
+                                            <p className="text-white font-bold">Bio:</p>
+                                            <p className="text-white break-words">{profile.bio}</p>
+                                            <p className="w-full text-white font-bold">Age:</p>
+                                            <p className="text-white break-words">{profile.age}</p>
+                                            <p className="text-white font-bold">Gender:</p>
+                                            <p className="text-white break-words">{profile.gender}</p>
+                                            <p className="text-white font-bold">Location:</p>
+                                            <p className="text-white break-words">{profile.location}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )
                         )}
                         {activeTab === 'playlist' && (
                             <div>
