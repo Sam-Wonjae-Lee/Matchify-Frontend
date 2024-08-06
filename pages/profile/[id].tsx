@@ -5,64 +5,59 @@ import { useState, useEffect } from 'react'
 
 interface ProfileProps {
     id: string,
-    // cause I'm lazy
     profileData: any
+}
+
+interface ProfileData {
+    name: string;
+    bio: string;
+    age: number;
+    gender: string;
+    location: string;
+    pfp: string;
 }
 
 const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
     const [activeTab, setActiveTab] = useState('profile');
-    const [profilePic, setProfilePic] = useState("/default_pfp.png");
-    const [name, setName] = useState("");
-    const [bio, setBio] = useState("");
-    const [gender, setGender] = useState("");
-    const [location, setLocation] = useState("");
-    const [age, setAge] = useState("");
 
     // I say we use sessionStorage to store the user id for their duration on the app
     const [viewer, setViewer] = useState("Anon");
 
     const [isEditing, setIsEditing] = useState(false);  // Track if form in edit mode
-    const [profile, setProfile] = useState({
-        bio: "I love smoking",
-        age: 25,
-        gender: "Male",
-        location: "New York"
-    });
+    const [profile, setProfile] = useState<ProfileData>(() => profileData);
 
-    // Toggles isEditing flag
-    const handleEditClick = () => {
-        setIsEditing(!isEditing);
-    };
+    const [editingProfile, setEditingProfile] = useState<ProfileData>(() => profileData);
 
     // Updates profileText that stores the value
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setProfile(prevProfile => ({
-            ...prevProfile,
-            [name]: value
-        }));
+        setEditingProfile({...editingProfile, [name]: value});
     };
 
-    const handleFormSubmit = (e: React.FormEvent) => {
+    const handleProfileChange = (e: React.FormEvent) => {
         e.preventDefault();
         // Handle form submission logic here, e.g., send data to server
         setIsEditing(false);
+        setProfile(editingProfile);
+
     };
 
     useEffect(() => {
-        // Anon will be default viewer
+        // if user cancels edit and re-edits, we want the previous unsaved edited profile to be lost
+        if (isEditing) {
+            setEditingProfile(profile);
+        }
+    }, [isEditing])
+
+    useEffect(() => {
+        // Anon will be default viewer, if viewer is not viewing their own profile then we include the matchify stats
         setViewer(sessionStorage.getItem("user_id") || "Anon");
-        setName(profileData.name);
-        setBio(profileData.bio);
-        setGender(profileData.gender);
-        setLocation(profileData.location);
-        setAge(profileData.age);
     })
 
     return (
         <div className="min-h-screen w-screen" style={{ backgroundColor: '#282828' }}>
             <Head>
-                {name && (<title>{name}'s Profile</title>)}
+                {profile && (<title>{profile.name}'s Profile</title>)}
                 <meta name="description" content="Profile Content"/>
                 <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
             </Head>
@@ -78,46 +73,67 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                 </button>
                 {/* Just realized we should use vh and vw for larger elements for different mobile dimensions*/}
                 <div className="w-full mt-[2vh]">
-                   {viewer && name && (<p className="text-white font-bold text-2xl">{id == viewer ? "View Own Profile" : name + "'s Profile"}</p>)}
+                   {viewer && profile && (<p className="text-white font-bold text-2xl">{id == viewer ? "View Own Profile" : profile.name + "'s Profile"}</p>)}
                 </div>
 
                 {/* Centred Items */}
                 <div className="flex flex-col w-full items-center">
                     <div>
-                        <img id="profilepic" src={profilePic} className="z-10 w-[24vw] h-[24vw] mt-[4vh]"></img>
+                        <img id="profilepic" src={profile.pfp} className="z-10 w-[24vw] h-[24vw] mt-[4vh]"></img>
                     </div>
-                    <div className="text-center w-2/3 mt-[2vh]">
-                        {name && (<p className="text-white text-2xl font-bold">{name}</p>)}
+                    <div className="text-center w-2/3 mt-[2vh] mb-[5vh]">
+                        {profile && (<p className="text-white text-2xl font-bold">{profile.name}</p>)}
                     </div>
 
-                    <button className="w-3/4 bg-black h-10 z-10 rounded-xl text-center z-10 mt-[5vh]">
-                        <div className="flex w-full h-full z-10">
-                            <div className="flex w-full items-center justify-center">
-                                <img src="/spotify_logo_green.png" className="w-6 h-6 z-10 mr-2"></img>
-                                <p className="text-green-500">Spotify Stats</p>
-                            </div>
-                        </div>
-                    </button>
-
-                    <div className="flex w-3/4 justify-between mt-[2vh]">
-                        <button onClick={handleEditClick} className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2">
+                    {!isEditing && (<div>
+                        <button className="w-[calc(100vw-6.5rem)] bg-black h-10 z-10 rounded-xl text-center z-10">
                             <div className="flex w-full h-full z-10">
                                 <div className="flex w-full items-center justify-center">
-                                    <p className="text-white">Edit Profile</p>
+                                    <img src="/spotify_logo_green.png" className="w-6 h-6 z-10 mr-2"></img>
+                                    <p className="text-green-500">Spotify Stats</p>
                                 </div>
                             </div>
                         </button>
-                        <button className="w-1/2 bg-white h-10 z-10 rounded-xl text-center z-10 ml-2">
-                            <div className="flex w-full h-full z-10">
-                                <div className="flex w-full items-center justify-center">
-                                    <p className="text-spotify-green">Settings</p>
+
+                        {viewer && (viewer == id) && <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
+                            <button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={() => {setIsEditing((prev) => {return !prev})}}>
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        <p className="text-white">Edit Profile</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </button>
-                    </div>
-                    
+                            </button>
+                            <button className="w-1/2 bg-white h-10 z-10 rounded-xl text-center z-10 ml-2">
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        <p className="text-spotify-green">Settings</p>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>}
+
+                        {viewer && (viewer != id) && <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
+                            <button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2">
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        {/*TODO make a friends dropdown*/}
+                                        <p className="text-white">Friends</p>
+                                    </div>
+                                </div>
+                            </button>
+                            <button className="w-1/2 bg-white h-10 z-10 rounded-xl text-center z-10 ml-2">
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        {/*TODO link to message*/}
+                                        <p className="text-spotify-green">Message</p>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>}
+                    </div>)}
+        
                     {/* Profile, Playlist, Activity Tabs */}
-                    <div className="flex space-x-4">
+                    <div className="flex w-full justify-around mt-[2vh]">
                         <button
                             className={`text-xl font-bold underline ${activeTab === 'profile' ? 'text-white' : 'text-gray-500'}`}
                             onClick={() => setActiveTab('profile')}
@@ -139,73 +155,78 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                     </div>
 
                     {/* Tab Content */}
-                    <div className="w-full mt-5 overflow-default">
-                        {isEditing ? (
-                            <form onSubmit={handleFormSubmit} className="ml-5">
-                                <div className="mb-4">
-                                    <label className="block text-gray-700">Bio:</label>
-                                    <input
-                                        type="text"
-                                        name="bio"
-                                        value={profile.bio}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border border-gray-300 rounded"
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700">Age:</label>
-                                    <input
-                                        type="number"
-                                        name="age"
-                                        value={profile.age}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border border-gray-300 rounded"
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700">Gender:</label>
-                                    <select
-                                        name="gender"
-                                        value={profile.gender}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border border-gray-300 rounded"
-                                    >
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700">Location:</label>
-                                    <input
-                                        type="text"
-                                        name="location"
-                                        value={profile.location}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border border-gray-300 rounded"
-                                    />
-                                </div>
-                                <button type="submit" className="bg-spotify-green text-white p-2 rounded">Save</button>
-                            </form>
-                        ) : (
-                            activeTab === 'profile' && (
-                                <div className="ml-5">
-                                    {viewer && viewer !== id && (
-                                        <div>
-                                            {/* Your existing profile content here */}
-                                            <p className="text-white font-bold">Bio:</p>
-                                            <p className="text-white break-words">{profile.bio}</p>
-                                            <p className="w-full text-white font-bold">Age:</p>
-                                            <p className="text-white break-words">{profile.age}</p>
-                                            <p className="text-white font-bold">Gender:</p>
-                                            <p className="text-white break-words">{profile.gender}</p>
-                                            <p className="text-white font-bold">Location:</p>
-                                            <p className="text-white break-words">{profile.location}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            )
-                        )}
+                    <div className="w-full mt-[2vh] overflow-default">
+                        {activeTab === 'profile' && (!isEditing ? (
+                            <div className="ml-5 ml-5">
+                                {viewer && (viewer != id) && (<div>
+                                    <p className="font-bold text-spotify-green">Matchify:</p>
+                                    <ul className="list-disc">
+                                        <li className="text-sm ml-5 mt-[1vh]">You're both racist</li>
+                                        <li className="text-sm ml-5">You both are misogynists</li>
+                                        <li className="text-sm ml-5">You don't have a bugatti</li>
+                                    </ul>
+                                </div>)}
+                                
+                                <p className="text-white font-bold mt-[2vh]">Bio:</p>
+                                {profile && (<p className="text-sm text-white break-words">{profile.bio}</p>)}
+
+                                <p className="w-full text-white font-bold mt-[2vh]">Age:</p>
+                                {profile && (<p className="text-sm text-white break-words">{profile.age}</p>)}
+
+                                <p className="text-white font-bold mt-[2vh]">Gender:</p>
+                                {profile && (<p className="text-sm text-white break-words">{profile.gender}</p>)}
+
+                                <p className="text-white font-bold mt-[2vh]">Location:</p>
+                                {profile && (<p className="text-sm text-white break-words">{profile.location}</p>)}
+                            </div>
+                        ) : 
+                        (<form onSubmit={handleProfileChange} className="ml-5 mr-5">
+                            <div className="mb-4">
+                                <label className="block text-gray-700">Bio:</label>
+                                <input
+                                    type="text"
+                                    name="bio"
+                                    value={editingProfile.bio}
+                                    onChange={handleInputChange}
+                                    className="w-full p-2 border border-gray-300 rounded text-black"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700">Age:</label>
+                                <input
+                                    type="number"
+                                    name="age"
+                                    value={editingProfile.age}
+                                    onChange={handleInputChange}
+                                    className="w-full p-2 border border-gray-300 rounded text-black"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700">Gender:</label>
+                                <select
+                                    name="gender"
+                                    value={editingProfile.gender}
+                                    onChange={handleInputChange}
+                                    className="w-full p-2 border border-gray-300 rounded text-black"
+                                >
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700">Location:</label>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    value={editingProfile.location}
+                                    onChange={handleInputChange}
+                                    className="w-full p-2 border border-gray-300 rounded text-black"
+                                />
+                            </div>
+                            <button type="submit" className="w-full bg-spotify-green text-white p-2 rounded mt-[2vh] h-[6vh]">Apply Changes</button>
+                            <button className="w-full bg-white text-red-500 p-2 rounded mt-[2vh] h-[6vh]" onClick={() => setIsEditing(false)}>Cancel</button>
+                        </form>))}
                         {activeTab === 'playlist' && (
                             <div>
                                 <p className="text-white">Playlist Content Here</p>
@@ -235,7 +256,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     // TODO FETCH BACKEND INFO ON PERSON
     console.log(id);
-    const profileData = {name: "Top G", bio: "I love smoking", gender: "Woman", location: "Romania", age: "69"}
+    const profileData = {name: "Top G", bio: "I love smoking", gender: "Woman", location: "Romania", age: "69", pfp: "/default_pfp.png"}
   
     return {
         props: {
