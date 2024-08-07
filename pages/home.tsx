@@ -5,16 +5,31 @@ import Background from "@/components/background";
 const Home = () => {
     const [activeTab, setActiveTab] = useState('home');
 
+    const getTabTitle = () => {
+        switch (activeTab) {
+            case 'home':
+                return 'Home';
+            case 'events':
+                return 'Events';
+            case 'friends':
+                return 'Friends';
+            case 'messages':
+                return 'Messages';
+            default:
+                return 'Home';
+        }
+    };
+
     return (
         <div className="h-screen w-screen" style={{ backgroundColor: '#282828' }}>
             <Head>
-                <title>Home</title>
+                <title>{getTabTitle()}</title>
                 <meta name="description" content="Home Screen"/>
                 <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
             </Head>
             <div className="h-full w-full p-8">
                 <div className="mb-4 flex justify-between items-center">
-                    <p className="text-spotify-green font-bold text-2xl">Home</p>
+                    <p className="text-spotify-green font-bold text-2xl">{getTabTitle()}</p>
                     <div className="flex space-x-4">
                         <img src="/heart_icon.svg" alt="Heart Icon" className="w-6 h-6"
                             style={{ transition: 'filter 0.3s ease' }}
