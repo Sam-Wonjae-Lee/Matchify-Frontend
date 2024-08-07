@@ -5,9 +5,17 @@ import { useRouter } from "next/router";
 import UserCard from "@/components/user_card";
 
 const Home = () => {
+    // Used for redirecting to another page
     const router = useRouter();
+
+    // Redirects for friend_requests.tsx page
     const handleFriendRequestsRedirect = () => {
         router.push('/friend_requests');
+    }
+
+    // Redirects for notifications.tsx page
+    const handleNotificationsRedirect = () => {
+        router.push('/notifications');
     }
 
     const [activeTab, setActiveTab] = useState('home');
@@ -56,6 +64,7 @@ const Home = () => {
                             style={{ transition: 'filter 0.3s ease' }}
                             onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
                             onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
+                            onClick={handleNotificationsRedirect}
                         />
                         <img src="/default_pfp_v2.png" alt="Profile Icon" className="w-7 h-8"/>
                     </div>
