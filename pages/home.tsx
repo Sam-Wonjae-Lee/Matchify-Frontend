@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Background from "@/components/background";
+import { useRouter } from "next/router";
 
 const Home = () => {
+    const router = useRouter();
+    const handleFriendRequestsRedirect = () => {
+        router.push('/friend_requests');
+    }
+
     const [activeTab, setActiveTab] = useState('home');
 
     const getTabTitle = () => {
@@ -35,6 +41,7 @@ const Home = () => {
                             style={{ transition: 'filter 0.3s ease' }}
                             onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
                             onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
+                            onClick={handleFriendRequestsRedirect}
                         />
                         <img src="/bell_icon.svg" alt="Bell Icon" className="w-6 h-6"
                             style={{ transition: 'filter 0.3s ease' }}
