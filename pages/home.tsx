@@ -105,7 +105,6 @@ const Home = () => {
                 </div>}
                 
                 {/* Events Page */}
-                {/* value={firstName} onChange={(e) => setFirstName(e.target.value)}> */}
                 {activeTab === 'events' && 
                 <div className="flex justify-center mt-4">
                     <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
@@ -114,13 +113,15 @@ const Home = () => {
                             type="text" 
                             placeholder="Search Events" 
                             onChange={(e) => setEventSearch(e.target.value)}
-
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleMessagesSearch();
+                                }
+                            }}
                             // Todo: change color to the correct grey
                             className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
                         />
                     </div>
-                    <button onClick={handleEventSearch} className="ml-4 bg-blue-500 text-white px-4 py-2 rounded">
-                    </button>
                 </div>}
                 
                 {/* Friends Page */}
@@ -132,11 +133,14 @@ const Home = () => {
                             type="text" 
                             placeholder="Search By Name" 
                             onChange={(e) => setFriendSearch(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleMessagesSearch();
+                                }
+                            }}
                             className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
                         />
                     </div>
-                    <button onClick={handleFriendSearch} className="ml-4 bg-blue-500 text-white px-4 py-2 rounded">
-                    </button>
                 </div>}
 
                 {/* Messages Page */}
@@ -148,11 +152,14 @@ const Home = () => {
                             type="text" 
                             placeholder="Search By Name"
                             onChange={(e) => setMessagesSearch(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleMessagesSearch();
+                                }
+                            }}
                             className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
                         />
                     </div>
-                    <button onClick={handleMessagesSearch} className="ml-4 bg-blue-500 text-white px-4 py-2 rounded">
-                    </button>
                 </div>}
             </div>
 
