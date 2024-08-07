@@ -8,6 +8,26 @@ const Home = () => {
     // Used for redirecting to another page
     const router = useRouter();
 
+    // for search inputs
+    const [eventSearch, setEventSearch] = useState('');
+    const [friendSearch, setFriendSearch] = useState('');
+    const [messagesSearch, setMessagesSearch] = useState('');
+
+    const handleEventSearch = () => {
+        console.log('Event Search:', eventSearch);
+        // TODO: Handle event search logic here
+    };
+
+    const handleFriendSearch = () => {
+        console.log('Friend Search:', friendSearch);
+        // TODO: Handle search logic here
+    };
+
+    const handleMessagesSearch = () => {
+        console.log('Messages Search:', messagesSearch);
+        // TODO: Handle search logic here
+    };
+
     // Redirects for friend_requests.tsx page
     const handleFriendRequestsRedirect = () => {
         router.push('/friend_requests');
@@ -85,6 +105,7 @@ const Home = () => {
                 </div>}
                 
                 {/* Events Page */}
+                {/* value={firstName} onChange={(e) => setFirstName(e.target.value)}> */}
                 {activeTab === 'events' && 
                 <div className="flex justify-center mt-4">
                     <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
@@ -92,10 +113,14 @@ const Home = () => {
                         <input 
                             type="text" 
                             placeholder="Search Events" 
+                            onChange={(e) => setEventSearch(e.target.value)}
+
                             // Todo: change color to the correct grey
                             className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
                         />
                     </div>
+                    <button onClick={handleEventSearch} className="ml-4 bg-blue-500 text-white px-4 py-2 rounded">
+                    </button>
                 </div>}
                 
                 {/* Friends Page */}
@@ -106,9 +131,12 @@ const Home = () => {
                         <input 
                             type="text" 
                             placeholder="Search By Name" 
+                            onChange={(e) => setFriendSearch(e.target.value)}
                             className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
                         />
                     </div>
+                    <button onClick={handleFriendSearch} className="ml-4 bg-blue-500 text-white px-4 py-2 rounded">
+                    </button>
                 </div>}
 
                 {/* Messages Page */}
@@ -118,10 +146,13 @@ const Home = () => {
                         <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
                         <input 
                             type="text" 
-                            placeholder="Search By Name" 
+                            placeholder="Search By Name"
+                            onChange={(e) => setMessagesSearch(e.target.value)}
                             className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
                         />
                     </div>
+                    <button onClick={handleMessagesSearch} className="ml-4 bg-blue-500 text-white px-4 py-2 rounded">
+                    </button>
                 </div>}
             </div>
 
