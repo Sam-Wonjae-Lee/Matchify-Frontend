@@ -86,21 +86,43 @@ const Home = () => {
                 
                 {/* Events Page */}
                 {activeTab === 'events' && 
-                <p className="text-white">
-                    Here are your upcoming events.
-                </p>}
+                <div className="flex justify-center mt-4">
+                    <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
+                        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
+                        <input 
+                            type="text" 
+                            placeholder="Search Events" 
+                            // Todo: change color to the correct grey
+                            className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
+                        />
+                    </div>
+                </div>}
                 
                 {/* Friends Page */}
                 {activeTab === 'friends' && 
-                <p className="text-white">
-                    See what your friends are up to.
-                </p>}
+                <div className="flex justify-center mt-4">
+                    <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
+                        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
+                        <input 
+                            type="text" 
+                            placeholder="Search By Name" 
+                            className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
+                        />
+                    </div>
+                </div>}
 
                 {/* Messages Page */}
                 {activeTab === 'messages' && 
-                <p className="text-white">
-                    Check your messages here.
-                </p>}
+                <div className="flex justify-center mt-4">
+                    <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
+                        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
+                        <input 
+                            type="text" 
+                            placeholder="Search By Name" 
+                            className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
+                        />
+                    </div>
+                </div>}
             </div>
 
             {/* Navigation Bar */}
