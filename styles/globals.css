@@ -43,6 +43,7 @@ body {
   z-index: 1;
 }
 
+/* For slider switch used in settings page */
 .switch {
   position: relative;
   display: inline-block;
@@ -100,4 +101,14 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* For hiding scrollbar used in home page */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
 }

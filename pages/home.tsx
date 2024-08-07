@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Background from "@/components/background";
 import { useRouter } from "next/router";
+import UserCard from "@/components/user_card";
 
 const Home = () => {
     const router = useRouter();
@@ -11,6 +12,7 @@ const Home = () => {
 
     const [activeTab, setActiveTab] = useState('home');
 
+    // For changing the page text on top left
     const getTabTitle = () => {
         switch (activeTab) {
             case 'home':
@@ -25,6 +27,13 @@ const Home = () => {
                 return 'Home';
         }
     };
+    const users = [
+        { profilePicture: "/default_pfp.png", username: "John Doe", songName: "Memories by Conan Gray" },
+        { profilePicture: "/default_pfp.png", username: "Jane Doe", songName: "teenage dream by Olivia Rodrigo" },
+        { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
+        { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
+        { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
+    ];
 
     return (
         <div className="h-screen w-screen" style={{ backgroundColor: '#282828' }}>
@@ -52,11 +61,37 @@ const Home = () => {
                     </div>
                 </div>
 
-                {/* Conditional Content */}
-                {activeTab === 'home' && <p className="text-white">Welcome to the Home tab!</p>}
-                {activeTab === 'events' && <p className="text-white">Here are your upcoming events.</p>}
-                {activeTab === 'friends' && <p className="text-white">See what your friends are up to.</p>}
-                {activeTab === 'messages' && <p className="text-white">Check your messages here.</p>}
+                {/* Home Page */}
+                {activeTab === 'home' && 
+                <div className="flex overflow-x-auto no-scrollbar space-x-4">
+                    {users.map((user, index) => (
+                        <div key={index} className="flex-shrink-0">
+                            <UserCard 
+                                profilePicture={user.profilePicture} 
+                                username={user.username} 
+                                songName={user.songName} 
+                            />
+                        </div>
+                    ))}
+                </div>}
+                
+                {/* Events Page */}
+                {activeTab === 'events' && 
+                <p className="text-white">
+                    Here are your upcoming events.
+                </p>}
+                
+                {/* Friends Page */}
+                {activeTab === 'friends' && 
+                <p className="text-white">
+                    See what your friends are up to.
+                </p>}
+
+                {/* Messages Page */}
+                {activeTab === 'messages' && 
+                <p className="text-white">
+                    Check your messages here.
+                </p>}
             </div>
 
             {/* Navigation Bar */}
