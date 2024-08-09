@@ -3,6 +3,9 @@ import Head from "next/head";
 import Background from "@/components/background";
 import { useRouter } from "next/router";
 import UserCard from "@/components/user_card";
+import FilterEventsTabs from "@/components/filter_events_tabs";
+import EventCard from "@/components/event_card";
+
 
 const Home = () => {
     // Used for redirecting to another page
@@ -10,11 +13,15 @@ const Home = () => {
 
     // for search inputs
     const [eventSearch, setEventSearch] = useState('');
+    const [headerText, setHeaderText] = useState('Your Events');
+
     const [friendSearch, setFriendSearch] = useState('');
     const [messagesSearch, setMessagesSearch] = useState('');
 
     const handleEventSearch = () => {
         console.log('Event Search:', eventSearch);
+
+        setHeaderText('Search Results');
         // TODO: Handle event search logic here
     };
 
@@ -36,6 +43,30 @@ const Home = () => {
     // Redirects for notifications.tsx page
     const handleNotificationsRedirect = () => {
         router.push('/notifications');
+    }
+
+    const attendingTab = () => {
+        console.log('Attending pressed!');
+    };
+
+    const locationTab = () => {
+        console.log('Location pressed!');
+    }
+
+    const dateTab = () => {
+        console.log('Date pressed!');
+    }
+
+    const artistTab = () => {
+        console.log('Artist pressed!');
+    }
+
+    const genreTab = () => {
+        console.log('Genre pressed!');
+    }
+
+    const friendsAttendingTab = () => {
+        console.log('Friends Attending pressed!');
     }
 
     const [activeTab, setActiveTab] = useState('home');
@@ -64,7 +95,7 @@ const Home = () => {
     ];
 
     return (
-        <div className="h-screen w-screen" style={{ backgroundColor: '#282828' }}>
+        <div className="bg-gray-900 flex flex-col min-h-screen w-screen overflow-y-auto" style={{ backgroundColor: '#282828', marginBottom: '4.5rem' }}>
             <Head>
                 <title>{getTabTitle()}</title>
                 <meta name="description" content="Home Screen"/>
@@ -106,25 +137,129 @@ const Home = () => {
                 
                 {/* Events Page */}
                 {activeTab === 'events' && 
-                <div className="flex justify-center mt-4">
-                    <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
-                        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
-                        <input 
-                            type="text" 
-                            placeholder="Search Events" 
-                            onChange={(e) => setEventSearch(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleMessagesSearch();
-                                }
-                            }}
-                            // Todo: change color to the correct grey
-                            className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
+                <div className="flex flex-col items-center mt-4 space-y-4 w-full max-w-screen-lg mx-auto">
+    <div
+        style={{ backgroundColor: '#535353', color: '#535353', borderColor: '#535353',
+            width: '325px',
+        }}
+        className="flex items-center rounded-md px-4 py-2 w-80">
+        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
+        <input
+            type="text"
+            placeholder="Search Events"
+            onChange={(e) => setEventSearch(e.target.value)}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                    handleEventSearch();
+                }
+            }}
+            style={{ backgroundColor: '#535353', color: '#FFFFFF', borderColor: '#535353' }}
+            className="outline-none placeholder-gray-400 w-full" />
+    </div>
+     {/* filter tabs */}
+    <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
+        {/* location */}
+        <FilterEventsTabs name="Location" onClick={locationTab} />
+
+        {/* date */}
+        <FilterEventsTabs name="Date" onClick={dateTab} />
+
+        {/* artist */}
+        <FilterEventsTabs name="Artist" onClick={artistTab} />
+
+        {/* genre */}
+        <FilterEventsTabs name="Genre" onClick={genreTab} />
+        
+        {/* friend_attending */}
+        <FilterEventsTabs name="Friends Attending" onClick={friendsAttendingTab} />
+
+        {/* attending */}
+        <FilterEventsTabs name="Attending" onClick={attendingTab} />
+        </div>
+
+        <div className="flex flex-col items-start w-full h-screen ">
+            <h1 className="text-2xl font-bold text-white">{headerText}</h1>
+            {/* Your events content goes here */}
+            <div className="flex flex-wrap justify-center mt-4 space-y-4">
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            eventName="Kanye West"
+                            eventDate="June 24, 2022"
+                            eventLocation="New York City"
+                            eventImage="/kanye.jpeg"
+                            friendImage1="/default_pfp.png"
+                            friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            friendName2="Jane Doe"
+                            additionalCount={999}
                         />
                     </div>
-                </div>}
-                
-                {/* Friends Page */}
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            eventName="UFC 214"
+                            eventDate="June 26, 2022"
+                            eventLocation="Las Vegas"
+                            eventImage="/UFC214.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                        />
+                    </div>
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            eventName="Olypic Basketball Finals"
+                            eventDate="August 10, 2024"
+                            eventLocation="Paris"
+                            eventImage="/olympic_basketball_final.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                        />
+                    </div>
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            eventName="Olypic Basketball Finals"
+                            eventDate="August 10, 2024"
+                            eventLocation="Paris"
+                            eventImage="/olympic_basketball_final.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                        />
+                    </div>
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            eventName="Olypic Basketball Finals"
+                            eventDate="August 10, 2024"
+                            eventLocation="Paris"
+                            eventImage="/olympic_basketball_final.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                        />
+                    </div>
+
+            </div>
+        </div>
+
+
+        
+
+
+    </div>}
+        {/* Friends Page */}
                 {activeTab === 'friends' && 
                 <div className="flex justify-center mt-4">
                     <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
@@ -135,7 +270,7 @@ const Home = () => {
                             onChange={(e) => setFriendSearch(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
-                                    handleMessagesSearch();
+                                    handleFriendSearch();
                                 }
                             }}
                             className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
