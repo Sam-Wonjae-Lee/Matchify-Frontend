@@ -98,7 +98,7 @@ const Home = () => {
         }
     };
     const users = [
-        { profilePicture: "/default_pfp.png", username: "John Doe", songName: "Memories by Conan Gray" },
+        { profilePicture: "/default_pfp.png", username: "Top G", songName: "I love smoking" },
         { profilePicture: "/default_pfp.png", username: "Jane Doe", songName: "teenage dream by Olivia Rodrigo" },
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
