@@ -25,6 +25,9 @@ const Home = () => {
     type Tab = 'events' | 'friends' | 'home' | 'friends' | 'messages';
     const [activeTab, setActiveTab] = useState<Tab>('home');
 
+    const [newFriendState, setIsNewFriendToggled] = useState(true);
+    const [currentfriendState, setIsCurrentFriendToggled] = useState(false);
+
 
     // For handling event clicks
     const handleEventClick = (eventID: number) => {
@@ -81,6 +84,11 @@ const Home = () => {
     const handleFriendsAttendingTab = () => {
         console.log('Friends Attending pressed!');
     }
+
+    const toggleButton = () => {
+        setIsNewFriendToggled(!newFriendState);
+        setIsCurrentFriendToggled(!currentfriendState);
+    };
 
     // For changing the page text on top left
     const getTabTitle = () => {
@@ -156,28 +164,25 @@ const Home = () => {
                         </div>
                     ))}
                 </div>}
+                <div>
+                    {/* Conditionally render the search bar */}
+                    {activeTab === 'events' && (
+                        <SearchBar
+                            placeholder="Search"
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleEventSearch();
+                                }
+                            }}
+                        />
+                    )}
+                </div>
                 
                 {/* Events Page */}
                 {activeTab === 'events' && 
                 <div className="flex flex-col items-center mt-4 space-y-4 w-full max-w-screen-lg mx-auto">
-    <div
-        style={{ backgroundColor: '#535353', color: '#535353', borderColor: '#535353',
-            width: '325px',
-        }}
-        className="flex items-center rounded-md px-4 py-2 w-80">
-        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
-        <input
-            type="text"
-            placeholder="Search Events"
-            onChange={(e) => setEventSearch(e.target.value)}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    handleEventSearch();
-                }
-            }}
-            style={{ backgroundColor: '#535353', color: '#FFFFFF', borderColor: '#535353' }}
-            className="outline-none placeholder-gray-400 w-full" />
-    </div>
+
      {/* filter tabs */}
     <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
         {/* location */}
@@ -253,20 +258,6 @@ const Home = () => {
                         />
                     </div>
             </div>
-            <div>
-            {/* Conditionally render the search bar */}
-            {activeTab === 'events' && (
-                <SearchBar
-                    placeholder="Search"
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleEventSearch();
-                        }
-                    }}
-                />
-            )}
-        </div>
         </div>
         </div>}
             {/* Friends Search Bar */}
@@ -283,6 +274,22 @@ const Home = () => {
             )}
             {activeTab === 'friends' && 
                 <div className="flex flex-col items-center mt-4">
+                <div className="w-full">
+                    <button
+                        onClick={toggleButton}
+                        className="w-1/2 px-4 py-2 mt-4 bg-blue-500 text-white rounded-md"
+                        style={{ height: '40px' }} // Adjust height to match the search bar
+                    >
+                        {newFriendState ? 'new friends' : ''}
+                    </button>
+                    <button
+                        onClick={toggleButton}
+                        className="w-1/2 px-4 py-2 mt-4 bg-blue-500 text-white rounded-md"
+                        style={{ height: '40px' }} // Adjust height to match the search bar
+                    >
+                        {currentfriendState ? 'current friends' : ''}
+                    </button>
+                </div>
                     <div className="mt-8 w-full px-4">
                         <h2 className="text-center text-white text-lg font-bold mb-4">Friends</h2>
                         <ul className="space-y-4">
