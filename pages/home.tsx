@@ -18,6 +18,11 @@ const Home = () => {
     const [friendSearch, setFriendSearch] = useState('');
     const [messagesSearch, setMessagesSearch] = useState('');
 
+    // For handling event clicks
+    const handleEventClick = (eventID: number) => {
+        console.log('Event ID:', eventID);
+    }
+
     const handleEventSearch = () => {
         console.log('Event Search:', eventSearch);
 
@@ -45,27 +50,27 @@ const Home = () => {
         router.push('/notifications');
     }
 
-    const attendingTab = () => {
+    const handleAttendingTab = () => {
         console.log('Attending pressed!');
     };
 
-    const locationTab = () => {
+    const handleLocationTab = () => {
         console.log('Location pressed!');
     }
 
-    const dateTab = () => {
+    const handleDateTab = () => {
         console.log('Date pressed!');
     }
 
-    const artistTab = () => {
+    const handleArtistTab = () => {
         console.log('Artist pressed!');
     }
 
-    const genreTab = () => {
+    const handleGenreTab = () => {
         console.log('Genre pressed!');
     }
 
-    const friendsAttendingTab = () => {
+    const handleFriendsAttendingTab = () => {
         console.log('Friends Attending pressed!');
     }
 
@@ -159,30 +164,33 @@ const Home = () => {
      {/* filter tabs */}
     <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
         {/* location */}
-        <FilterEventsTabs name="Location" onClick={locationTab} />
+        <FilterEventsTabs name="Location" onClick={handleLocationTab} />
 
         {/* date */}
-        <FilterEventsTabs name="Date" onClick={dateTab} />
+        <FilterEventsTabs name="Date" onClick={handleDateTab} />
 
         {/* artist */}
-        <FilterEventsTabs name="Artist" onClick={artistTab} />
+        <FilterEventsTabs name="Artist" onClick={handleArtistTab} />
 
         {/* genre */}
-        <FilterEventsTabs name="Genre" onClick={genreTab} />
+        <FilterEventsTabs name="Genre" onClick={handleGenreTab} />
         
         {/* friend_attending */}
-        <FilterEventsTabs name="Friends Attending" onClick={friendsAttendingTab} />
+        <FilterEventsTabs name="Friends Attending" onClick={handleFriendsAttendingTab} />
 
         {/* attending */}
-        <FilterEventsTabs name="Attending" onClick={attendingTab} />
+        <FilterEventsTabs name="Attending" onClick={handleAttendingTab} />
         </div>
+        
 
+        {/* for events, their event id is unique and is used to identify them in the database */}
         <div className="flex flex-col items-start w-full h-screen ">
             <h1 className="text-2xl font-bold text-white">{headerText}</h1>
             {/* Your events content goes here */}
             <div className="flex flex-wrap justify-center mt-4 space-y-4">
                     <div className="flex-shrink-0">
                         <EventCard
+                            key={1}
                             eventName="Kanye West"
                             eventDate="June 24, 2022"
                             eventLocation="New York City"
@@ -192,11 +200,13 @@ const Home = () => {
                             friendName1="John Doe"
                             friendName2="Jane Doe"
                             additionalCount={999}
+                            onClick={() => handleEventClick(1)}
                         />
                     </div>
 
                     <div className="flex-shrink-0">
                         <EventCard
+                            key={2}
                             eventName="UFC 214"
                             eventDate="June 26, 2022"
                             eventLocation="Las Vegas"
@@ -206,11 +216,13 @@ const Home = () => {
                             friendName1="John Doe"
                             // friendName2="Jane Doe"
                             additionalCount={999}
+                            onClick={() => handleEventClick(2)}
                         />
                     </div>
 
                     <div className="flex-shrink-0">
                         <EventCard
+                            key={3}
                             eventName="Olypic Basketball Finals"
                             eventDate="August 10, 2024"
                             eventLocation="Paris"
@@ -220,36 +232,10 @@ const Home = () => {
                             friendName1="John Doe"
                             // friendName2="Jane Doe"
                             additionalCount={999}
+                            onClick={() => handleEventClick(3)}
                         />
                     </div>
 
-                    <div className="flex-shrink-0">
-                        <EventCard
-                            eventName="Olypic Basketball Finals"
-                            eventDate="August 10, 2024"
-                            eventLocation="Paris"
-                            eventImage="/olympic_basketball_final.jpg"
-                            friendImage1="/default_pfp.png"
-                            // friendImage2="/default_pfp.png"
-                            friendName1="John Doe"
-                            // friendName2="Jane Doe"
-                            additionalCount={999}
-                        />
-                    </div>
-
-                    <div className="flex-shrink-0">
-                        <EventCard
-                            eventName="Olypic Basketball Finals"
-                            eventDate="August 10, 2024"
-                            eventLocation="Paris"
-                            eventImage="/olympic_basketball_final.jpg"
-                            friendImage1="/default_pfp.png"
-                            // friendImage2="/default_pfp.png"
-                            friendName1="John Doe"
-                            // friendName2="Jane Doe"
-                            additionalCount={999}
-                        />
-                    </div>
 
             </div>
         </div>

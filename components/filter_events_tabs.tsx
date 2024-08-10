@@ -8,8 +8,9 @@ interface EventCardProps {
 const EventCard: React.FC<EventCardProps> = ({ name, onClick }) => {
     const [bgColor, setBgColor] = useState('#535353');
 
+
     const handleClick = () => {
-        setBgColor(prevColor => prevColor === '#535353' ? '#1DB954' : '#535353'); // Toggle color to Spotify green
+        setBgColor('#535353'); // Toggle color to #535353
         onClick();
     };
 
@@ -25,31 +26,3 @@ const EventCard: React.FC<EventCardProps> = ({ name, onClick }) => {
 };
 
 export default EventCard;
-
-// import React, { useState } from 'react';
-
-// interface EventCardProps {
-//     name: string;
-//     onClick: () => void;
-// }
-
-// const EventCard: React.FC<EventCardProps> = ({ name, onClick }) => {
-//     const [bgColor, setBgColor] = useState('#535353');
-
-//     const handleClick = () => {
-//         setBgColor(prevColor => prevColor === '#535353' ? '#1DB954' : '#535353'); // Toggle color to Spotify green
-//         onClick();
-//     };
-
-//     return (
-//         <div 
-//             className="flex flex-col items-center p-2 rounded-lg shadow-md mb-2" 
-//             style={{ backgroundColor: bgColor, width: '25%' }}
-//             onClick={handleClick}
-//         >
-//             <p className="text-white text-xs">{name}</p>
-//         </div>
-//     );
-// };
-
-// export default EventCard;
