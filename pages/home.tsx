@@ -61,6 +61,12 @@ const Home = () => {
         router.push('/notifications');
     }
 
+    const handleProfileRedirect = () => {
+        // HERE WE NEED TO ACCESS SESSION STORAGE
+        const user_id = sessionStorage.getItem("user_id") || "Anon"
+        router.push('/profile/' + user_id);
+    }
+
     const handleAttendingTab = () => {
         console.log('Attending pressed!');
     };
@@ -147,7 +153,7 @@ const Home = () => {
                             onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
                             onClick={handleNotificationsRedirect}
                         />
-                        <img src="/default_pfp_v2.png" alt="Profile Icon" className="w-7 h-8"/>
+                        <img src="/default_pfp_v2.png" alt="Profile Icon" className="w-7 h-8" onClick={handleProfileRedirect}/>
                     </div>
                 </div>
 
