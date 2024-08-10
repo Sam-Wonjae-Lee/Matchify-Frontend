@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import UserCard from "@/components/user_card";
 import FilterEventsTabs from "@/components/filter_events_tabs";
 import EventCard from "@/components/event_card";
+import FriendCard from "@/components/friend_card";
+import SearchBar from "@/components/search_bar";
 
 
 
@@ -19,6 +21,10 @@ const Home = () => {
 
     const [friendSearch, setFriendSearch] = useState('');
     const [messagesSearch, setMessagesSearch] = useState('');
+
+    type Tab = 'events' | 'friends' | 'home' | 'friends' | 'messages';
+    const [activeTab, setActiveTab] = useState<Tab>('home');
+
 
     // For handling event clicks
     const handleEventClick = (eventID: number) => {
@@ -76,8 +82,6 @@ const Home = () => {
         console.log('Friends Attending pressed!');
     }
 
-    const [activeTab, setActiveTab] = useState('home');
-
     // For changing the page text on top left
     const getTabTitle = () => {
         switch (activeTab) {
@@ -101,7 +105,18 @@ const Home = () => {
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
     ];
 
+    const friends = [
+        { key: 1, suggested: true, friendImage: "/default_pfp.png", friendName: "John Doe", bio: "Sigma" },
+        { key: 2, suggested: true, friendImage: "/default_pfp.png", friendName: "Hitler", bio: "Sigma 2" },
+        { key: 3, suggested: false, friendImage: "/default_pfp.png", friendName: "george floyd", bio: "Sigma 3" },
+    ];
+
+    function setSearchQuery(value: string): void {
+        throw new Error("Function not implemented.");
+    }
+
     return (
+        
         <div className="bg-gray-900 flex flex-col min-h-screen w-screen overflow-y-auto" style={{ backgroundColor: '#282828', marginBottom: '4.5rem' }}>
             <Head>
                 <title>{getTabTitle()}</title>
@@ -237,53 +252,69 @@ const Home = () => {
                             onClick={() => handleEventClick(3)}
                         />
                     </div>
-
-
             </div>
+            <div>
+            {/* Conditionally render the search bar */}
+            {activeTab === 'events' && (
+                <SearchBar
+                    placeholder="Search"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleEventSearch();
+                        }
+                    }}
+                />
+            )}
         </div>
-
-
-        
-
-
-    </div>}
-        {/* Friends Page */}
-                {activeTab === 'friends' && 
-                <div className="flex justify-center mt-4">
-                    <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
-                        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
-                        <input 
-                            type="text" 
-                            placeholder="Search By Name" 
-                            onChange={(e) => setFriendSearch(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleFriendSearch();
-                                }
-                            }}
-                            className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
-                        />
+        </div>
+        </div>}
+            {/* Friends Search Bar */}
+            {activeTab === 'friends' && (
+                <SearchBar
+                    placeholder="Search"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleFriendSearch();
+                        }
+                    }}
+                />
+            )}
+            {activeTab === 'friends' && 
+                <div className="flex flex-col items-center mt-4">
+                    <div className="mt-8 w-full px-4">
+                        <h2 className="text-center text-white text-lg font-bold mb-4">Friends</h2>
+                        <ul className="space-y-4">
+                            {friends.map((friend, index) => (
+                                <div key={index} className="flex-shrink-0">
+                                    <FriendCard
+                                        friendImage={friend.friendImage} 
+                                        friendName={friend.friendName} 
+                                        suggested={friend.suggested}
+                                        bio={friend.bio}
+                                        key={friend.key}
+                                        onClick={() => handleEventClick(3)}
+                                    />
+                                </div>
+                            ))}
+                        </ul>
                     </div>
-                </div>}
+                </div>
+            }
 
-                {/* Messages Page */}
-                {activeTab === 'messages' && 
-                <div className="flex justify-center mt-4">
-                    <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
-                        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
-                        <input 
-                            type="text" 
-                            placeholder="Search By Name"
-                            onChange={(e) => setMessagesSearch(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleMessagesSearch();
-                                }
-                            }}
-                            className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
-                        />
-                    </div>
-                </div>}
+            {/* Conditionally render the search bar */}
+            {activeTab === 'messages' && (
+                <SearchBar
+                    placeholder="Search"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleMessagesSearch();
+                        }
+                    }}
+                />
+            )}
             </div>
 
             {/* Navigation Bar */}
