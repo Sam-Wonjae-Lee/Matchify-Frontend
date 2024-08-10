@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Background from "@/components/background";
+
 import { useRouter } from "next/router";
 import UserCard from "@/components/user_card";
 import FilterEventsTabs from "@/components/filter_events_tabs";
 import EventCard from "@/components/event_card";
+
 
 
 const Home = () => {
