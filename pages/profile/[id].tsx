@@ -6,7 +6,8 @@ import { useRouter } from "next/router";
 
 interface ProfileProps {
     id: string,
-    profileData: any
+    profileData: any,
+    isOwner: boolean
 }
 
 interface ProfileData {
@@ -21,6 +22,9 @@ interface ProfileData {
 const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
 
     const router = useRouter();
+    // hard setting it rn
+    // TODO: link this somehow
+    const isOwner = false;
 
     const [activeTab, setActiveTab] = useState('profile');
 
@@ -217,7 +221,14 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             </button>
                         </div>}
                     </div>)}
-        
+                    {/*additional information for non owners/ matchify stats*/}
+                    {isOwner === false && (
+                        <div className="mt-4 w-full mt-[1vh] overflow-default">
+                            <h1 className="text-2xl text-spotify-green font-bold">Matchify Stats</h1>
+                            <p className="text-sm text-white break-words">{profile.bio}</p>
+                            
+                        </div>
+                    ) }
                     {/* Profile, Playlist, Activity Tabs */}
                     <div className="flex w-full justify-around mt-[2vh]">
                         <button
