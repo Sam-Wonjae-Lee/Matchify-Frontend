@@ -61,6 +61,11 @@ const Home = () => {
         router.push('/notifications');
     }
 
+    // Redirects for notifications.tsx page
+    const handleFriendsRedirect = () => {
+        router.push('/friends');
+    }
+
     const handleProfileRedirect = () => {
         // HERE WE NEED TO ACCESS SESSION STORAGE
         const user_id = sessionStorage.getItem("user_id") || "Anon"
@@ -280,34 +285,33 @@ const Home = () => {
             )}
             {activeTab === 'friends' && 
                 <div className="flex flex-col items-center mt-4">
-                <div className="w-full">
-                    <button
-                        onClick={toggleButton}
-                        className="w-1/2 px-4 py-2 mt-4 bg-blue-500 text-white rounded-md"
-                        style={{ height: '40px' }} // Adjust height to match the search bar
-                    >
-                        {newFriendState ? 'new friends' : ''}
-                    </button>
-                    <button
-                        onClick={toggleButton}
-                        className="w-1/2 px-4 py-2 mt-4 bg-blue-500 text-white rounded-md"
-                        style={{ height: '40px' }} // Adjust height to match the search bar
-                    >
-                        {currentfriendState ? 'current friends' : ''}
-                    </button>
-                </div>
+                    <div className="w-full flex">
+                        <button
+                            onClick={() => toggleButton()}
+                            className={`w-1/2 px-4 py-2 mt-4 rounded-l-md flex items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: currentfriendState === false ? '#1DB954' : '#535353'}}
+                        >
+                            {newFriendState ? 'Suggestions' : 'Suggestions'}
+                        </button>
+                        <button
+                            onClick={() => toggleButton()}
+                            className={`w-1/2 px-4 py-2 mt-4 rounded-r-md flex items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: currentfriendState === true ? '#1DB954' : '#535353'}}
+                        >
+                            {currentfriendState ? 'Friends' : 'Friends'}
+                        </button>
+                    </div>
                     <div className="mt-8 w-full px-4">
-                        <h2 className="text-center text-white text-lg font-bold mb-4">Friends</h2>
                         <ul className="space-y-4">
                             {friends.map((friend, index) => (
                                 <div key={index} className="flex-shrink-0">
                                     <FriendCard
-                                        friendImage={friend.friendImage} 
-                                        friendName={friend.friendName} 
+                                        friendImage={friend.friendImage}
+                                        friendName={friend.friendName}
                                         suggested={friend.suggested}
                                         bio={friend.bio}
                                         key={friend.key}
-                                        onClick={() => handleEventClick(3)}
+                                        onClick={() => console.log('Friend clicked')}
                                     />
                                 </div>
                             ))}
