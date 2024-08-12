@@ -84,6 +84,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
 
         if(sliderPart) {
             sliderPart.style.backgroundColor = "rgb(75, 85, 99)";
+            sliderPart.style.borderRadius = "0.5rem";
         }
     }
 
@@ -92,6 +93,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
 
         if(sliderPart) {
             sliderPart.style.backgroundColor = "rgb(107, 114, 128)";
+            sliderPart.style.borderRadius = "0.5rem";
         }
     }
 
