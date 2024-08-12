@@ -7,7 +7,7 @@ const Callback = () => {
 
         const getProfileObject = async (code: string | null) => {
             const response = await axios.post("http://localhost:8888/spotify/auth/callback", {code})
-            console.log(response.data.ok);
+            console.log(response.data);
         }
 
         const params = new URLSearchParams(window.location.search);
