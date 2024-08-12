@@ -60,7 +60,7 @@ const FriendRequests = () => {
                     Requests ({requests.length})
                 </h1>
                 {requests && requests.length == 0 && (<div className="flex justify-center">
-                    <div className="text-center text-2xl mt-20 w-1/2"> You Have No Requests!</div>
+                    <div className="text-center text-2xl text-white mt-20 w-1/2"> You Have No Requests!</div>
                 </div>)}
                 {requests && requests.length > 0 && requests.map((request, index) => (
                     <RequestCard 
