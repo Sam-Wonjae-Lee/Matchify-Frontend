@@ -1,23 +1,27 @@
 import axios from 'axios'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Callback = () => {
 
+    const [runOnce, setRunOnce] = useState(false);
+
     useEffect(() => {
 
+        if (runOnce) {
+            return;
+        }
+
         const getProfileObject = async (code: string | null) => {
-            const response = await axios.post("http://localhost:8888/spotify/auth/callback", {code}, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            console.log("Profile Data " + response.data.display_name);
+            const response = await axios.post("http://localhost:8888/spotify/auth/callback", {code})
+            console.log(response.data);
         }
 
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
+        console.log("Running");
+        setRunOnce(true);
         getProfileObject(code);
-    }, [])
+    }, [runOnce])
 
     return (
         <div>
