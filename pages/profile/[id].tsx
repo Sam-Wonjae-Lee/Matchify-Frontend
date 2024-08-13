@@ -1,6 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
-import Background from '@/components/background'
+import { SlideupCard, showSlideupCard } from '@/components/slideup_card';
+import { AreYouSureCard, showAreYouSureCard } from '@/components/are_you_sure_card';
 import { useState, useEffect } from 'react'
 import { useRouter } from "next/router";
 
@@ -37,7 +38,11 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
 
     const [editingProfile, setEditingProfile] = useState<ProfileData>(() => profileData);
 
+    // friend request state
     const [requestClicked, setRequestClicked] = useState(false);
+    const [blocked, setBlocked] = useState(false);
+
+    const [currStatusText, setCurrStatusText] = useState("");
 
 
     interface TrackCardProps {
@@ -70,52 +75,54 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
     };
 
     const handleBack = () => {
-        router.back();
+        router.push("/home");
     }
 
-    const handleRequestClick = () => {
-        const sliderElement = document.getElementById("slider");
+    const showStatusPopup = (text: string) => {
+        const sliderElement = document.getElementById("status");
 
         if (sliderElement) {
             sliderElement.style.display = "block";
-            sliderElement.classList.remove("animate-slideDown");
-            sliderElement.classList.add("animate-slideUp");
-            console.log("Slider wdwdd");
-        } else {
-            console.log("Slider element not found");
         }
-        setRequestClicked(true);
+        setCurrStatusText(text);
+        setTimeout(() => {
+            const sliderElement = document.getElementById("status");
+
+            if (sliderElement) {
+                sliderElement.style.display = "none";
+            }
+        }, 1200);
     }
 
-    const removeSlider = () => {
-        const sliderElement = document.getElementById("slider");
 
-        if (sliderElement) {
-            //setTimeout(() => {sliderElement.style.display = "hidden"}, 1000)
-            sliderElement.classList.remove("animate-slideUp");
-            sliderElement.classList.add("animate-slideDown");
-        } else {
-            console.log("Slider element not found");
-        }
+    const handleSendFriendRequest = () => {
+        // TODO BACKEND SEND FRIEND REQUEST
+        showStatusPopup("Sent Friend Request to" + profile.name + "!");
+    }
+
+    const handleUnfriend = () => {
         setRequestClicked(false);
+        setFriends(false);
+        showStatusPopup("Unfriended " + profile.name + "!");
     }
 
-    const pressDownHighlight = (id: string) => {
-        const sliderPart = document.getElementById(id);
-
-        if(sliderPart) {
-            sliderPart.style.backgroundColor = "rgb(75, 85, 99)";
-            sliderPart.style.borderRadius = "0.5rem";
-        }
+    const handleCancelFriendRequest = () => {
+        // TODO BACKEND CANCEL FRIEND REQUEST
+        setRequestClicked(false);
+        showStatusPopup("Canceled Friend Request to " + profile.name);
     }
 
-    const pressUpHighlight = (id: string) => {
-        const sliderPart = document.getElementById(id);
+    const handleBlockUser = () => {
+        // TODO BLOCK USER ON BACKEND
+        setRequestClicked(false);
+        setBlocked(true);
+        showStatusPopup("Blocked " + profile.name);
+    }
 
-        if(sliderPart) {
-            sliderPart.style.backgroundColor = "rgb(107, 114, 128)";
-            sliderPart.style.borderRadius = "0.5rem";
-        }
+    const handleUnblockUser = () => {
+        // TODO BLOCK USER ON BACKEND
+        setBlocked(false);
+        showStatusPopup("Unblocked " + profile.name);
     }
 
     useEffect(() => {
@@ -130,8 +137,9 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
         setViewer(sessionStorage.getItem("user_id") || "Anon");
         // BACKEND CALL HERE TO GET IF VIEWER IS FRIENDS WITH PROFILE
         // setFriends()
-        setFriends(false);
-    })
+        console.log("I AM RUNNING")
+        setFriends(true);
+    }, [])
 
     return (
         <div className="min-h-screen w-screen" style={{ backgroundColor: '#282828' }}>
@@ -175,67 +183,73 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             </div>
                         </button>
 
-                        {viewer && (viewer == id) && <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
-                            <button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={() => {setIsEditing((prev) => {return !prev})}}>
-                                <div className="flex w-full h-full z-10">
-                                    <div className="flex w-full items-center justify-center">
-                                        <p className="text-white">Edit Profile</p>
-                                    </div>
-                                </div>
-                            </button>
-                            <button className="w-1/2 bg-white h-10 z-10 rounded-xl text-center z-10 ml-2">
-                                <div className="flex w-full h-full z-10">
-                                    <div className="flex w-full items-center justify-center">
-                                        <p className="text-spotify-green">Settings</p>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>}
-
-                        {viewer && (viewer != id) && friends && <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
-                            <button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2">
+                        <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
+                            {viewer && (viewer != id) && friends && !blocked && (<button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={() => {
+                                showSlideupCard("unfriend_popup");
+                            }}>
                                 <div className="flex w-full h-full z-10">
                                     <div className="flex w-full items-center justify-center">
                                         {/*TODO make a friends dropdown*/}
                                         <p className="text-white">Friends</p>
                                     </div>
                                 </div>
-                            </button>
-                            <button className="w-1/2 bg-white h-10 z-10 rounded-xl text-center z-10 ml-2">
-                                <div className="flex w-full h-full z-10">
-                                    <div className="flex w-full items-center justify-center">
-                                        {/*TODO link to message*/}
-                                        <p className="text-spotify-green">Message</p>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>}
-                        {viewer && (viewer != id) && !friends && <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
-                            {!requestClicked && <button className="w-1/2 bg-[#0094CA] h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={handleRequestClick}>
+                            </button>)}
+                            {viewer && (viewer != id) && !friends && !blocked && !requestClicked && (<button className="w-1/2 bg-[#0094CA] h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={() => {
+                                showSlideupCard("slider");
+                                setRequestClicked(true);
+                            }}>
                                 <div className="flex w-full h-full z-10">
                                     <div className="flex w-full items-center justify-center">
                                         {/*TODO make a friends dropdown*/}
                                         <p className="text-white">Request</p>
                                     </div>
                                 </div>
-                            </button>}
-                            {requestClicked && <button className="w-1/2 bg-red-600 h-10 z-10 rounded-xl text-center z-10 mr-2">
+                            </button>)}
+                            {viewer && (viewer != id) && !friends && !blocked && requestClicked && (<button className="w-1/2 bg-red-600 h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={() => {
+                                showAreYouSureCard("cancel_popup");
+                            }}>
                                 <div className="flex w-full h-full z-10">
                                     <div className="flex w-full items-center justify-center">
                                         {/*TODO make a friends dropdown*/}
                                         <p className="text-white">Cancel</p>
                                     </div>
                                 </div>
-                            </button>}
-                            <button className="w-1/2 bg-white h-10 z-10 rounded-xl text-center z-10 ml-2">
+                            </button>)}
+                            {viewer && (viewer != id) && blocked && (<button className="w-1/2 bg-red-800 h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={() => {
+                                showAreYouSureCard("unblock_popup");
+                            }}>
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        {/*TODO make a friends dropdown*/}
+                                        <p className="text-white">Blocked</p>
+                                    </div>
+                                </div>
+                            </button>)}
+                            {viewer && (viewer != id) && <button className="w-1/2 bg-white h-10 z-10 rounded-xl text-center z-10 ml-2">
                                 <div className="flex w-full h-full z-10">
                                     <div className="flex w-full items-center justify-center">
                                         {/*TODO link to message*/}
                                         <p className="text-spotify-green">Message</p>
                                     </div>
                                 </div>
-                            </button>
-                        </div>}
+                            </button>}
+                            {viewer && (viewer == id) && (<button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={() => {setIsEditing((prev) => {return !prev})}}>
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        <p className="text-white">Edit Profile</p>
+                                    </div>
+                                </div>
+                            </button>)}
+                            {viewer && (viewer == id) && (<button className="w-1/2 bg-white h-10 z-10 rounded-xl text-center z-10 ml-2">
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        <p className="text-spotify-green">Settings</p>
+                                    </div>
+                                </div>
+                            </button>)}
+                        </div>
+
+
                     </div>)}
                     {/* Profile, Playlist, Activity Tabs */}
                     <div className="flex w-full justify-around mt-[2vh]">
@@ -359,23 +373,13 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             </div>
                         )}
                     </div>
-                    <div id="slider" className="hidden rounded-lg fixed w-full h-1/4 bg-gray-500 bottom-0">
-                        <button id="slider1" className="flex flex-col items-center w-full h-[30%]" onClick={removeSlider}
-                        onTouchStart={() => pressDownHighlight("slider1")} onTouchEnd={() => pressUpHighlight("slider1")}>
-                            <div className="w-1/4 h-4 bg-gray-100 rounded-lg mt-4">
-                            </div>
-                            <div className="mt-2">
-                                {profile.name}
-                            </div>
-                        </button >
-                        <button id="slider2" className="w-full h-[30%]" onTouchStart={() => pressDownHighlight("slider2")} onTouchEnd={() => pressUpHighlight("slider2")}>
-                            Unfriend
-                        </button>
-                        <button id="slider3" className="w-full h-[40%] text-center text-red-500" onTouchStart={() => pressDownHighlight("slider3")} onTouchEnd={() => pressUpHighlight("slider3")}>
-                            Block User
-                        </button>
+                    <div id="status" className="hidden fixed z-100 bottom-0 h-8 text-lg rounded-lg shadow-md w-[calc(100vw-4rem)] text-center bg-spotify-green mb-8">
+                        {currStatusText}
                     </div>
-                    
+                    <AreYouSureCard id="unfriend_popup" text={"Are you sure you want to unfriend " + profile.name + "? You will no longer see their updates or be able to interact with them as friends. This action cannot be undone."} buttonName="Unfriend" buttonFunc={handleUnfriend}></AreYouSureCard>
+                    <AreYouSureCard id="cancel_popup" text={"Are you sure you want to cancel your friend request to " + profile.name + "?."} buttonName="Okay" buttonFunc={handleCancelFriendRequest}></AreYouSureCard>
+                    <AreYouSureCard id="unblock_popup" text={"Are you sure you want to unblock " + profile.name + "? He has a bugatti though?" }buttonName="Unblock" buttonFunc={handleUnblockUser}></AreYouSureCard>
+                    <SlideupCard id="slider" first={profile.name} second={"Send Friend Request"} third={"Block User"} firstFunc={() => {setRequestClicked(false)}} secondFunc={handleSendFriendRequest} thirdFunc={handleBlockUser}></SlideupCard>
                 </div>
 
             </div>

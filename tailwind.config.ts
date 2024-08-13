@@ -23,10 +23,10 @@ const config: Config = {
       keyframes: {
         slideUp: {
           '0%': { transform: 'translateY(100%)' },
-          '100%': { transform: 'translateY(5%)' },
+          '100%': { transform: 'translateY(2%)' },
         },
         slideDown: {
-          '0%': { transform: 'translateY(5%)' },
+          '0%': { transform: 'translateY(2%)' },
           '100%': { transform: 'translateY(100%)' },
         },
       },
