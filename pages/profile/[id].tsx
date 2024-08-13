@@ -4,6 +4,8 @@ import Background from '@/components/background'
 import { useState, useEffect } from 'react'
 import { useRouter } from "next/router";
 
+import Playlist from '@/components/playlist_card';
+
 import TrackCard from "@/components/track_card";
 
 interface ProfileProps {
@@ -208,7 +210,6 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                                 </div>
                             </button>
                         </div>}
-
                         {viewer && (viewer != id) && !friends && <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
                             {!requestClicked && <button className="w-1/2 bg-[#0094CA] h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={handleRequestClick}>
                                 <div className="flex w-full h-full z-10">
@@ -330,7 +331,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             <button type="submit" className="w-full bg-spotify-green text-white p-2 rounded mt-[2vh] h-[6vh]">Apply Changes</button>
                             <button className="w-full bg-white text-red-500 p-2 rounded mt-[2vh] h-[6vh]" onClick={() => setIsEditing(false)}>Cancel</button>
                         </form>))}
-                        {activeTab === 'playlist' && (
+                        {/*
                             <div className="mt-4 w-full px-4">
                                 <ul className="space-y-4">
                                     {tracks.map((track, index) => (
@@ -345,6 +346,11 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                                         </div>
                                     ))}
                                 </ul>
+                            </div>
+                        */}
+                        {activeTab === 'playlist' && (
+                            <div className="mt-4 w-full px-4">
+                                <Playlist />
                             </div>
                         )}
                         {activeTab === 'activity' && (
