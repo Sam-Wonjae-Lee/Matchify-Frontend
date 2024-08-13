@@ -43,7 +43,7 @@ const EventDetails = () => {
                 </div>
 
                 {/* Attendees Section */}
-                <div className="p-4">
+                <div className="p-4 h-80 overflow-y-auto no-scrollbar mt-2">
                     <h2 className="text-white text-lg font-bold mb-4">Attendees</h2>
 
                     {/* Attendee 1 */}
@@ -76,7 +76,7 @@ const EventDetails = () => {
                     <div className="text-green-500 text-xs py-1 px-3 bg-gray-700 bg-opacity-60 rounded-full">Friends</div>
                 </div>
 
-                    {/* Attendee 2 */}
+                    {/* Attendee 4 */}
                     <div className="flex items-center p-4 mb-4 bg-gray-800 bg-opacity-60 rounded-lg">
                         <img src="https://via.placeholder.com/50" alt="John Wu" className="rounded-full w-12 h-12" />
                     <div className="flex-1 ml-4">
