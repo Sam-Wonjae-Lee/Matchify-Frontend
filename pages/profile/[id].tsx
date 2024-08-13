@@ -49,6 +49,9 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
         { key: 1, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
         { key: 2, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
         { key: 3, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 4, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 5, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 6, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
     ];
 
     // Updates profileText that stores the value
@@ -254,21 +257,6 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             Activity
                         </button>
                     </div>
-{/*                             <div className="mt-8 w-full px-4">
-                                <ul className="space-y-4">
-                                    {tracks.map((track, index) => (
-                                        <div key={index} className="flex-shrink-0">
-                                            <TrackCard
-                                                songImage={track.songImage}
-                                                songName={track.songName}
-                                                artistName={track.art}
-                                                key={track.key}
-                                                onClick={() => console.log('Friend clicked')}
-                                            />
-                                        </div>
-                                    ))}
-                                </ul>
-                            </div> */}
                     {/* Tab Content */}
                     <div className="w-full mt-[2vh] overflow-default">
                         {activeTab === 'profile' && (!isEditing ? (
@@ -343,7 +331,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             <button className="w-full bg-white text-red-500 p-2 rounded mt-[2vh] h-[6vh]" onClick={() => setIsEditing(false)}>Cancel</button>
                         </form>))}
                         {activeTab === 'playlist' && (
-                            <div className="mt-8 w-full px-4">
+                            <div className="mt-4 w-full px-4">
                                 <ul className="space-y-4">
                                     {tracks.map((track, index) => (
                                         <div key={index} className="flex-shrink-0">
