@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Background from "@/components/background";
+
 import { useRouter } from "next/router";
 import UserCard from "@/components/user_card";
 import FilterEventsTabs from "@/components/filter_events_tabs";
 import EventCard from "@/components/event_card";
+import FriendCard from "@/components/friend_card";
+import SearchBar from "@/components/search_bar";
+
 
 
 const Home = () => {
@@ -17,6 +21,13 @@ const Home = () => {
 
     const [friendSearch, setFriendSearch] = useState('');
     const [messagesSearch, setMessagesSearch] = useState('');
+
+    type Tab = 'events' | 'friends' | 'home' | 'friends' | 'messages';
+    const [activeTab, setActiveTab] = useState<Tab>('home');
+
+    const [newFriendState, setIsNewFriendToggled] = useState(true);
+    const [currentfriendState, setIsCurrentFriendToggled] = useState(false);
+
 
     // For handling event clicks
     const handleEventClick = (eventID: number) => { 
@@ -50,6 +61,17 @@ const Home = () => {
         router.push('/notifications');
     }
 
+    // Redirects for notifications.tsx page
+    const handleFriendsRedirect = () => {
+        router.push('/friends');
+    }
+
+    const handleProfileRedirect = () => {
+        // HERE WE NEED TO ACCESS SESSION STORAGE
+        const user_id = sessionStorage.getItem("user_id") || "Anon"
+        router.push('/profile/' + user_id);
+    }
+
     const handleAttendingTab = () => {
         console.log('Attending pressed!');
     };
@@ -74,7 +96,10 @@ const Home = () => {
         console.log('Friends Attending pressed!');
     }
 
-    const [activeTab, setActiveTab] = useState('home');
+    const toggleButton = () => {
+        setIsNewFriendToggled(!newFriendState);
+        setIsCurrentFriendToggled(!currentfriendState);
+    };
 
     // For changing the page text on top left
     const getTabTitle = () => {
@@ -92,14 +117,25 @@ const Home = () => {
         }
     };
     const users = [
-        { profilePicture: "/default_pfp.png", username: "John Doe", songName: "Memories by Conan Gray" },
+        { profilePicture: "/default_pfp.png", username: "Top G", songName: "I love smoking" },
         { profilePicture: "/default_pfp.png", username: "Jane Doe", songName: "teenage dream by Olivia Rodrigo" },
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
     ];
 
+    const friends = [
+        { key: 1, suggested: true, friendImage: "/default_pfp.png", friendName: "John Doe", bio: "Sigma" },
+        { key: 2, suggested: true, friendImage: "/default_pfp.png", friendName: "Hitler", bio: "Sigma 2" },
+        { key: 3, suggested: false, friendImage: "/default_pfp.png", friendName: "george floyd", bio: "Sigma 3" },
+    ];
+
+    function setSearchQuery(value: string): void {
+        throw new Error("Function not implemented.");
+    }
+
     return (
+        
         <div className="bg-gray-900 flex flex-col min-h-screen w-screen overflow-y-auto" style={{ backgroundColor: '#282828', marginBottom: '4.5rem' }}>
             <Head>
                 <title>{getTabTitle()}</title>
@@ -122,7 +158,7 @@ const Home = () => {
                             onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
                             onClick={handleNotificationsRedirect}
                         />
-                        <img src="/default_pfp_v2.png" alt="Profile Icon" className="w-7 h-8"/>
+                        <img src="/default_pfp_v2.png" alt="Profile Icon" className="w-7 h-8" onClick={handleProfileRedirect}/>
                     </div>
                 </div>
 
@@ -139,28 +175,25 @@ const Home = () => {
                         </div>
                     ))}
                 </div>}
+                <div>
+                    {/* Conditionally render the search bar */}
+                    {activeTab === 'events' && (
+                        <SearchBar
+                            placeholder="Search"
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleEventSearch();
+                                }
+                            }}
+                        />
+                    )}
+                </div>
                 
                 {/* Events Page */}
                 {activeTab === 'events' && 
                 <div className="flex flex-col items-center mt-4 space-y-4 w-full max-w-screen-lg mx-auto">
-    <div
-        style={{ backgroundColor: '#535353', color: '#535353', borderColor: '#535353',
-            width: '325px',
-        }}
-        className="flex items-center rounded-md px-4 py-2 w-80">
-        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
-        <input
-            type="text"
-            placeholder="Search Events"
-            onChange={(e) => setEventSearch(e.target.value)}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    handleEventSearch();
-                }
-            }}
-            style={{ backgroundColor: '#535353', color: '#FFFFFF', borderColor: '#535353' }}
-            className="outline-none placeholder-gray-400 w-full" />
-    </div>
+
      {/* filter tabs */}
     <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
         {/* location */}
@@ -235,53 +268,70 @@ const Home = () => {
                             onClick={() => handleEventClick(3)}
                         />
                     </div>
-
-
             </div>
         </div>
-
-
-        
-
-
-    </div>}
-        {/* Friends Page */}
-                {activeTab === 'friends' && 
-                <div className="flex justify-center mt-4">
-                    <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
-                        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
-                        <input 
-                            type="text" 
-                            placeholder="Search By Name" 
-                            onChange={(e) => setFriendSearch(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleFriendSearch();
-                                }
-                            }}
-                            className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
-                        />
+        </div>}
+            {/* Friends Search Bar */}
+            {activeTab === 'friends' && (
+                <SearchBar
+                    placeholder="Search"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleFriendSearch();
+                        }
+                    }}
+                />
+            )}
+            {activeTab === 'friends' && 
+                <div className="flex flex-col items-center mt-4">
+                    <div className="w-full flex">
+                        <button
+                            onClick={() => toggleButton()}
+                            className={`w-1/2 px-4 py-2 mt-4 rounded-l-md flex items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: currentfriendState === false ? '#1DB954' : '#535353'}}
+                        >
+                            {newFriendState ? 'Suggestions' : 'Suggestions'}
+                        </button>
+                        <button
+                            onClick={() => toggleButton()}
+                            className={`w-1/2 px-4 py-2 mt-4 rounded-r-md flex items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: currentfriendState === true ? '#1DB954' : '#535353'}}
+                        >
+                            {currentfriendState ? 'Friends' : 'Friends'}
+                        </button>
                     </div>
-                </div>}
-
-                {/* Messages Page */}
-                {activeTab === 'messages' && 
-                <div className="flex justify-center mt-4">
-                    <div className="flex items-center bg-gray-700 rounded-md px-4 py-2 w-80">
-                        <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
-                        <input 
-                            type="text" 
-                            placeholder="Search By Name"
-                            onChange={(e) => setMessagesSearch(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleMessagesSearch();
-                                }
-                            }}
-                            className="bg-gray-700 outline-none placeholder-gray-400 text-white w-full" 
-                        />
+                    <div className="mt-8 w-full px-4">
+                        <ul className="space-y-4">
+                            {friends.map((friend, index) => (
+                                <div key={index} className="flex-shrink-0">
+                                    <FriendCard
+                                        friendImage={friend.friendImage}
+                                        friendName={friend.friendName}
+                                        suggested={friend.suggested}
+                                        bio={friend.bio}
+                                        key={friend.key}
+                                        onClick={() => console.log('Friend clicked')}
+                                    />
+                                </div>
+                            ))}
+                        </ul>
                     </div>
-                </div>}
+                </div>
+            }
+
+            {/* Conditionally render the search bar */}
+            {activeTab === 'messages' && (
+                <SearchBar
+                    placeholder="Search"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleMessagesSearch();
+                        }
+                    }}
+                />
+            )}
             </div>
 
             {/* Navigation Bar */}

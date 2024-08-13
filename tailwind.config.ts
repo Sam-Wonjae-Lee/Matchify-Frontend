@@ -20,6 +20,20 @@ const config: Config = {
         '1/8': '12.5%',
         '7/8': '87.5%',
       },
+      keyframes: {
+        slideUp: {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(5%)' },
+        },
+        slideDown: {
+          '0%': { transform: 'translateY(5%)' },
+          '100%': { transform: 'translateY(100%)' },
+        },
+      },
+      animation: {
+        slideUp: 'slideUp 0.5s ease-out forwards',
+        slideDown: 'slideDown 0.5s ease-out forwards',
+      },
     },
   },
   plugins: [],

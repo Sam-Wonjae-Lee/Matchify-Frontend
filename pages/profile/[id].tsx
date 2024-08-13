@@ -2,6 +2,9 @@ import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import Background from '@/components/background'
 import { useState, useEffect } from 'react'
+import { useRouter } from "next/router";
+
+import TrackCard from "@/components/track_card";
 
 interface ProfileProps {
     id: string,
@@ -18,15 +21,38 @@ interface ProfileData {
 }
 
 const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
+
+    const router = useRouter();
+
     const [activeTab, setActiveTab] = useState('profile');
 
     // I say we use sessionStorage to store the user id for their duration on the app
     const [viewer, setViewer] = useState("Anon");
+    const [friends, setFriends] = useState(false);
 
     const [isEditing, setIsEditing] = useState(false);  // Track if form in edit mode
     const [profile, setProfile] = useState<ProfileData>(() => profileData);
 
     const [editingProfile, setEditingProfile] = useState<ProfileData>(() => profileData);
+
+    const [requestClicked, setRequestClicked] = useState(false);
+
+
+    interface TrackCardProps {
+        index:number;
+        songName: string;
+        artistName: string;
+        songImage: string;
+        onClick: () => void;
+    }
+    const tracks = [
+        { key: 1, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 2, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 3, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 4, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 5, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 6, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+    ];
 
     // Updates profileText that stores the value
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -39,8 +65,56 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
         // Handle form submission logic here, e.g., send data to server
         setIsEditing(false);
         setProfile(editingProfile);
-
     };
+
+    const handleBack = () => {
+        router.back();
+    }
+
+    const handleRequestClick = () => {
+        const sliderElement = document.getElementById("slider");
+
+        if (sliderElement) {
+            sliderElement.style.display = "block";
+            sliderElement.classList.remove("animate-slideDown");
+            sliderElement.classList.add("animate-slideUp");
+            console.log("Slider wdwdd");
+        } else {
+            console.log("Slider element not found");
+        }
+        setRequestClicked(true);
+    }
+
+    const removeSlider = () => {
+        const sliderElement = document.getElementById("slider");
+
+        if (sliderElement) {
+            //setTimeout(() => {sliderElement.style.display = "hidden"}, 1000)
+            sliderElement.classList.remove("animate-slideUp");
+            sliderElement.classList.add("animate-slideDown");
+        } else {
+            console.log("Slider element not found");
+        }
+        setRequestClicked(false);
+    }
+
+    const pressDownHighlight = (id: string) => {
+        const sliderPart = document.getElementById(id);
+
+        if(sliderPart) {
+            sliderPart.style.backgroundColor = "rgb(75, 85, 99)";
+            sliderPart.style.borderRadius = "0.5rem";
+        }
+    }
+
+    const pressUpHighlight = (id: string) => {
+        const sliderPart = document.getElementById(id);
+
+        if(sliderPart) {
+            sliderPart.style.backgroundColor = "rgb(107, 114, 128)";
+            sliderPart.style.borderRadius = "0.5rem";
+        }
+    }
 
     useEffect(() => {
         // if user cancels edit and re-edits, we want the previous unsaved edited profile to be lost
@@ -52,6 +126,9 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
     useEffect(() => {
         // Anon will be default viewer, if viewer is not viewing their own profile then we include the matchify stats
         setViewer(sessionStorage.getItem("user_id") || "Anon");
+        // BACKEND CALL HERE TO GET IF VIEWER IS FRIENDS WITH PROFILE
+        // setFriends()
+        setFriends(false);
     })
 
     return (
@@ -69,6 +146,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                         style={{ transition: 'filter 0.3s ease' }}
                         onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
                         onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
+                        onClick={handleBack}
                     />
                 </button>
                 {/* Just realized we should use vh and vw for larger elements for different mobile dimensions*/}
@@ -77,7 +155,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                 </div>
 
                 {/* Centred Items */}
-                <div className="flex flex-col w-full items-center">
+                <div className="relative flex flex-col w-full items-center">
                     <div>
                         <img id="profilepic" src={profile.pfp} className="z-10 w-[24vw] h-[24vw] mt-[4vh]"></img>
                     </div>
@@ -112,7 +190,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             </button>
                         </div>}
 
-                        {viewer && (viewer != id) && <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
+                        {viewer && (viewer != id) && friends && <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
                             <button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2">
                                 <div className="flex w-full h-full z-10">
                                     <div className="flex w-full items-center justify-center">
@@ -130,8 +208,34 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                                 </div>
                             </button>
                         </div>}
+
+                        {viewer && (viewer != id) && !friends && <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
+                            {!requestClicked && <button className="w-1/2 bg-[#0094CA] h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={handleRequestClick}>
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        {/*TODO make a friends dropdown*/}
+                                        <p className="text-white">Request</p>
+                                    </div>
+                                </div>
+                            </button>}
+                            {requestClicked && <button className="w-1/2 bg-red-600 h-10 z-10 rounded-xl text-center z-10 mr-2">
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        {/*TODO make a friends dropdown*/}
+                                        <p className="text-white">Cancel</p>
+                                    </div>
+                                </div>
+                            </button>}
+                            <button className="w-1/2 bg-white h-10 z-10 rounded-xl text-center z-10 ml-2">
+                                <div className="flex w-full h-full z-10">
+                                    <div className="flex w-full items-center justify-center">
+                                        {/*TODO link to message*/}
+                                        <p className="text-spotify-green">Message</p>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>}
                     </div>)}
-        
                     {/* Profile, Playlist, Activity Tabs */}
                     <div className="flex w-full justify-around mt-[2vh]">
                         <button
@@ -153,12 +257,11 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             Activity
                         </button>
                     </div>
-
                     {/* Tab Content */}
                     <div className="w-full mt-[2vh] overflow-default">
                         {activeTab === 'profile' && (!isEditing ? (
                             <div className="ml-5 ml-5">
-                                {viewer && (viewer != id) && (<div>
+                                {viewer && (viewer != id) && (<div className="text-white">
                                     <p className="font-bold text-spotify-green">Matchify:</p>
                                     <ul className="list-disc">
                                         <li className="text-sm ml-5 mt-[1vh]">You're both racist</li>
@@ -228,8 +331,20 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             <button className="w-full bg-white text-red-500 p-2 rounded mt-[2vh] h-[6vh]" onClick={() => setIsEditing(false)}>Cancel</button>
                         </form>))}
                         {activeTab === 'playlist' && (
-                            <div>
-                                <p className="text-white">Playlist Content Here</p>
+                            <div className="mt-4 w-full px-4">
+                                <ul className="space-y-4">
+                                    {tracks.map((track, index) => (
+                                        <div key={index} className="flex-shrink-0">
+                                            <TrackCard
+                                                songImage={track.songImage}
+                                                songName={track.songName}
+                                                artistName={track.artistName}
+                                                trackKey={track.key}
+                                                onClick={() => console.log('Friend clicked')}
+                                            />
+                                        </div>
+                                    ))}
+                                </ul>
                             </div>
                         )}
                         {activeTab === 'activity' && (
@@ -237,6 +352,22 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                                 <p className="text-white">Activity Content Here</p>
                             </div>
                         )}
+                    </div>
+                    <div id="slider" className="hidden rounded-lg fixed w-full h-1/4 bg-gray-500 bottom-0">
+                        <button id="slider1" className="flex flex-col items-center w-full h-[30%]" onClick={removeSlider}
+                        onTouchStart={() => pressDownHighlight("slider1")} onTouchEnd={() => pressUpHighlight("slider1")}>
+                            <div className="w-1/4 h-4 bg-gray-100 rounded-lg mt-4">
+                            </div>
+                            <div className="mt-2">
+                                {profile.name}
+                            </div>
+                        </button >
+                        <button id="slider2" className="w-full h-[30%]" onTouchStart={() => pressDownHighlight("slider2")} onTouchEnd={() => pressUpHighlight("slider2")}>
+                            Unfriend
+                        </button>
+                        <button id="slider3" className="w-full h-[40%] text-center text-red-500" onTouchStart={() => pressDownHighlight("slider3")} onTouchEnd={() => pressUpHighlight("slider3")}>
+                            Block User
+                        </button>
                     </div>
                     
                 </div>
