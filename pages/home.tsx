@@ -19,7 +19,7 @@ const Home = () => {
     const [messagesSearch, setMessagesSearch] = useState('');
 
     // For handling event clicks
-    const handleEventClick = (eventID: number) => {
+    const handleEventClick = (eventID: number) => { 
         console.log('Event ID:', eventID);
     }
 

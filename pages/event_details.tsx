@@ -4,7 +4,7 @@ import React from 'react';
 const EventDetails = () => {
     return (
         <div 
-            className="flex flex-col min-h-screen w-screen overflow-y-auto" 
+            className="flex flex-col min-h-screen w-screen" 
         >
             <div 
                 className="absolute inset-0"
@@ -27,7 +27,7 @@ const EventDetails = () => {
             </div>
 
             {/* Event Details */}
-            <div className="p-4 text-white">
+            <div className="p-4 text-white ">
                 <h1 className="text-3xl font-bold">Travis Scott Concert</h1>
                 <p className="text-white mt-1">September 10, 2024</p>
                 <p className="text-white">Toronto, ON - Scotiabank Arena</p>
@@ -55,6 +55,26 @@ const EventDetails = () => {
                         </div>
                         <div className="text-green-500 text-xs py-1 px-3 bg-gray-700 bg-opacity-60 rounded-full">Friends</div>
                     </div>
+
+                    {/* Attendee 2 */}
+                    <div className="flex items-center p-4 mb-4 bg-gray-800 bg-opacity-60 rounded-lg">
+                        <img src="https://via.placeholder.com/50" alt="John Wu" className="rounded-full w-12 h-12" />
+                    <div className="flex-1 ml-4">
+                        <h4 className="text-white font-bold">John Wu</h4>
+                        <p className="text-gray-400 text-xs">Shared interest in EDM with favorite tracks by top DJs</p>
+                    </div>
+                    <div className="text-green-500 text-xs py-1 px-3 bg-gray-700 bg-opacity-60 rounded-full">Friends</div>
+                </div>
+
+                    {/* Attendee 3 */}
+                    <div className="flex items-center p-4 mb-4 bg-gray-800 bg-opacity-60 rounded-lg">
+                        <img src="https://via.placeholder.com/50" alt="John Wu" className="rounded-full w-12 h-12" />
+                    <div className="flex-1 ml-4">
+                        <h4 className="text-white font-bold">John Wu</h4>
+                        <p className="text-gray-400 text-xs">Shared interest in EDM with favorite tracks by top DJs</p>
+                    </div>
+                    <div className="text-green-500 text-xs py-1 px-3 bg-gray-700 bg-opacity-60 rounded-full">Friends</div>
+                </div>
 
                     {/* Attendee 2 */}
                     <div className="flex items-center p-4 mb-4 bg-gray-800 bg-opacity-60 rounded-lg">
