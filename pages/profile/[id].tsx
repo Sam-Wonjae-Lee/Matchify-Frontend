@@ -4,6 +4,8 @@ import Background from '@/components/background'
 import { useState, useEffect } from 'react'
 import { useRouter } from "next/router";
 
+import TrackCard from "@/components/track_card";
+
 interface ProfileProps {
     id: string,
     profileData: any
@@ -34,6 +36,20 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
     const [editingProfile, setEditingProfile] = useState<ProfileData>(() => profileData);
 
     const [requestClicked, setRequestClicked] = useState(false);
+
+
+    interface TrackCardProps {
+        index:number;
+        songName: string;
+        artistName: string;
+        songImage: string;
+        onClick: () => void;
+    }
+    const tracks = [
+        { key: 1, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 2, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+        { key: 3, songImage: "/best_girl.jpg", songName: "Top G beats", artistName: "bottom G" },
+    ];
 
     // Updates profileText that stores the value
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -238,7 +254,21 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             Activity
                         </button>
                     </div>
-
+{/*                             <div className="mt-8 w-full px-4">
+                                <ul className="space-y-4">
+                                    {tracks.map((track, index) => (
+                                        <div key={index} className="flex-shrink-0">
+                                            <TrackCard
+                                                songImage={track.songImage}
+                                                songName={track.songName}
+                                                artistName={track.art}
+                                                key={track.key}
+                                                onClick={() => console.log('Friend clicked')}
+                                            />
+                                        </div>
+                                    ))}
+                                </ul>
+                            </div> */}
                     {/* Tab Content */}
                     <div className="w-full mt-[2vh] overflow-default">
                         {activeTab === 'profile' && (!isEditing ? (
@@ -313,8 +343,20 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             <button className="w-full bg-white text-red-500 p-2 rounded mt-[2vh] h-[6vh]" onClick={() => setIsEditing(false)}>Cancel</button>
                         </form>))}
                         {activeTab === 'playlist' && (
-                            <div>
-                                <p className="text-white">Playlist Content Here</p>
+                            <div className="mt-8 w-full px-4">
+                                <ul className="space-y-4">
+                                    {tracks.map((track, index) => (
+                                        <div key={index} className="flex-shrink-0">
+                                            <TrackCard
+                                                songImage={track.songImage}
+                                                songName={track.songName}
+                                                artistName={track.artistName}
+                                                trackKey={track.key}
+                                                onClick={() => console.log('Friend clicked')}
+                                            />
+                                        </div>
+                                    ))}
+                                </ul>
                             </div>
                         )}
                         {activeTab === 'activity' && (
