@@ -363,26 +363,24 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                             <button type="submit" className="w-full bg-spotify-green text-white p-2 rounded mt-[2vh] h-[6vh]">Apply Changes</button>
                             <button className="w-full bg-white text-red-500 p-2 rounded mt-[2vh] h-[6vh]" onClick={() => setIsEditing(false)}>Cancel</button>
                         </form>))}
-                        {/*
-                            <div className="mt-4 w-full px-4">
-                                <ul className="space-y-4">
-                                    {tracks.map((track, index) => (
-                                        <div key={index} className="flex-shrink-0">
-                                            <TrackCard
-                                                songImage={track.songImage}
-                                                songName={track.songName}
-                                                artistName={track.artistName}
-                                                trackKey={track.key}
-                                                onClick={() => console.log('Friend clicked')}
-                                            />
-                                        </div>
-                                    ))}
-                                </ul>
-                            </div>
-                        */}
                         {activeTab === 'playlist' && (
-                            <div className="mt-4 w-full px-4">
+                            <div className="mt-4 w-full h-full">
                                 <Playlist />
+                                {/* <div className="mt-4 w-full px-4">
+                                    <ul className="space-y-4">
+                                        {tracks.map((track, index) => (
+                                            <div key={index} className="flex-shrink-0">
+                                                <TrackCard
+                                                    songImage={track.songImage}
+                                                    songName={track.songName}
+                                                    artistName={track.artistName}
+                                                    trackKey={track.key}
+                                                    onClick={() => console.log('Friend clicked')}
+                                                />
+                                            </div>
+                                        ))}
+                                    </ul>
+                                </div> */}
                             </div>
                         )}
                         {activeTab === 'activity' && (
