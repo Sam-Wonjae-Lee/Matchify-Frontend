@@ -78,6 +78,10 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
         router.push("/home");
     }
 
+    const handleSpotifyStats = () => {
+        router.push("/spotify_stats");
+    }
+
     const showStatusPopup = (text: string) => {
         const sliderElement = document.getElementById("status");
 
@@ -178,15 +182,28 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                         <button className="w-[calc(100vw-6.5rem)] bg-black h-10 z-10 rounded-xl text-center z-10">
                             <div className="flex w-full h-full z-10">
                                 <div className="flex w-full items-center justify-center">
-                                    <img src="/spotify_logo_green.png" className="w-6 h-6 z-10 mr-2"></img>
-                                    <p className="text-green-500">Spotify Stats</p>
+                                    {/* Spotify Stats Button */}
+                                    <button
+                                        className="w-[calc(100vw-6.5rem)] bg-black h-10 z-10 rounded-xl text-center z-10"
+                                        onClick={handleSpotifyStats}>
+                                        <div className="flex w-full h-full z-10">
+                                            <div className="flex w-full items-center justify-center">
+                                                <img src="/spotify_logo_green.png" className="w-6 h-6 z-10 mr-2"></img>
+                                                <p className="text-green-500">Spotify Stats</p>
+                                            </div>
+                                        </div>
+                                    </button>
+                                    {/*<img src="/spotify_logo_green.png" className="w-6 h-6 z-10 mr-2"></img>*/}
+                                    {/*<p className="text-green-500">Spotify Stats</p>*/}
                                 </div>
                             </div>
                         </button>
 
                         <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
-                            {viewer && (viewer != id) && friends && !blocked && (<button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2" onClick={() => {
-                                showSlideupCard("unfriend_popup");
+                            {viewer && (viewer != id) && friends && !blocked && (
+                                <button className="w-1/2 bg-spotify-green h-10 z-10 rounded-xl text-center z-10 mr-2"
+                                        onClick={() => {
+                                            showSlideupCard("unfriend_popup");
                             }}>
                                 <div className="flex w-full h-full z-10">
                                     <div className="flex w-full items-center justify-center">
