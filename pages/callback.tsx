@@ -7,7 +7,14 @@ const Callback = () => {
 
         const getProfileObject = async (code: string | null) => {
             const response = await axios.post("http://localhost:8888/spotify/auth/callback", {code})
-            console.log(response.data);
+            sessionStorage.setItem("userId", response.data.profileData.id);
+            if (response.data.isCreation) {
+                sessionStorage.setItem("profileData", JSON.stringify(response.data.profileData));
+                window.location.href = "/create_profile";
+            }
+            else {
+                window.location.href = "/login_success?isCreation=false";
+            }
         }
 
         const params = new URLSearchParams(window.location.search);

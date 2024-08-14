@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Background from '@/components/background'
 import Head from 'next/head'
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 const CreateProfile: NextPage = () => {
 
@@ -20,16 +21,17 @@ const CreateProfile: NextPage = () => {
   const [gender, setGender] = useState("");
   const [bio, setBio] = useState("");
 
-  const handleCreateProfile = (): void => {
-    // TODO LATER
-    console.log(firstName);
-    console.log(lastName);
-    console.log(email);
-    console.log(location);
-    console.log(dob);
-    console.log(gender);
-    console.log(bio);
-    router.push("/login_success?isCreation=true");
+  const handleCreateProfile = async () => {
+
+    const profileData = JSON.parse(sessionStorage.getItem("profileData") || "ERROR");
+    
+    const response = await axios.post("http://localhost:8888/spotify/auth/create", {user_id: profileData.id, username: profileData.display_name, first_name: firstName, last_name: lastName, location: location, dob, bio, email, profile_pic: profileData.images[0].url, favourite_playlist: "None", gender})
+
+    if (response.data.success) {
+      sessionStorage.removeItem("profileData");
+      router.push("/login_success?isCreation=true");
+    }
+    else {console.log(response.data.message);}
   }
 
   return (

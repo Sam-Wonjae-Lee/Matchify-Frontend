@@ -134,7 +134,8 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
 
     useEffect(() => {
         // Anon will be default viewer, if viewer is not viewing their own profile then we include the matchify stats
-        setViewer(sessionStorage.getItem("user_id") || "Anon");
+        setViewer(sessionStorage.getItem("userId") || "Anon");
+        
         // BACKEND CALL HERE TO GET IF VIEWER IS FRIENDS WITH PROFILE
         // setFriends()
         console.log("I AM RUNNING")
