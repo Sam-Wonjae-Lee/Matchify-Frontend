@@ -68,7 +68,7 @@ const Home = () => {
 
     const handleProfileRedirect = () => {
         // HERE WE NEED TO ACCESS SESSION STORAGE
-        const user_id = sessionStorage.getItem("user_id") || "Anon"
+        const user_id = sessionStorage.getItem("userId") || "Anon"
         router.push('/profile/' + user_id);
     }
 

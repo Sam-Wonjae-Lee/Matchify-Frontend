@@ -11,6 +11,8 @@ const Callback = () => {
             sessionStorage.setItem("userId", response.data.profileData.id);
             if (response.data.isCreation) {
                 sessionStorage.setItem("profileData", JSON.stringify(response.data.profileData));
+                sessionStorage.setItem("accessToken", response.data.accessToken);
+                sessionStorage.setItem("refreshToken", response.data.refreshToken);
                 window.location.href = "/create_profile";
             }
             else {

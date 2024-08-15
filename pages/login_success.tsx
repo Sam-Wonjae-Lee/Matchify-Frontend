@@ -37,7 +37,7 @@ const LoginSuccess = () => {
                 <img src="/green_checkmark.svg" alt="green check mark" className="z-10 w-26 h-26"></img>
                 <h2 className="z-10 font-bold text-3xl text-white">Well Done!</h2>
                 <p className="w-2/3 text-center mt-5 z-10 text-white">You have successfully created your Matchify account!</p>
-                <button className="w-2/3 bg-spotify-green h-14 z-10 rounded text-center mt-20 text-white" onClick={() => console.log("NOT IMPLEMENTED YET")}>Home</button>
+                <button className="w-2/3 bg-spotify-green h-14 z-10 rounded text-center mt-20 text-white" onClick={handleHomeRedirect}>Home</button>
             </div>)}
             {!isCreation && (<div className="flex flex-col items-center justify-center h-full w-full">
                 <img src="/green_checkmark.png" alt="green check mark" className="z-10 w-26 h-26"></img>
