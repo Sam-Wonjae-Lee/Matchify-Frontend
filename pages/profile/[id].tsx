@@ -4,6 +4,7 @@ import { SlideupCard, showSlideupCard } from '@/components/slideup_card';
 import { AreYouSureCard, showAreYouSureCard } from '@/components/are_you_sure_card';
 import { useState, useEffect } from 'react'
 import { useRouter } from "next/router";
+import axios from 'axios';
 
 import Playlist from '@/components/playlist_card';
 
@@ -11,7 +12,8 @@ import TrackCard from "@/components/track_card";
 
 interface ProfileProps {
     id: string,
-    profileData: any
+    profileData: any,
+    playlists: any
 }
 
 interface ProfileData {
@@ -23,9 +25,11 @@ interface ProfileData {
     pfp: string;
 }
 
-const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
+const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
 
     const router = useRouter();
+
+    console.log(playlists);
 
     const [activeTab, setActiveTab] = useState('profile');
 
@@ -172,7 +176,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                 {/* Centred Items */}
                 <div className="relative flex flex-col w-full items-center">
                     <div>
-                        <img id="profilepic" src={profile.pfp} className="z-10 w-[24vw] h-[24vw] mt-[4vh]"></img>
+                        <img id="profilepic" src={profile.pfp} className="z-10 w-[24vw] h-[24vw] mt-[4vh] rounded-full"></img>
                     </div>
                     <div className="text-center w-2/3 mt-[2vh] mb-[5vh]">
                         {profile && (<p className="text-white text-2xl font-bold">{profile.name}</p>)}
@@ -365,7 +369,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData} ) => {
                         </form>))}
                         {activeTab === 'playlist' && (
                             <div className="mt-4 w-full h-full">
-                                <Playlist />
+                                <Playlist playlists={playlists} username={profile.name} fav={profileData.fav_playlist}/>
                                 {/* <div className="mt-4 w-full px-4">
                                     <ul className="space-y-4">
                                         {tracks.map((track, index) => (
@@ -413,12 +417,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     // TODO FETCH BACKEND INFO ON PERSON
     console.log(id);
-    const profileData = {name: "Top G", bio: "I love smoking", gender: "Woman", location: "Romania", age: "69", pfp: "/default_pfp.png"}
+    const playlists = await axios.get(`http://localhost:8888/spotify/user/${id}/playlists`);
+    const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
+
+    const profileData = {name: profile.data.username, bio: profile.data.bio, gender: profile.data.gender, location: profile.data.location, age: "Doing this later", pfp: profile.data.profile_pic, fav_playlist: profile.data.favourite_playlist}
   
     return {
         props: {
             id,
-            profileData
+            profileData,
+            playlists: playlists.data
         },
     };
 };

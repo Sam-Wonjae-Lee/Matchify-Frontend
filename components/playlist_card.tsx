@@ -1,6 +1,26 @@
 import React from "react";
+import { useState, useEffect } from "react";
 
-const Playlist = () => {
+interface PlaylistProps {
+  playlists: any
+  username: string
+  fav: string
+}
+
+const Playlist: React.FC<PlaylistProps> = ({playlists, username, fav}) => {
+
+  const [currFav, setCurrFav] = useState(playlists.items[0]);
+
+  useEffect(() => {
+    if (fav == "None") {
+      return;
+    }
+    for (let i = 0; i < playlists.items.length; i++) {
+      if (fav == playlists.items[i].id) {
+        setCurrFav(playlists.items[i]);
+      }
+    }
+  }, [])
 
   const showSelectionCard = () => {
     const sliderElement = document.getElementById("select");
@@ -13,32 +33,74 @@ const Playlist = () => {
     } else {
         console.log("Slider element not found");
     }
-}
+  } 
+
+  const removeSlider = () => {
+    const sliderElement = document.getElementById("select");
+
+    if (sliderElement) {
+        sliderElement.style.display = "none"
+    } else {
+        console.log("Slider element not found");
+    }
+  }
+
+  const pressDownHighlight = (id: string) => {
+    const sliderPart = document.getElementById(id);
+
+    if(sliderPart) {
+        sliderPart.style.backgroundColor = "rgb(75, 85, 99)";
+    }
+  }
+
+  const pressUpHighlight = (id: string) => {
+      const sliderPart = document.getElementById(id);
+
+      if(sliderPart) {
+          sliderPart.style.backgroundColor = "rgb(107, 114, 128)";
+      }
+  }
 
   return (
     <div className="w-full h-full box-border p-2 rounded-xl text-white font-sans">
-      <div className="flex items-center p-4 bg-[#535353] rounded-tl-md rounded-tr-md">
-        <img
-          src="\best_girl.jpg" // Replace with your image URL
-          alt="Playlist Cover"
-          className="w-20 h-20 rounded-lg object-cover"
-        />
-        <div className="ml-4">
-          <h2 className="text-xl font-semibold">Vibes</h2>
-          <p className="text-sm text-[#B3B3B3]">Lil UX</p>
+      {Object.keys(currFav).length > 0 && (<div>
+        <div className="flex items-center p-4 bg-[#535353] rounded-tl-md rounded-tr-md">
+          <img
+            src={currFav.images[0].url} // Replace with your image URL
+            alt="Playlist Cover"
+            className="w-20 h-20 rounded-lg object-cover"
+          />
+          <div className="ml-4">
+            <h2 className="text-xl font-semibold">{currFav.name}</h2>
+            <p className="text-sm text-[#B3B3B3]">{username}</p>
+          </div>
         </div>
-      </div>
-      <div className="">
-        <Song title="Blinding Lights" artist="The Weeknd" duration="3:20" index={1} />
-        <Song title="Sanctuary" artist="Joji" duration="3:00" index={2}/>
-        <Song title="skeletons" artist="keshi" duration="2:32" index={3}/>
-        <Song title="drunk" artist="keshi" duration="3:47" index={4}/>
-        <Song title="Starboy" artist="The Weeknd" duration="3:50" index={5}/>
-        <Song title="Die For You" artist="The Weeknd" duration="4:20" index={6} last={true}/>
-      </div>
+        <div className="">
+          <Song title="Blinding Lights" artist="The Weeknd" duration="3:20" index={1} />
+          <Song title="Sanctuary" artist="Joji" duration="3:00" index={2}/>
+          <Song title="skeletons" artist="keshi" duration="2:32" index={3}/>
+          <Song title="drunk" artist="keshi" duration="3:47" index={4}/>
+          <Song title="Starboy" artist="The Weeknd" duration="3:50" index={5}/>
+          <Song title="Die For You" artist="The Weeknd" duration="4:20" index={6} last={true}/>
+        </div>
+      </div>)}
       <button className="w-full bg-spotify-green h-14 z-10 rounded text-center text-white mt-5" onClick={showSelectionCard}>Change Matchify Playlist</button>
-      <div id="select" className="hidden fixed flex flex-col items-center w-[calc(100%-5rem)] h-[50vh] bg-gray-500 z-30 bottom-40 rounded-md">
-        <div className="w-[80%] h-[40%] bg-gray-500 text-center">Will do Later</div>
+      <div id="select" className="hidden fixed flex flex-col items-center w-[calc(100%-5rem)] h-[45vh] bg-gray-500 z-30 bottom-40 rounded-md">
+        <div className="w-[80%] bg-gray-500 text-center text-xl font-bold py-6">Select Matchify Playlist</div>
+        <div className="flex flex-row overflow-x-auto no-scrollbar w-[90%] space-x-2 ml-[10%]">
+          {playlists.items.map((data: any, index: number) => ( 
+          <div id={"playlist_selector" + index} className="flex-none" onTouchStart={() => {pressDownHighlight("playlist_selector" + index)}}
+          onTouchEnd={() => {pressUpHighlight("playlist_selector" + index)}} onClick={() => {
+            setCurrFav(playlists.items[index]);
+            removeSlider();
+          }}>
+            <img className="h-36 w-36 bg-white" src={data.images[0].url}>
+            </img>  
+            <div className="font-bold py-1">{data.name}</div>
+            <div>{username}</div>
+          </div>))}
+        </div>
+        <button className="bg-red-600 w-[60%] h-12 my-auto rounded-md" onClick={removeSlider}>Cancel</button>
       </div>
     </div>
   );
