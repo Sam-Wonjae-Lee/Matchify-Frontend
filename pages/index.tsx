@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Background from '@/components/background'
 import axios from 'axios'
+import { useRouter } from "next/router"
 
 const Entry: NextPage = () => {
 
