@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface TrackCardProps {
-    trackKey: number;
+    trackKey: number;   // Index of the track
     songName: string;
     artistName: string;
     songImage: string;
