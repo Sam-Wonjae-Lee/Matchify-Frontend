@@ -83,7 +83,7 @@ const SpotifyStats: NextPage<SpotifyStatsProps> = ( {id, profileData}) => {
 
                     {/* Profile Pic */}
                     <div>
-                        <img id="profilepic" src={profile.pfp} className="z-10 w-[24vw] h-[24vw] mt-[4vh] rounded-full border-4 border-spotify-green"></img>
+                        <img id="profilepic" src={profile.pfp} className="z-10 w-[24vw] h-[24vw] mt-[4vh] rounded-full border-4 border-spotify-green object-cover"></img>
                     </div>
                     <p className="text-white text-2xl font-bold">{profile.name}</p>
 
