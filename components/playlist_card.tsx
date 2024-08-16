@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 interface PlaylistProps {
   playlists: any
@@ -10,6 +11,19 @@ interface PlaylistProps {
 const Playlist: React.FC<PlaylistProps> = ({playlists, username, fav}) => {
 
   const [currFav, setCurrFav] = useState(playlists.items[0]);
+  const [currFavTracks, setCurrFavTracks] = useState<any>([]);
+
+  useEffect(() => {
+
+    const fetchFavTracks = async () => {
+      const response = await axios.post(`http://localhost:8888/spotify/playlists/${currFav.id}/tracks`, {user_id: sessionStorage.getItem("userId"), limit: 50, offset: 0});
+      setCurrFavTracks(response.data.items);
+    }
+
+    if (currFav && Object.keys(currFav).length > 0) {
+      fetchFavTracks();
+    }
+  }, [currFav])
 
   useEffect(() => {
     if (fav == "None") {
@@ -61,9 +75,15 @@ const Playlist: React.FC<PlaylistProps> = ({playlists, username, fav}) => {
       }
   }
 
+  const miliToTextFormat = (mili: number) => {
+    const minutes = Math.floor(mili / 1000 / 60);
+    const seconds = Math.round((mili - (minutes * 60 * 1000)) / 1000);
+    return "" + minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+  }
+
   return (
     <div className="w-full h-full box-border p-2 rounded-xl text-white font-sans">
-      {Object.keys(currFav).length > 0 && (<div>
+      {currFav && Object.keys(currFav).length > 0 && (<div>
         <div className="flex items-center p-4 bg-[#535353] rounded-tl-md rounded-tr-md">
           <img
             src={currFav.images[0].url} // Replace with your image URL
@@ -76,12 +96,7 @@ const Playlist: React.FC<PlaylistProps> = ({playlists, username, fav}) => {
           </div>
         </div>
         <div className="">
-          <Song title="Blinding Lights" artist="The Weeknd" duration="3:20" index={1} />
-          <Song title="Sanctuary" artist="Joji" duration="3:00" index={2}/>
-          <Song title="skeletons" artist="keshi" duration="2:32" index={3}/>
-          <Song title="drunk" artist="keshi" duration="3:47" index={4}/>
-          <Song title="Starboy" artist="The Weeknd" duration="3:50" index={5}/>
-          <Song title="Die For You" artist="The Weeknd" duration="4:20" index={6} last={true}/>
+          {currFavTracks && currFavTracks.length > 0 && currFavTracks.map((data: any, index: number) => (<Song title={data.track.name} artist={data.track.artists[0].name} duration={miliToTextFormat(data.track.duration_ms)} index={index + 1} />))}
         </div>
       </div>)}
       <button className="w-full bg-spotify-green h-14 z-10 rounded text-center text-white mt-5" onClick={showSelectionCard}>Change Matchify Playlist</button>
@@ -115,7 +130,7 @@ const Song = ({ title, artist, duration, index, last = false }: { title: string,
   return (
     <div className={containerClass}> {/* Lighter background color */}
       <div className="flex items-center">
-        <div className="mr-4 text-xs">
+        <div className="mr-4 text-xs w-5">
           {index}
         </div>
         <div>
