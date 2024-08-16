@@ -18,17 +18,19 @@ const CreateProfile: NextPage = () => {
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [dob, setDob] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState("Male");
   const [bio, setBio] = useState("");
 
   const handleCreateProfile = async () => {
 
     const profileData = JSON.parse(sessionStorage.getItem("profileData") || "ERROR");
     
-    const response = await axios.post("http://localhost:8888/spotify/auth/create", {user_id: profileData.id, username: profileData.display_name, first_name: firstName, last_name: lastName, location: location, dob, bio, email, profile_pic: profileData.images[0].url, favourite_playlist: "None", gender})
+    const response = await axios.post("http://localhost:8888/spotify/auth/create", {user_id: profileData.id, username: profileData.display_name, first_name: firstName, last_name: lastName, location: location, dob, bio, email, profile_pic: profileData.images[1].url, favourite_playlist: "None", gender, access_token: sessionStorage.getItem("accessToken"), refresh_token: sessionStorage.getItem("refreshToken")})
 
     if (response.data.success) {
       sessionStorage.removeItem("profileData");
+      sessionStorage.removeItem("accessToken");
+      sessionStorage.removeItem("refreshToken");
       router.push("/login_success?isCreation=true");
     }
     else {console.log(response.data.message);}
