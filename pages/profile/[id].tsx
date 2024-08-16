@@ -155,7 +155,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
             <Head>
                 {profile && (<title>{profile.name}'s Profile</title>)}
                 <meta name="description" content="Profile Content"/>
-                <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
+                <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"/>
             </Head>
             <div className="h-full w-full p-8">
                 {/* Back Arrow */}
@@ -416,7 +416,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const { id } = context.params as {id: string};
 
     // TODO FETCH BACKEND INFO ON PERSON
-    console.log(id);
+    console.log("THE ID IS: " + id);
     const playlists = await axios.get(`http://localhost:8888/spotify/user/${id}/playlists`);
     const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
 
