@@ -7,9 +7,12 @@ import axios from "axios";
 import TrackCard from "@/components/track_card";
 import FriendsPlaylistCard from "@/components/friends_playlist";
 
-interface ProfileProps {
+interface SpotifyStatsProps {
     id: string,
-    profileData: any
+    profileData: any,
+    topTracks: any,
+    topArtists: any,
+    topGenres: any,
 }
 
 interface ProfileData {
@@ -21,12 +24,29 @@ interface ProfileData {
     pfp: string;
 }
 
-const SpotifyStats: NextPage<ProfileProps> = ( {id, profileData}) => {
+interface TrackData {
+    artistName: string;
+    albumImageUrl: string;
+    artistsNames: string;
+}
+
+const SpotifyStats: NextPage<SpotifyStatsProps> = ( {id, profileData}) => {
     const router = useRouter();
 
-    const [activeTab, setActiveTab] = useState('profile');
+    const [activeTab, setActiveTab] = useState('top tracks');
+    const [tracks, setTracks] = useState<{ id: number; songName: string; artistName: string; songImage: string; }[]>([]);
 
-    const [viewer, setViewer] = useState("Anon");
+    useEffect(() => {
+        // Fetch tracks data here and set it to state
+        // Example data
+        setTracks([
+            { id: 1, songName: 'Track 1', artistName: 'Artist 1', songImage: 'image1.jpg' },
+            { id: 2, songName: 'Track 2', artistName: 'Artist 2', songImage: 'image2.jpg' },
+            { id: 3, songName: 'Track 3', artistName: 'Artist 3', songImage: 'image3.jpg' },
+            // Add more tracks as needed
+        ]);
+    }, []);
+
     const [profile, setProfile] = useState<ProfileData>(() => profileData);
 
     const handleProfileRedirect = () => {
@@ -38,9 +58,9 @@ const SpotifyStats: NextPage<ProfileProps> = ( {id, profileData}) => {
     return (
         <div className="min-h-screen w-screen" style={{ backgroundColor: '#282828' }}>
             <Head>
-                {profile && (<title>{profile.name}'s Profile</title>)}
-                <meta name="description" content="Profile Content"/>
-                <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
+                {profile && (<title>{profile.name}'s Spotify Stats</title>)}
+                <meta name="description" content="Spotify Stats"/>
+                <link rel="icon" href="/matchify_logo.svg" type="image/svg+xml" sizes="16x16"/>
             </Head>
             <div className="h-full w-full p-8">
                 {/* Back Arrow */}
@@ -53,9 +73,19 @@ const SpotifyStats: NextPage<ProfileProps> = ( {id, profileData}) => {
                          onClick={handleProfileRedirect}
                     />
                 </button>
+
+                <div className="w-full mt-[2vh]">
+                    <p className="text-white font-bold text-2xl">{profile.name}'s Spotify Stats</p>
+                </div>
                 
                 {/* Centred Items */}
                 <div className="relative flex flex-col w-full items-center">
+
+                    {/* Profile Pic */}
+                    <div>
+                        <img id="profilepic" src={profile.pfp} className="z-10 w-[24vw] h-[24vw] mt-[4vh] rounded-full border-4 border-spotify-green"></img>
+                    </div>
+                    <p className="text-white text-2xl font-bold">{profile.name}</p>
 
                     {/* Profile, Playlist, Activity Tabs */}
                     <div className="flex w-full justify-around mt-[2vh]">
@@ -78,13 +108,22 @@ const SpotifyStats: NextPage<ProfileProps> = ( {id, profileData}) => {
                             Top Genres
                         </button>
                     </div>
-                    
+
 
                     {/* Tab Content */}
                     <div className="w-full mt-[2vh] overflow-default">
                         {activeTab === 'top tracks' && (
                             <div>
-                                <p className="text-white">Tracks Content Here</p>
+                                {tracks.map((track, index) => (
+                                    <TrackCard
+                                        key={track.id}
+                                        trackKey={index + 1}
+                                        songName={track.songName}
+                                        artistName={track.artistName}
+                                        songImage={track.songImage}
+                                        onClick={() => console.log(`Track ${track.id} clicked`)}
+                                    />
+                                ))}
                             </div>
                         )}
                         {activeTab === 'top artists' && (
@@ -118,7 +157,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const topGenres = await axios.get(`http://localhost:8888/spotify/user/${id}/top-genres`);
 
 
-    const profileData = {name: profile.data.username, bio: profile.data.bio, gender: profile.data.gender, location: profile.data.location, age: "Doing this later", pfp: profile.data.profile_pic, fav_playlist: profile.data.favourite_playlist}
+    const profileData = {
+        name: profile.data.username,
+        bio: profile.data.bio, 
+        gender: profile.data.gender, 
+        location: profile.data.location, 
+        age: "Doing this later", 
+        pfp: profile.data.profile_pic, 
+        fav_playlist: profile.data.favourite_playlist}
+
+    const topTracksData = topTracks.data.items.map((track: any) => ({
+        artistName: track.artists[0].name,
+        albumImageUrl: track.album.images[0].url,
+        artistNames: track.artists.map((artist: any) => artist.name).join(', ')
+    }));
   
     return {
         props: {
