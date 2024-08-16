@@ -165,7 +165,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
             <Head>
                 {profile && (<title>{profile.name}'s Profile</title>)}
                 <meta name="description" content="Profile Content"/>
-                <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"/>
+                <link rel="icon" href="/matchify_logo.svg" type="image/svg+xml" sizes="16x16"/>
             </Head>
             <div className="h-full w-full p-8">
                 {/* Back Arrow */}
@@ -186,7 +186,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                 {/* Centred Items */}
                 <div className="relative flex flex-col w-full items-center">
                     <div>
-                        <img id="profilepic" src={profile.pfp} className="z-10 w-[24vw] h-[24vw] mt-[4vh] rounded-full"></img>
+                        <img id="profilepic" src={profile.pfp} className="z-10 w-[24vw] h-[24vw] mt-[4vh] rounded-full border-4 border-spotify-green"></img>
                     </div>
                     <div className="text-center w-2/3 mt-[2vh] mb-[5vh]">
                         {profile && (<p className="text-white text-2xl font-bold">{profile.name}</p>)}
