@@ -31,7 +31,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
 
     console.log(playlists);
 
-    const [activeTab, setActiveTab] = useState('profile');
+    const [activeTab, setActiveTab] = useState('top tracks');
 
     // I say we use sessionStorage to store the user id for their duration on the app
     const [viewer, setViewer] = useState("Anon");
@@ -83,7 +83,8 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
     }
 
     const handleSpotifyStats = () => {
-        router.push("/spotify_stats");
+        const user_id = sessionStorage.getItem("userId") || "Anon"
+        router.push("/spotify_stats/" + user_id);
     }
 
     const showStatusPopup = (text: string) => {
