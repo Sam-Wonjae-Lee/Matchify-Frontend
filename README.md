@@ -11,17 +11,29 @@
     <br />
     <a href="https://github.com/Sam-Wonjae-Lee/Matchify-Backend">Backend Repository</a>
     ·
+    <a href="https://github.com/Sam-Wonjae-Lee/Matchify-Beta">Matchify Early Version</a>
+    ·
     <a href="">View Demo</a>
     ·
     <a href="">Request Feature</a>
   </p>
 </div>
 
+<!-- Preview -->
+## Preview
+
+### Spotify User Login
+
+### Home Page
+
+### View Profile
+
+### Events Page
+
 <!-- PROJECT DESCRIPTION -->
 ## Project Description
 
-### Demo
-Show Demo Here
+
 
 ### Features
 1. 
@@ -52,12 +64,16 @@ Explain installing the app
 ## Credits
 
 ### Contributors
-**Andy Ren** ([1172097](https://github.com/1172097)) - *Frontend/Backend Developer* \
-**Calvin Liew** ([Calvin-Liew](https://github.com/Calvin-Liew)) - *UI/UX Designer* \
-**Frank Peng** ([Graves451](https://github.com/Graves451)) - *Frontend/Backend/Database Developer* \
-**Michael Pan** ([Yaymichael](https://github.com/Yaymichael)) - *Backend Developer* \
-**Richard Chen** ([Riixardo](https://github.com/Riixardo)) - *Frontend/Backend/Database Developer*\
-**Wonjae (Samuel) Lee** ([Sam-Wonjae-Lee](https://github.com/Sam-Wonjae-Lee)) - *Frontend/Backend Developer* \
-**Yehyun Lee** ([YehyunLee](https://github.com/YehyunLee)) - *Frontend/Backend Developer*
+**Andy Ren** ([1172097](https://github.com/1172097)) - Frontend/Backend Developer \
+**Calvin Liew** ([Calvin-Liew](https://github.com/Calvin-Liew)) - UI/UX Designer \
+**Dmitrii Vlasov** ([Endlesssuply](https://github.com/Endlesssuply)) - Backend Developer \
+**Frank Peng** ([Graves451](https://github.com/Graves451)) - Frontend/Backend/Database Developer \
+**Michael Pan** ([Yaymichael](https://github.com/Yaymichael)) - Backend Developer \
+**Richard Chen** ([Riixardo](https://github.com/Riixardo)) - Frontend/Backend/Database Developer\
+**Wonjae (Samuel) Lee** ([Sam-Wonjae-Lee](https://github.com/Sam-Wonjae-Lee)) - Frontend/Backend Developer \
+**Yehyun Lee** ([YehyunLee](https://github.com/YehyunLee)) - Frontend/Backend Developer
 
-<!-- CONTACTS -->
+<!-- CONTACT -->
+## Contact
+For more questions or information about the project, please consult: \
+Wonjae (Samuel) Lee - wonjaesamuel.lee@mail.utoronto.ca
