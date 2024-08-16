@@ -78,6 +78,7 @@ const SpotifyStats: NextPage<ProfileProps> = ( {id, profileData}) => {
                             Top Genres
                         </button>
                     </div>
+                    
 
                     {/* Tab Content */}
                     <div className="w-full mt-[2vh] overflow-default">
