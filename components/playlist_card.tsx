@@ -6,11 +6,12 @@ interface PlaylistProps {
   playlists: any
   username: string
   fav: string
+  currFav: any
+  setCurrFav: any
 }
 
-const Playlist: React.FC<PlaylistProps> = ({playlists, username, fav}) => {
+const Playlist: React.FC<PlaylistProps> = ({currFav, setCurrFav, playlists, username, fav}) => {
 
-  const [currFav, setCurrFav] = useState(playlists.items[0]);
   const [currFavTracks, setCurrFavTracks] = useState<any>([]);
 
   useEffect(() => {
@@ -105,9 +106,10 @@ const Playlist: React.FC<PlaylistProps> = ({playlists, username, fav}) => {
         <div className="flex flex-row overflow-x-auto no-scrollbar w-[90%] space-x-2 ml-[10%]">
           {playlists.items.map((data: any, index: number) => ( 
           <div id={"playlist_selector" + index} className="flex-none" onTouchStart={() => {pressDownHighlight("playlist_selector" + index)}}
-          onTouchEnd={() => {pressUpHighlight("playlist_selector" + index)}} onClick={() => {
+          onTouchEnd={() => {pressUpHighlight("playlist_selector" + index)}} onClick={async () => {
             setCurrFav(playlists.items[index]);
             removeSlider();
+            await axios.post(`http://localhost:8888/user/post/${sessionStorage.getItem("userId")}`, {fav_playlist: playlists.items[index].id});
           }}>
             <img className="h-36 w-36 bg-white" src={data.images[0].url}>
             </img>  

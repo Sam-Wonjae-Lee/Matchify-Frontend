@@ -19,7 +19,7 @@ interface ProfileProps {
 interface ProfileData {
     name: string;
     bio: string;
-    age: number;
+    dob: number;
     gender: string;
     location: string;
     pfp: string;
@@ -48,6 +48,8 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
 
     const [currStatusText, setCurrStatusText] = useState("");
 
+    const [currFav, setCurrFav] = useState(playlists.items[0]);
+
 
     interface TrackCardProps {
         index:number;
@@ -71,11 +73,18 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
         setEditingProfile({...editingProfile, [name]: value});
     };
 
-    const handleProfileChange = (e: React.FormEvent) => {
+    const handleProfileChange = async (e: React.FormEvent) => {
         e.preventDefault();
         // Handle form submission logic here, e.g., send data to server
+
         setIsEditing(false);
         setProfile(editingProfile);
+        await axios.post(`http://localhost:8888/user/post/${sessionStorage.getItem("userId")}`, {
+            bio: editingProfile.bio,
+            location: editingProfile.location,
+            gender: editingProfile.gender,
+            dob: editingProfile.dob
+        });
     };
 
     const handleBack = () => {
@@ -311,7 +320,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                                 {profile && (<p className="text-sm text-white break-words">{profile.bio}</p>)}
 
                                 <p className="w-full text-white font-bold mt-[2vh]">Age:</p>
-                                {profile && (<p className="text-sm text-white break-words">{profile.age}</p>)}
+                                {profile && (<p className="text-sm text-white break-words">{profile.dob}</p>)}
 
                                 <p className="text-white font-bold mt-[2vh]">Gender:</p>
                                 {profile && (<p className="text-sm text-white break-words">{profile.gender}</p>)}
@@ -322,7 +331,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                         ) : 
                         (<form onSubmit={handleProfileChange} className="ml-5 mr-5">
                             <div className="mb-4">
-                                <label className="block text-gray-700">Bio:</label>
+                                <label className="block text-white">Bio:</label>
                                 <input
                                     type="text"
                                     name="bio"
@@ -332,17 +341,17 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700">Age:</label>
+                                <label className="block text-white">Date of Birth:</label>
                                 <input
-                                    type="number"
-                                    name="age"
-                                    value={editingProfile.age}
+                                    type="date"
+                                    name="dob"
+                                    value={editingProfile.dob}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border border-gray-300 rounded text-black"
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700">Gender:</label>
+                                <label className="block text-white">Gender:</label>
                                 <select
                                     name="gender"
                                     value={editingProfile.gender}
@@ -355,7 +364,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                                 </select>
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700">Location:</label>
+                                <label className="block text-white">Location:</label>
                                 <input
                                     type="text"
                                     name="location"
@@ -369,7 +378,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                         </form>))}
                         {activeTab === 'playlist' && (
                             <div className="mt-4 w-full h-full">
-                                <Playlist playlists={playlists} username={profile.name} fav={profileData.fav_playlist}/>
+                                <Playlist currFav={currFav} setCurrFav={setCurrFav} playlists={playlists} username={profile.name} fav={profileData.fav_playlist}/>
                                 {/* <div className="mt-4 w-full px-4">
                                     <ul className="space-y-4">
                                         {tracks.map((track, index) => (
@@ -408,8 +417,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
     );
 };
 
-// so this function runs on server before page gets sent to client. It's built into nextjs. You have to refresh page if you want
-// to see changes 
+// There is an error where this function runs twice because of the <link> tag in the Head. I don't know how to fix it
 export const getServerSideProps: GetServerSideProps = async (context) => {
     
     // typescript keeps yelling about types
@@ -420,7 +428,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const playlists = await axios.get(`http://localhost:8888/spotify/user/${id}/playlists`);
     const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
 
-    const profileData = {name: profile.data.username, bio: profile.data.bio, gender: profile.data.gender, location: profile.data.location, age: "Doing this later", pfp: profile.data.profile_pic, fav_playlist: profile.data.favourite_playlist}
+    const profileData = {name: profile.data.username, bio: profile.data.bio, gender: profile.data.gender, location: profile.data.location, dob: profile.data.dob.split('T')[0], pfp: profile.data.profile_pic, fav_playlist: profile.data.favourite_playlist}
   
     return {
         props: {
