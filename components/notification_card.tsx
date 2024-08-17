@@ -9,7 +9,7 @@ interface NotificationCardProps {
     onDelete: () => void;
 }
 
-const NotificationCard: React.FC<NotificationCardProps> = ({ iconPath, message, onDelete }) => {
+const NotificationCard: React.FC<NotificationCardProps> = ({ iconPath, message, onDelete}) => {
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [dragging, setDragging] = useState(false);
     const [startX, setStartX] = useState(0);
@@ -82,7 +82,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ iconPath, message, 
                 onTouchStart={handleTouchStart}
             >
                 <div className="flex items-center">
-                    <img src={iconPath} alt="Notification Icon" className="w-8 h-8 mr-4" />
+                    <img src={iconPath} alt="Notification Icon" className="w-8 h-8 mr-4"/>
                     <p className="text-white">{message}</p>
                 </div>
             </div>
