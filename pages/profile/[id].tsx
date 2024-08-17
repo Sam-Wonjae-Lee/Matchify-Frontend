@@ -429,7 +429,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const playlists = await axios.get(`http://localhost:8888/spotify/user/${id}/playlists`);
     const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
 
-    const profileData = {name: profile.data.username, bio: profile.data.bio, gender: profile.data.gender, location: profile.data.location, dob: profile.data.dob.split('T')[0], pfp: profile.data.profile_pic, fav_playlist: profile.data.favourite_playlist}
+    const profileData = {
+        name: profile.data.username, 
+        bio: profile.data.bio, 
+        gender: profile.data.gender, 
+        location: profile.data.location, 
+        dob: profile.data.dob ? profile.data.dob.split('T')[0] : null,
+        pfp: profile.data.profile_pic, 
+        fav_playlist: profile.data.favourite_playlist}
   
     return {
         props: {

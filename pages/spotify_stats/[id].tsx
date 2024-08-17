@@ -5,15 +5,8 @@ import type { GetServerSideProps, NextPage } from 'next'
 import axios from "axios";
 
 import TrackCard from "@/components/track_card";
-import FriendsPlaylistCard from "@/components/friends_playlist";
-
-interface SpotifyStatsProps {
-    id: string,
-    profileData: any,
-    topTracks: any,
-    topArtists: any,
-    topGenres: any,
-}
+import ArtistCard from "@/components/artist_card";
+import GenreCard from "@/components/genre_card";
 
 interface ProfileData {
     name: string;
@@ -25,28 +18,29 @@ interface ProfileData {
 }
 
 interface TrackData {
-    artistName: string;
-    albumImageUrl: string;
-    artistsNames: string;
+    id: string;
+    name: string;   // Track name
+    artists: { name: string }[];
+    album: { images: {url: string }[] };    // Album cover that track is related to
 }
 
-const SpotifyStats: NextPage<SpotifyStatsProps> = ( {id, profileData}) => {
+interface ArtistData {
+    id: string;
+    name: string;   // Artist name
+    images: {url: string }[];
+}
+
+interface SpotifyStatsProps {
+    profileData: ProfileData;
+    topTracks: { items: TrackData[] };
+    topArtists: { items: ArtistData[] };
+    topGenres: { [genre: string]: number };
+}
+
+const SpotifyStats: NextPage<SpotifyStatsProps> = ( { profileData, topTracks, topArtists, topGenres }) => {
     const router = useRouter();
 
     const [activeTab, setActiveTab] = useState('top tracks');
-    const [tracks, setTracks] = useState<{ id: number; songName: string; artistName: string; songImage: string; }[]>([]);
-
-    useEffect(() => {
-        // Fetch tracks data here and set it to state
-        // Example data
-        setTracks([
-            { id: 1, songName: 'Track 1', artistName: 'Artist 1', songImage: 'image1.jpg' },
-            { id: 2, songName: 'Track 2', artistName: 'Artist 2', songImage: 'image2.jpg' },
-            { id: 3, songName: 'Track 3', artistName: 'Artist 3', songImage: 'image3.jpg' },
-            // Add more tracks as needed
-        ]);
-    }, []);
-
     const [profile, setProfile] = useState<ProfileData>(() => profileData);
 
     const handleProfileRedirect = () => {
@@ -90,19 +84,19 @@ const SpotifyStats: NextPage<SpotifyStatsProps> = ( {id, profileData}) => {
                     {/* Profile, Playlist, Activity Tabs */}
                     <div className="flex w-full justify-around mt-[2vh]">
                         <button
-                            className={`text-xl font-bold underline ${activeTab === 'profile' ? 'text-white' : 'text-gray-500'}`}
+                            className={`text-xl font-bold underline ${activeTab === 'top tracks' ? 'text-white' : 'text-gray-500'}`}
                             onClick={() => setActiveTab('top tracks')}
                         >
                             Top Tracks
                         </button>
                         <button
-                            className={`text-xl font-bold underline ${activeTab === 'playlist' ? 'text-white' : 'text-gray-500'}`}
+                            className={`text-xl font-bold underline ${activeTab === 'top artists' ? 'text-white' : 'text-gray-500'}`}
                             onClick={() => setActiveTab('top artists')}
                         >
                             Top Artists
                         </button>
                         <button
-                            className={`text-xl font-bold underline ${activeTab === 'activity' ? 'text-white' : 'text-gray-500'}`}
+                            className={`text-xl font-bold underline ${activeTab === 'top genres' ? 'text-white' : 'text-gray-500'}`}
                             onClick={() => setActiveTab('top genres')}
                         >
                             Top Genres
@@ -114,13 +108,13 @@ const SpotifyStats: NextPage<SpotifyStatsProps> = ( {id, profileData}) => {
                     <div className="w-full mt-[2vh] overflow-default">
                         {activeTab === 'top tracks' && (
                             <div>
-                                {tracks.map((track, index) => (
+                                {topTracks.items.map((track, index) => (
                                     <TrackCard
                                         key={track.id}
                                         trackKey={index + 1}
-                                        songName={track.songName}
-                                        artistName={track.artistName}
-                                        songImage={track.songImage}
+                                        songName={track.name}
+                                        artistName={track.artists.map(artist => artist.name).join(', ')}
+                                        songImage={track.album.images[0].url}
                                         onClick={() => console.log(`Track ${track.id} clicked`)}
                                     />
                                 ))}
@@ -128,12 +122,27 @@ const SpotifyStats: NextPage<SpotifyStatsProps> = ( {id, profileData}) => {
                         )}
                         {activeTab === 'top artists' && (
                             <div>
-                                <p className="text-white">Artists Content Here</p>
+                                {topArtists.items.map((artist, index) => (
+                                    <ArtistCard 
+                                        key={artist.id} 
+                                        ArtistKey={index + 1}
+                                        artistName={artist.name}
+                                        artistImage={artist.images[0]?.url}
+                                        onClick={() => console.log(`Artist ${artist.id} clicked`)} 
+                                    />
+                                ))}
                             </div>
                         )}
                         {activeTab === 'top genres' && (
                             <div>
-                                <p className="text-white">Genres Content Here</p>
+                                {/* {topGenres.items.map((genre, index) => (
+                                    <GenreCard 
+                                        key={index} 
+                                        genreKey={index + 1}
+                                        genreName={genre}
+                                        onClick={() => console.log(`Genre ${index + 1} clicked`)} 
+                                    />
+                                ))} */}
                             </div>
                         )}
                     </div>
@@ -166,19 +175,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         pfp: profile.data.profile_pic, 
         fav_playlist: profile.data.favourite_playlist}
 
-    const topTracksData = topTracks.data.items.map((track: any) => ({
-        artistName: track.artists[0].name,
-        albumImageUrl: track.album.images[0].url,
-        artistNames: track.artists.map((artist: any) => artist.name).join(', ')
-    }));
-  
+    // const topTracksData = topTracks.data.items.map((track: any) => ({
+    //     trackName: track.name,
+    //     artistName: track.artists[0].name,
+    //     albumImageUrl: track.album.images[0].url,
+    //     // artistNames: track.artists.map((artist: any) => artist.name).join(', ')
+    // }));
+
     return {
         props: {
             id,
             profileData,
             topTracks: topTracks.data,
             topArtists: topArtists.data,
-            topGenres: topGenres.data
+            topGenres: topGenres.data,
         },
     };
 };
