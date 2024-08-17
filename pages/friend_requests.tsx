@@ -57,11 +57,14 @@ const FriendRequests = () => {
                     />
                 </button>
                 <h1 className="font-bold text-2xl z-10 text-white mb-4">
-                    Requests ({requests.length})
+                    Friend Requests ({requests.length})
                 </h1>
+
+                {/* If there's no friend requests left */}
                 {requests && requests.length == 0 && (<div className="flex justify-center">
                     <div className="text-center text-2xl text-white mt-20 w-1/2"> You Have No Requests!</div>
                 </div>)}
+
                 {requests && requests.length > 0 && requests.map((request, index) => (
                     <RequestCard 
                         key={index}
@@ -72,9 +75,14 @@ const FriendRequests = () => {
                         onDecline={() => handleDecline(index)} 
                     />
                 ))}
-                {accepted && (<div className="fixed z-100 bottom-0 h-8 text-lg rounded-lg shadow-md w-[calc(100vw-4rem)] text-center bg-spotify-green mb-8">
-                    Accepted Friend Request!
-                </div>)}
+
+                {/* Accepted Popup */}
+                {accepted && (
+                    <div className="fixed z-100 bottom-0 h-16 text-lg rounded-lg shadow-md w-[calc(100vw-4rem)] text-center bg-spotify-green text-white mb-8 flex items-center justify-center">
+                        <span>Accepted Request!</span>
+                        <img src="/white_checkmark.svg" alt="Accepted" className="h-6 w-6 ml-2" />
+                    </div>
+                )}
             </div>
         </div>
     );
