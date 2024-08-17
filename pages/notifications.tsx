@@ -17,11 +17,10 @@ const NotificationsPage = () => {
     const [notifications, setNotifications] = useState([
         { iconPath: '/heart_icon.svg', message: 'You are now friends with Janet Yu' },
         { iconPath: '/event_icon.svg', message: 'There is an upcoming concert' },
-        // Add more notifications as needed
     ]);
 
     return (
-        <div className="h-full w-full p-8" style={{ backgroundColor: '#282828' }}>
+        <div className="min-h-screen w-full p-8" style={{ backgroundColor: '#282828' }}>
             <Head>
                 <title>Notifications</title>
                 <meta name="description" content="Notifications"/>
