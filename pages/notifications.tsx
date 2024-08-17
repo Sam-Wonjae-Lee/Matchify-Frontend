@@ -15,9 +15,13 @@ const NotificationsPage = () => {
     };
 
     const [notifications, setNotifications] = useState([
-        { iconPath: '/heart_icon.svg', message: 'You are now friends with Janet Yu' },
-        { iconPath: '/event_icon.svg', message: 'There is an upcoming concert' },
+        { id: 1, iconPath: '/heart_icon.svg', message: 'You are now friends with Janet Yu' },
+        { id: 2, iconPath: '/event_icon.svg', message: 'There is an upcoming concert' },
     ]);
+
+    const handleDelete = (id: number) => {
+        setNotifications(notifications.filter(notification => notification.id !== id));
+    };
 
     return (
         <div className="min-h-screen w-full p-8" style={{ backgroundColor: '#282828' }}>
@@ -38,11 +42,12 @@ const NotificationsPage = () => {
             <h1 className="font-bold text-2xl z-10 text-white mb-4">
                 Notifications ({notifications.length})
             </h1>
-            {notifications.map((notification, index) => (
-                <NotificationCard 
-                    key={index}
+            {notifications.map(notification => (
+                <NotificationCard
+                    key={notification.id}
                     iconPath={notification.iconPath}
                     message={notification.message}
+                    onDelete={() => handleDelete(notification.id)}
                 />
             ))}
         </div>
