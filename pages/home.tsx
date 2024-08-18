@@ -9,6 +9,10 @@ import EventCard from "@/components/event_card";
 import FriendCard from "@/components/friend_card";
 import SearchBar from "@/components/search_bar";
 
+import { concertRecommendations } from "@/api/api";
+import axios from 'axios';
+import { profile } from "console";
+
 
 
 const Home = () => {
@@ -29,8 +33,39 @@ const Home = () => {
     const [currentfriendState, setIsCurrentFriendToggled] = useState(false);
 
 
+    const [recommendations, setRecommendations] = useState([]);
+
+
+    // Fetch concert recommendations
+    // TODO: Implement the get the user's profile data from session storage and pass it to the API
+    // theres still more to be done here
+    // TODO: Implement the friends attending and number of people attending
+    const fetchConcertRecommendations = async () => {
+        const profileData = JSON.parse(sessionStorage.getItem("profileData") || "{}");
+        console.log(profileData);
+        profileData.id = 'a';
+        profileData.name = 'a';
+        if (profileData && profileData.id) {
+            const response = await axios.post("http://localhost:8888/concert_recommendations", { user_id: profileData.id });
+            console.log("response data:", response.data);
+
+            if (response.data && response.data.success) {
+                console.log("response.data.concerts:", response.data.concerts);
+                setRecommendations(response.data.concerts); // Assuming the API returns a "concerts" array
+                // console.log("your recs:", recommendations);
+                sessionStorage.removeItem("profileData");
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (activeTab === 'events') {
+            fetchConcertRecommendations(); // Fetch recommendations when 'events' tab is active
+        }
+    }, [activeTab]);
+
     // For handling event clicks
-    const handleEventClick = (eventID: number) => { 
+    const handleEventClick = (eventID: string) => { 
         console.log('Event ID:', eventID);
     }
 
@@ -220,8 +255,36 @@ const Home = () => {
         <div className="flex flex-col items-start w-full h-screen ">
             <h1 className="text-2xl font-bold text-white">{headerText}</h1>
             {/* Your events content goes here */}
+
+            
+
             <div className="flex flex-wrap justify-center mt-4 space-y-4">
-                    <div className="flex-shrink-0">
+                {/* Map over concertRecommendations to render EventCard for each concert */}
+
+                    {recommendations.length > 0 ? (
+                        console.log(recommendations),
+                                recommendations.map((event: any) => (
+                                    console.log(event),
+                                    <div className="flex-shrink-0" >
+                                        <EventCard
+                                            key={event.concert_id}
+                                            eventName={event.concert_name}
+                                            eventDate={event.concert_date}
+                                            eventLocation={event.concert_location}
+                                            eventImage={event.concert_image}
+                                            friendImage1={event.friendImage1}
+                                            friendImage2={event.friendImage2}
+                                            friendName1={event.friendName1}
+                                            friendName2={event.friendName2}
+                                            additionalCount={event.additionalCount}
+                                            onClick={() => handleEventClick(event.id)}
+                                        />
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-white">No events found</p>
+                            )}
+                    {/* <div className="flex-shrink-0">
                         <EventCard
                             key={1}
                             eventName="Kanye West"
@@ -267,7 +330,7 @@ const Home = () => {
                             additionalCount={999}
                             onClick={() => handleEventClick(3)}
                         />
-                    </div>
+                    </div> */}
             </div>
         </div>
         </div>}
