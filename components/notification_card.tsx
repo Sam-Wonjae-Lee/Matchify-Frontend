@@ -82,7 +82,13 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ iconPath, message, 
                 onTouchStart={handleTouchStart}
             >
                 <div className="flex items-center">
-                    <img src={iconPath} alt="Notification Icon" className="w-8 h-8 mr-4"/>
+                    <img 
+                        src={iconPath} 
+                        alt="Notification Icon" 
+                        className="w-8 h-8 mr-4"
+                        // Makes icon green
+                        style={{ filter: 'invert(48%) sepia(92%) saturate(749%) hue-rotate(85deg) brightness(92%) contrast(92%)' }} 
+                    />
                     <p className="text-white">{message}</p>
                 </div>
             </div>
