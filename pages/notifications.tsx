@@ -32,7 +32,7 @@ const NotificationsPage = () => {
     };
 
     return (
-        <div className="min-h-screen w-full p-8" style={{ backgroundColor: '#282828' }}>
+        <div className="min-h-screen w-full p-8 flex flex-col" style={{ backgroundColor: '#282828' }}>
             <Head>
                 <title>Notifications</title>
                 <meta name="description" content="Notifications"/>
