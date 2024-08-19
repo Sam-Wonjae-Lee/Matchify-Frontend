@@ -9,7 +9,6 @@ import EventCard from "@/components/event_card";
 import FriendCard from "@/components/friend_card";
 import SearchBar from "@/components/search_bar";
 
-import { concertRecommendations } from "@/api/api";
 import axios from 'axios';
 import { profile } from "console";
 
