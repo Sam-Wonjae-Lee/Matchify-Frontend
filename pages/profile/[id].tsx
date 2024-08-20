@@ -199,7 +199,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                     </div>
 
                     {!isEditing && (<div>
-                        <button className="w-[calc(100vw-6.5rem)] bg-black h-10 z-10 rounded-xl text-center z-10">
+                        <div className="w-[calc(100vw-6.5rem)] bg-black h-10 z-10 rounded-xl text-center z-10">
                             <div className="flex w-full h-full z-10">
                                 <div className="flex w-full items-center justify-center">
                                     {/* Spotify Stats Button */}
@@ -217,7 +217,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                                     {/*<p className="text-green-500">Spotify Stats</p>*/}
                                 </div>
                             </div>
-                        </button>
+                        </div>
 
                         <div className="flex w-[calc(100vw-6.5rem)] justify-between mt-[2vh]">
                             {viewer && (viewer != id) && friends && !blocked && (
