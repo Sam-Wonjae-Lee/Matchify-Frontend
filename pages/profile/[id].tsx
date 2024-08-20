@@ -31,7 +31,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
 
     console.log(playlists);
 
-    const [activeTab, setActiveTab] = useState('top tracks');
+    const [activeTab, setActiveTab] = useState('profile');
 
     // I say we use sessionStorage to store the user id for their duration on the app
     const [viewer, setViewer] = useState("Anon");
@@ -68,7 +68,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
     ];
 
     // Updates profileText that stores the value
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleInputChange = (e: any) => {
         const { name, value } = e.target;
         setEditingProfile({...editingProfile, [name]: value});
     };
@@ -88,6 +88,10 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
     };
 
     const handleBack = () => {
+        if (isEditing) {
+            setIsEditing(false);
+            return;
+        }
         router.push("/home");
     }
 
@@ -147,6 +151,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
         // if user cancels edit and re-edits, we want the previous unsaved edited profile to be lost
         if (isEditing) {
             setEditingProfile(profile);
+            setActiveTab('profile');
         }
     }, [isEditing])
 
@@ -180,7 +185,8 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                 </button>
                 {/* Just realized we should use vh and vw for larger elements for different mobile dimensions*/}
                 <div className="w-full mt-[2vh]">
-                   {viewer && profile && (<p className="text-white font-bold text-2xl">{id == viewer ? "View Own Profile" : profile.name + "'s Profile"}</p>)}
+                   {viewer && profile && !isEditing && (<p className="text-white font-bold text-2xl">{id == viewer ? "View Your Profile" : profile.name + "'s Profile"}</p>)}
+                   {isEditing && (<p className="text-white font-bold text-2xl">Edit Your Profile</p>)}
                 </div>
 
                 {/* Centred Items */}
@@ -284,7 +290,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
 
                     </div>)}
                     {/* Profile, Playlist, Activity Tabs */}
-                    <div className="flex w-full justify-around mt-[2vh]">
+                   {!isEditing &&  (<div className="flex w-full justify-around mt-[2vh]">
                         <button
                             className={`text-xl font-bold underline ${activeTab === 'profile' ? 'text-white' : 'text-gray-500'}`}
                             onClick={() => setActiveTab('profile')}
@@ -303,7 +309,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                         >
                             Activity
                         </button>
-                    </div>
+                    </div>)}
                     {/* Tab Content */}
                     <div className="w-full mt-[2vh] overflow-default">
                         {activeTab === 'profile' && (!isEditing ? (
@@ -331,47 +337,47 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                             </div>
                         ) : 
                         (<form onSubmit={handleProfileChange} className="ml-5 mr-5">
-                            <div className="mb-4">
-                                <label className="block text-white">Bio:</label>
-                                <input
-                                    type="text"
+                            <div className="mb-3">
+                                <label className="block text-[#DADEDB] text-sm">Bio:</label>
+                                <textarea
                                     name="bio"
                                     value={editingProfile.bio}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border border-gray-300 rounded text-black"
-                                />
+                                    className="w-full p-2 border border-gray-300 rounded text-black bg-[#DADEDB]"
+                                >
+                                </textarea>
                             </div>
-                            <div className="mb-4">
-                                <label className="block text-white">Date of Birth:</label>
+                            <div className="mb-3">
+                                <label className="block text-[#DADEDB] text-sm">Date of Birth:</label>
                                 <input
                                     type="date"
                                     name="dob"
                                     value={editingProfile.dob}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border border-gray-300 rounded text-black"
+                                    className="w-full p-2 border border-gray-300 rounded text-black bg-[#DADEDB]"
                                 />
                             </div>
-                            <div className="mb-4">
-                                <label className="block text-white">Gender:</label>
+                            <div className="mb-3">
+                                <label className="block text-[#DADEDB] text-sm">Gender:</label>
                                 <select
                                     name="gender"
                                     value={editingProfile.gender}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border border-gray-300 rounded text-black"
+                                    className="w-full p-2 border border-gray-300 rounded text-black bg-[#DADEDB]"
                                 >
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
-                            <div className="mb-4">
-                                <label className="block text-white">Location:</label>
+                            <div className="mb-3">
+                                <label className="block text-[#DADEDB] text-sm">Location:</label>
                                 <input
                                     type="text"
                                     name="location"
                                     value={editingProfile.location}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border border-gray-300 rounded text-black"
+                                    className="w-full p-2 border border-gray-300 rounded text-black bg-[#DADEDB]"
                                 />
                             </div>
                             <button type="submit" className="w-full bg-spotify-green text-white p-2 rounded mt-[2vh] h-[6vh]">Apply Changes</button>
