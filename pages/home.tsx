@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import UserCard from "@/components/user_card";
 import FilterEventsTabs from "@/components/filter_events_tabs";
 import EventCard from "@/components/event_card";
-import FriendCard from "@/components/friend_card";
+import ProfileCard from "@/components/profile_card";
 import SearchBar from "@/components/search_bar";
 
 import axios from 'axios';
@@ -28,12 +28,13 @@ const Home = () => {
     type Tab = 'events' | 'friends' | 'home' | 'friends' | 'messages';
     const [activeTab, setActiveTab] = useState<Tab>('home');
 
-    const [newFriendState, setIsNewFriendToggled] = useState(true);
-    const [currentfriendState, setIsCurrentFriendToggled] = useState(false);
-
+    const [suggestionState, setSuggestionState] = useState(true);
 
     const [recommendations, setRecommendations] = useState([]);
 
+    const [friendMatches, setFriendMatches] = useState([{first_name: "placeholder", last_name: "placeholder", profile_pic: "placeholder", bio: "placeholder", user_id: "placeholder"}]);
+
+    const [friends, setFriends] = useState([{first_name: "323r", last_name: "233er", profile_pic: "plaholder", bio: "pla123er", user_id: "placeholder"}]);
 
     // Fetch concert recommendations
     // TODO: Implement the get the user's profile data from session storage and pass it to the API
@@ -57,11 +58,34 @@ const Home = () => {
         }
     };
 
+    const getSuggestions = async () => {
+        const response = await axios.post("http://localhost:8888/match/get_matches", {user_id: sessionStorage.getItem("userId")});
+        setFriendMatches(response.data);
+    }
+
+    const getFriends = async () => {
+        const id = sessionStorage.getItem("userId");
+        const response = await axios.get(`http://localhost:8888/user/get_user_friends/${id}`);
+        console.log(response.data);
+        setFriends(response.data);
+    }
+
     useEffect(() => {
         if (activeTab === 'events') {
             fetchConcertRecommendations(); // Fetch recommendations when 'events' tab is active
         }
     }, [activeTab]);
+
+    useEffect(() => {
+
+        if (suggestionState) {
+            getSuggestions();
+        }
+        else {
+            getFriends();
+        }
+
+    }, [suggestionState]);
 
     // For handling event clicks
     const handleEventClick = (eventID: string) => { 
@@ -130,11 +154,6 @@ const Home = () => {
         console.log('Friends Attending pressed!');
     }
 
-    const toggleButton = () => {
-        setIsNewFriendToggled(!newFriendState);
-        setIsCurrentFriendToggled(!currentfriendState);
-    };
-
     // For changing the page text on top left
     const getTabTitle = () => {
         switch (activeTab) {
@@ -156,12 +175,6 @@ const Home = () => {
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
-    ];
-
-    const friends = [
-        { key: 1, suggested: true, friendImage: "/default_pfp.png", friendName: "John Doe", bio: "Sigma" },
-        { key: 2, suggested: true, friendImage: "/default_pfp.png", friendName: "Hitler", bio: "Sigma 2" },
-        { key: 3, suggested: false, friendImage: "/default_pfp.png", friendName: "george floyd", bio: "Sigma 3" },
     ];
 
     function setSearchQuery(value: string): void {
@@ -349,36 +362,50 @@ const Home = () => {
                 <div className="flex flex-col items-center mt-4">
                     <div className="w-full flex">
                         <button
-                            onClick={() => toggleButton()}
-                            className={`w-1/2 px-4 py-2 mt-4 rounded-l-md flex items-center justify-center text-white font-bold`}
-                            style={{ height: '45px', backgroundColor: currentfriendState === false ? '#1DB954' : '#535353'}}
+                            onClick={() => setSuggestionState(true)}
+                            className={`w-1/2 mt-4 rounded-l-md flex text-xs items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: suggestionState === true ? '#1DB954' : '#535353'}}
                         >
-                            {newFriendState ? 'Suggestions' : 'Suggestions'}
+                            Matchify Suggestions
                         </button>
                         <button
-                            onClick={() => toggleButton()}
-                            className={`w-1/2 px-4 py-2 mt-4 rounded-r-md flex items-center justify-center text-white font-bold`}
-                            style={{ height: '45px', backgroundColor: currentfriendState === true ? '#1DB954' : '#535353'}}
+                            onClick={() => setSuggestionState(false)}
+                            className={`w-1/2 mt-4 rounded-r-md flex text-xs items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: suggestionState === false ? '#1DB954' : '#535353'}}
                         >
-                            {currentfriendState ? 'Friends' : 'Friends'}
+                            Current Friends
                         </button>
                     </div>
-                    <div className="mt-8 w-full px-4">
-                        <ul className="space-y-4">
-                            {friends.map((friend, index) => (
-                                <div key={index} className="flex-shrink-0">
-                                    <FriendCard
-                                        friendImage={friend.friendImage}
-                                        friendName={friend.friendName}
-                                        suggested={friend.suggested}
-                                        bio={friend.bio}
-                                        key={friend.key}
-                                        onClick={() => console.log('Friend clicked')}
-                                    />
-                                </div>
-                            ))}
-                        </ul>
-                    </div>
+                    {suggestionState && friendMatches && friendMatches.length > 0 && (<div className="mt-8 w-full">
+                        {friendMatches.map((friend, index) => (
+                            <div key={index} className="">
+                                <ProfileCard
+                                    pfp={friend.profile_pic}
+                                    name={friend.first_name + " " + friend.last_name}
+                                    enterState={"Request"}
+                                    bio={friend.bio}
+                                    key={index}
+                                    userID={friend.user_id}
+                                />
+                            </div>
+                        ))}
+                    </div>)}
+
+                    {!suggestionState && friends && friends.length > 0 && (<div className="mt-8 w-full">
+                        {friends.map((friend, index) => (
+                            <div key={index} className="">
+                                <ProfileCard
+                                    pfp={friend.profile_pic}
+                                    name={friend.first_name + " " + friend.last_name}
+                                    enterState={"Friend"}
+                                    bio={friend.bio}
+                                    key={index}
+                                    userID={friend.user_id}
+                                />
+                            </div>
+                        ))}
+                    </div>)}
+                    {!suggestionState && friends && friends.length == 0 && (<p className="mt-20 text-xl font-bold">You have no friends!</p>)}
                 </div>
             }
 
