@@ -31,13 +31,14 @@ interface ArtistData {
 }
 
 interface SpotifyStatsProps {
+    id: string;
     profileData: ProfileData;
     topTracks: { items: TrackData[] };
     topArtists: { items: ArtistData[] };
     topGenres: { [genre: string]: number };
 }
 
-const SpotifyStats: NextPage<SpotifyStatsProps> = ( { profileData, topTracks, topArtists, topGenres }) => {
+const SpotifyStats: NextPage<SpotifyStatsProps> = ( { id, profileData, topTracks, topArtists, topGenres }) => {
     const router = useRouter();
 
     const [activeTab, setActiveTab] = useState('top tracks');
@@ -45,8 +46,7 @@ const SpotifyStats: NextPage<SpotifyStatsProps> = ( { profileData, topTracks, to
 
     const handleProfileRedirect = () => {
         // HERE WE NEED TO ACCESS SESSION STORAGE
-        const user_id = sessionStorage.getItem("userId") || "Anon"
-        router.push('/profile/' + user_id);
+        router.push('/profile/' + id);
     }
 
     return (

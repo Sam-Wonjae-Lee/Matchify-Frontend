@@ -48,7 +48,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
 
     const [currStatusText, setCurrStatusText] = useState("");
 
-    const [currFav, setCurrFav] = useState(playlists.items[0]);
+    const [currFav, setCurrFav] = useState();
 
 
     interface TrackCardProps {
@@ -96,8 +96,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
     }
 
     const handleSpotifyStats = () => {
-        const user_id = sessionStorage.getItem("userId") || "Anon"
-        router.push("/spotify_stats/" + user_id);
+        router.push("/spotify_stats/" + id);
     }
 
     const showStatusPopup = (text: string) => {
