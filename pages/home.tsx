@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
+import { GetServerSideProps, NextPage } from 'next';
 import Background from "@/components/background";
 
 import { useRouter } from "next/router";
@@ -11,8 +12,6 @@ import SearchBar from "@/components/search_bar";
 
 import axios from 'axios';
 import { profile } from "console";
-
-
 
 const Home = () => {
     // Used for redirecting to another page
@@ -27,6 +26,8 @@ const Home = () => {
 
     type Tab = 'events' | 'friends' | 'home' | 'friends' | 'messages';
     const [activeTab, setActiveTab] = useState<Tab>('home');
+
+    const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
     const [suggestionState, setSuggestionState] = useState(true);
 
@@ -58,6 +59,12 @@ const Home = () => {
         }
     };
 
+    const getProfilePic = async () => {
+        const id = sessionStorage.getItem("userId");
+        const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
+        setProfilePicture(profile.data.profile_pic);
+    }
+
     const getSuggestions = async () => {
         const response = await axios.post("http://localhost:8888/match/get_matches", {user_id: sessionStorage.getItem("userId")});
         setFriendMatches(response.data);
@@ -69,6 +76,10 @@ const Home = () => {
         console.log(response.data);
         setFriends(response.data);
     }
+
+    useEffect(() => {
+        getProfilePic();
+    }, []);
 
     useEffect(() => {
         if (activeTab === 'events') {
@@ -193,19 +204,25 @@ const Home = () => {
                 <div className="mb-4 flex justify-between items-center">
                     <p className="text-spotify-green font-bold text-2xl">{getTabTitle()}</p>
                     <div className="flex space-x-4">
+
+                        {/* Friend Requests Button */}
                         <img src="/heart_icon.svg" alt="Heart Icon" className="w-6 h-6"
                             style={{ transition: 'filter 0.3s ease' }}
                             onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
                             onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
                             onClick={handleFriendRequestsRedirect}
                         />
+
+                        {/* Notifications Button */}
                         <img src="/bell_icon.svg" alt="Bell Icon" className="w-6 h-6"
                             style={{ transition: 'filter 0.3s ease' }}
                             onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
                             onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
                             onClick={handleNotificationsRedirect}
                         />
-                        <img src="/default_pfp_v2.png" alt="Profile Icon" className="w-7 h-8" onClick={handleProfileRedirect}/>
+
+                        {/* Profile Button */}
+                        <img src={profilePicture ?? ''} alt="Profile Icon" className="z-10 w-[7vw] h-[7vw] rounded-full border-2 border-spotify-green object-cover" onClick={handleProfileRedirect}/>
                     </div>
                 </div>
 
@@ -405,7 +422,7 @@ const Home = () => {
                             </div>
                         ))}
                     </div>)}
-                    {!suggestionState && friends && friends.length == 0 && (<p className="mt-20 text-xl font-bold">You have no friends!</p>)}
+                    {!suggestionState && friends && friends.length == 0 && (<p className="mt-20 text-xl font-bold text-white">You have no friends!</p>)}
                 </div>
             }
 
