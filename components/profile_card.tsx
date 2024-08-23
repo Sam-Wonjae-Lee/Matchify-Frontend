@@ -21,7 +21,7 @@ const ProfileCard: React.FC<FriendCardProps> = ({key, bio, name, pfp, userID, en
 
     return (
         <div className="flex items-center p-4 mb-4 bg-[#535353] bg-opacity-60 rounded-lg" onClick={handleProfileRedirect}>
-            <img src={pfp} alt={name} className="rounded-full w-12 h-12" />
+            <img src={pfp} alt={name} className="rounded-full w-12 h-12 border-2 border-spotify-green object-cover" />
                 <div className="flex-1 ml-4">
                     <h4 className="text-white font-bold">{name}</h4>
 
