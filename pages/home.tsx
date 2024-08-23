@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
+
 import Background from "@/components/background";
 
 import { useRouter } from "next/router";
@@ -65,9 +66,26 @@ const Home = () => {
     }, [activeTab]);
 
     // For handling event clicks
-    const handleEventClick = (eventID: string) => { 
-        console.log('Event ID:', eventID);
-    }
+    const handleEventClick = (event: any) => {
+        console.log('Event clicked:', event);
+        // Destructure event details
+        const { concert_id, concert_name, concert_date, concert_location, concert_image, venue, link} = event;
+
+        // Navigate to event_details page with query parameters
+        router.push({
+            pathname: '/event_details',
+            query: {
+                concert_id, 
+                concert_name,
+                concert_date,
+                concert_location,
+                concert_image,
+                venue,
+                link
+
+            }
+        });
+    };
 
     const handleEventSearch = () => {
         console.log('Event Search:', eventSearch);
@@ -265,9 +283,8 @@ const Home = () => {
                         console.log(recommendations),
                                 recommendations.map((event: any) => (
                                     console.log(event),
-                                    <div className="flex-shrink-0" >
+                                    <div className="flex-shrink-0" key={event.concert_id} >
                                         <EventCard
-                                            key={event.concert_id}
                                             eventName={event.concert_name}
                                             eventDate={event.concert_date}
                                             eventLocation={event.concert_location}
@@ -277,7 +294,7 @@ const Home = () => {
                                             friendName1={event.friendName1}
                                             friendName2={event.friendName2}
                                             additionalCount={event.additionalCount}
-                                            onClick={() => handleEventClick(event.id)}
+                                            onClick={() => handleEventClick(event)}
                                         />
                                     </div>
                                 ))
