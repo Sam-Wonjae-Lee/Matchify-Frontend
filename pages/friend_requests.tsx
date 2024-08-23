@@ -4,18 +4,32 @@ import Background from "@/components/background";
 import React from "react";
 import { useRouter } from "next/router";
 import RequestCard from "@/components/request_card";
+import axios from "axios";
 
 const FriendRequests = () => {
     // Used for redirecting to another page
     const router = useRouter();
 
     const [accepted, setAccepted] = useState(false);
-    const [requests, setRequests] = useState([
-        { username: "Greg Wang", description: "Attended the same Imagine Dragons concert in June 24", image: "default_pfp.png"},
-        { username: "Victor Yu", description: "Attended the same Imagine Dragons concert in June 24", image: "default_pfp.png"},
-        { username: "Victor Yu", description: "Attended the same Imagine Dragons concert in June 24", image: "default_pfp.png" },
-        { username: "Victor Yu", description: "Attended the same Imagine Dragons concert in June 24", image: "default_pfp.png" },
-    ]);
+    const [requests, setRequests] = useState([]);
+
+    useEffect(() => {
+        const fetchFriendRequests = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8888/friend_request/get_user_friend_requests/${sessionStorage.getItem("userId")}`);
+                const friendRequests = response.data.map((request: { sender: any, receiver: any}) => ({
+                    username: request.sender,
+                    description: "Hey! I'd like to be your friend.",
+                    image: "default_pfp.png"
+                }));
+                setRequests(friendRequests);
+            } catch (error) {
+                console.error("Failed to fetch friend requests:", error);
+            }
+        };
+
+        fetchFriendRequests();
+    }, []);
 
     // Specified for home.tsx page
     const handleHomeRedirect = () => {
