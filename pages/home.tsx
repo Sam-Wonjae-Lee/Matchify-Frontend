@@ -10,8 +10,18 @@ import EventCard from "@/components/event_card";
 import ProfileCard from "@/components/profile_card";
 import SearchBar from "@/components/search_bar";
 
+import { AreYouSureCard, showAreYouSureCard } from "@/components/are_you_sure_card";
+
 import axios from 'axios';
 import { profile } from "console";
+
+interface Friend {
+    first_name: string,
+    last_name: string,
+    profile_pic: string,
+    bio: string,
+    user_id: string
+}
 
 const Home = () => {
     // Used for redirecting to another page
@@ -33,9 +43,13 @@ const Home = () => {
 
     const [recommendations, setRecommendations] = useState([]);
 
-    const [friendMatches, setFriendMatches] = useState([{first_name: "placeholder", last_name: "placeholder", profile_pic: "placeholder", bio: "placeholder", user_id: "placeholder"}]);
+    const [friendMatches, setFriendMatches] = useState<Friend[]>([]);
 
-    const [friends, setFriends] = useState([{first_name: "323r", last_name: "233er", profile_pic: "plaholder", bio: "pla123er", user_id: "placeholder"}]);
+    const [friends, setFriends] = useState<Friend[]>([]);
+
+    const [areYouSureText, setAreYouSureText] = useState("");
+
+    const [areYouSureFunc, setAreYouSureFunc] = useState(null);
 
     // Fetch concert recommendations
     // TODO: Implement the get the user's profile data from session storage and pass it to the API
@@ -403,6 +417,8 @@ const Home = () => {
                                     bio={friend.bio}
                                     key={index}
                                     userID={friend.user_id}
+                                    setAreYouSureText={setAreYouSureText}
+                                    setAreYouSureFunc={setAreYouSureFunc}
                                 />
                             </div>
                         ))}
@@ -418,11 +434,18 @@ const Home = () => {
                                     bio={friend.bio}
                                     key={index}
                                     userID={friend.user_id}
+                                    setAreYouSureText={setAreYouSureText}
+                                    setAreYouSureFunc={setAreYouSureFunc}
                                 />
                             </div>
                         ))}
                     </div>)}
                     {!suggestionState && friends && friends.length == 0 && (<p className="mt-20 text-xl font-bold text-white">You have no friends!</p>)}
+
+                    <AreYouSureCard id="unfriend_popup" text={areYouSureText} buttonName="Unfriend" buttonFunc={areYouSureFunc}>
+                    </AreYouSureCard>
+                    <AreYouSureCard id="cancel_popup" text={areYouSureText} buttonName="Okay" buttonFunc={areYouSureFunc}>
+                    </AreYouSureCard>
                 </div>
             }
 
