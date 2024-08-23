@@ -14,7 +14,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ username, description, image,
     return (
         <div className="p-4 rounded-lg shadow-md mb-4" style={{ backgroundColor: '#535353' }}>
             <div className="flex items-center space-x-2">
-                <img src={image} className="h-12 w-12"></img>
+                <img src={image} className="h-12 w-12 rounded-full"></img>
                 <h2 className="text-xl font-bold text-white">{username}</h2>
             </div>
             <p style={{ color: '#DADEDB' }}>{description}</p>

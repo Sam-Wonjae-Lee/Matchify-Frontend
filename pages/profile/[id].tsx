@@ -116,19 +116,20 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
     }
 
 
-    const handleSendFriendRequest = () => {
-        // TODO BACKEND SEND FRIEND REQUEST
+    const handleSendFriendRequest = async () => {
+        const response = await axios.post("http://localhost:8888/friend_request/send_friend_request", {senderID: sessionStorage.getItem("userId"), receiverID: id});
         showStatusPopup("Sent Friend Request to" + profile.name + "!");
     }
 
-    const handleUnfriend = () => {
+    const handleUnfriend = async () => {
+        const response = await axios.post(`http://localhost:8888/user/unfriend/${sessionStorage.getItem("userId")}`, {unfriended: id});
         setRequestClicked(false);
         setFriends(false);
         showStatusPopup("Unfriended " + profile.name + "!");
     }
 
-    const handleCancelFriendRequest = () => {
-        // TODO BACKEND CANCEL FRIEND REQUEST
+    const handleCancelFriendRequest = async () => {
+        const response = await axios.post("http://localhost:8888/friend_request/unsend_friend_request", {senderID: sessionStorage.getItem("userId"), receiverID: id});
         setRequestClicked(false);
         showStatusPopup("Canceled Friend Request to " + profile.name);
     }
@@ -160,8 +161,17 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
         
         // BACKEND CALL HERE TO GET IF VIEWER IS FRIENDS WITH PROFILE
         // setFriends()
-        console.log("I AM RUNNING")
-        setFriends(true);
+
+        const checkFriendStatus = async () => {
+            const response = await axios.post(`http://localhost:8888/user/is_friends_with/${sessionStorage.getItem("userId")}`, {userToCheck: id})
+            if (response.data.status) {
+                setFriends(true);
+            }
+            else {
+                setFriends(false);
+            }
+        }
+        checkFriendStatus();
     }, [])
 
     return (

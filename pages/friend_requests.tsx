@@ -6,21 +6,27 @@ import { useRouter } from "next/router";
 import RequestCard from "@/components/request_card";
 import axios from "axios";
 
+interface FriendRequest {
+    username: string,
+    description: string,
+    image: string
+}
+
 const FriendRequests = () => {
     // Used for redirecting to another page
     const router = useRouter();
 
     const [accepted, setAccepted] = useState(false);
-    const [requests, setRequests] = useState([]);
+    const [requests, setRequests] = useState<FriendRequest[]>([]);
 
     useEffect(() => {
         const fetchFriendRequests = async () => {
             try {
-                const response = await axios.get(`http://localhost:8888/friend_request/get_user_friend_requests/${sessionStorage.getItem("userId")}`);
-                const friendRequests = response.data.map((request: { sender: any, receiver: any}) => ({
+                const response = await axios.post("http://localhost:8888/friend_request/get_user_friend_requests", {receiverID: sessionStorage.getItem("userId")});
+                const friendRequests = response.data.map((request: { sender: string, profile_pic: string}) => ({
                     username: request.sender,
                     description: "Hey! I'd like to be your friend.",
-                    image: "default_pfp.png"
+                    image: request.profile_pic
                 }));
                 setRequests(friendRequests);
             } catch (error) {
@@ -36,20 +42,27 @@ const FriendRequests = () => {
         router.push('/home');
     };
 
-    const handleAccept = () => {
+    const handleAccept = async (index: number) => {
         if (!accepted) {
             setTimeout(() => setAccepted(false), 1000);
         }
         setAccepted(true);
-        // TODO: Handle accept logic here
-        console.log('Accepted');
-    };
-
-    const handleDecline = (index: number) => {
         let req_copy = [...requests];
         req_copy.splice(index, 1)
         setRequests(req_copy);
-        // TODO: Handle decline logic here
+
+        const id = sessionStorage.getItem("userId");
+        const response = await axios.post("http://localhost:8888/request_decision/accept", {receiver_id: id, sender_id: requests[index].username})
+        console.log('Accepted');
+    };
+
+    const handleDecline = async (index: number) => {
+        let req_copy = [...requests];
+        req_copy.splice(index, 1)
+        setRequests(req_copy);
+        
+        const id = sessionStorage.getItem("userId");
+        const response = await axios.post("http://localhost:8888/request_decision/decline", {receiver_id: id, sender_id: requests[index].username})
         console.log('Declined ' + index);
     };
 
@@ -85,7 +98,7 @@ const FriendRequests = () => {
                         image={request.image}
                         username={request.username} 
                         description={request.description} 
-                        onAccept={handleAccept} 
+                        onAccept={() => handleAccept(index)} 
                         onDecline={() => handleDecline(index)} 
                     />
                 ))}

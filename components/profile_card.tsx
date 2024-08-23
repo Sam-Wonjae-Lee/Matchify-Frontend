@@ -51,22 +51,19 @@ const ProfileCard: React.FC<FriendCardProps> = ({key, bio, name, pfp, userID, en
     }
 
     const handleSendFriendRequest = async () => {
-        // TODO BACKEND SEND FRIEND REQUEST
         const response = await axios.post("http://localhost:8888/friend_request/send_friend_request", {senderID: sessionStorage.getItem("userId"), receiverID: userID});
-        console.log(response.data);
         setButtonColor("#DC2626");
         setState('Cancel');
     }
 
     const handleUnfriend = async () => {
-        // console.log("FRIEND FRIEND LOLLOLOLO");
+        const response = await axios.post(`http://localhost:8888/user/unfriend/${sessionStorage.getItem("userId")}`, {unfriended: userID});
         setButtonColor("#0094CA");
         setState('Request');
     }
 
     const handleCancelFriendRequest = async () => {
-        // TODO BACKEND CANCEL FRIEND REQUEST
-        console.log("POKPOKPOK");
+        const response = await axios.post("http://localhost:8888/friend_request/unsend_friend_request", {senderID: sessionStorage.getItem("userId"), receiverID: userID});
         setButtonColor("#0094CA");
         setState('Request');
     }
