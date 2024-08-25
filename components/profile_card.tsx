@@ -6,7 +6,6 @@ import { AreYouSureCard, showAreYouSureCard } from './are_you_sure_card';
 import axios from 'axios';
 
 interface FriendCardProps {
-    key: number;
     bio: string;
     name: string;
     pfp: string;
@@ -17,7 +16,7 @@ interface FriendCardProps {
 }
 
 
-const ProfileCard: React.FC<FriendCardProps> = ({key, bio, name, pfp, userID, enterState = 'Friend', setAreYouSureText, setAreYouSureFunc}) => {
+const ProfileCard: React.FC<FriendCardProps> = ({bio, name, pfp, userID, enterState = 'Friend', setAreYouSureText, setAreYouSureFunc}) => {
 
     const router = useRouter();
 
@@ -101,10 +100,10 @@ const ProfileCard: React.FC<FriendCardProps> = ({key, bio, name, pfp, userID, en
     }, [state])
 
     return (
-        <div id={"profile_card_" + key} className="flex items-center p-4 mb-4 bg-[#535353] bg-opacity-60 rounded-lg" 
+        <div id={"profile_card_" + userID} className="flex items-center p-4 mb-4 bg-[#535353] bg-opacity-60 rounded-lg" 
         onClick={handleProfileRedirect}
-        onTouchStart={() => pressUpHighlight("profile_card_" + key)}
-        onTouchEnd={() => pressDownHighlight("profile_card_" + key)}>
+        onTouchStart={() => pressUpHighlight("profile_card_" + userID)}
+        onTouchEnd={() => pressDownHighlight("profile_card_" + userID)}>
             <img src={pfp} alt={name} className="rounded-full w-12 h-12 border-2 border-spotify-green object-cover" />
             <div className="w-1/2 ml-4">
                 <h4 className="text-white font-bold">{name}</h4>

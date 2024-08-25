@@ -408,14 +408,13 @@ const Home = () => {
                         </button>
                     </div>
                     {suggestionState && friendMatches && friendMatches.length > 0 && (<div className="mt-8 w-full">
-                        {friendMatches.map((friend, index) => (
-                            <div key={index} className="">
+                        {friendMatches.map((friend) => (
+                            <div className="">
                                 <ProfileCard
                                     pfp={friend.profile_pic}
                                     name={friend.first_name + " " + friend.last_name}
                                     enterState={"Request"}
                                     bio={friend.bio}
-                                    key={index}
                                     userID={friend.user_id}
                                     setAreYouSureText={setAreYouSureText}
                                     setAreYouSureFunc={setAreYouSureFunc}
@@ -425,14 +424,13 @@ const Home = () => {
                     </div>)}
 
                     {!suggestionState && friends && friends.length > 0 && (<div className="mt-8 w-full">
-                        {friends.map((friend, index) => (
-                            <div key={index} className="">
+                        {friends.map((friend) => (
+                            <div className="">
                                 <ProfileCard
                                     pfp={friend.profile_pic}
                                     name={friend.first_name + " " + friend.last_name}
                                     enterState={"Friend"}
                                     bio={friend.bio}
-                                    key={index}
                                     userID={friend.user_id}
                                     setAreYouSureText={setAreYouSureText}
                                     setAreYouSureFunc={setAreYouSureFunc}
