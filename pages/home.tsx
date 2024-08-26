@@ -159,6 +159,10 @@ const Home = () => {
         router.push('/profile/' + user_id);
     }
 
+    const handleCreateNewChat = () => {
+        router.push('/create_new_chat');
+    }
+
     const handleAttendingTab = () => {
         console.log('Attending pressed!');
     };
@@ -489,6 +493,7 @@ const Home = () => {
                             <button
                                 className="fixed bottom-24 right-4 text-white font-bold py-3 px-7 rounded z-10"
                                 style={{ background: 'linear-gradient(45deg, #0D5326, #1DB954)', borderRadius: '50px' }}
+                                onClick={handleCreateNewChat}
                             >
                                 <img src="/create_chat_logo.svg" alt="Create Chat"/>
                             </button>
