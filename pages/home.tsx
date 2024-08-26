@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Head from "next/head";
 import { GetServerSideProps, NextPage } from 'next';
 import Background from "@/components/background";
@@ -44,13 +44,18 @@ const Home = () => {
     const [recommendations, setRecommendations] = useState([]);
 
     const [friendMatches, setFriendMatches] = useState<Friend[]>([]);
+    const [friendMatchesCopy, setFriendMatchesCopy] = useState<Friend[]>([]);
 
     const [friends, setFriends] = useState<Friend[]>([]);
+    const [friendsCopy, setFriendsCopy] = useState<Friend[]>([]);
 
     const [areYouSureText, setAreYouSureText] = useState("");
 
     const [areYouSureFunc, setAreYouSureFunc] = useState(null);
 
+    const initialLoadFriendMatches = useRef(true);
+    const initialLoadFriend = useRef(true);
+  
     // State for messages sub-tabs
     type MessagesSubTab = 'messages' | 'requests';
     const [activeMessagesSubTab, setActiveMessagesSubTab] = useState<MessagesSubTab>('messages');
@@ -81,19 +86,27 @@ const Home = () => {
         const id = sessionStorage.getItem("userId");
         const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
         setProfilePicture(profile.data.profile_pic);
-    }
+    };
 
     const getSuggestions = async () => {
         const response = await axios.post("http://localhost:8888/match/get_matches", {user_id: sessionStorage.getItem("userId")});
         setFriendMatches(response.data);
-    }
+        if (initialLoadFriendMatches.current) {
+            setFriendMatchesCopy(response.data);
+            initialLoadFriendMatches.current = false;
+        }
+    };
 
     const getFriends = async () => {
         const id = sessionStorage.getItem("userId");
         const response = await axios.get(`http://localhost:8888/user/get_user_friends/${id}`);
         console.log(response.data);
         setFriends(response.data);
-    }
+        if (initialLoadFriend.current) {
+            setFriendsCopy(response.data);
+            initialLoadFriend.current = false;
+        }
+    };
 
     useEffect(() => {
         getProfilePic();
@@ -211,7 +224,51 @@ const Home = () => {
     ];
 
     function setSearchQuery(value: string): void {
-        throw new Error("Function not implemented.");
+
+        console.log("VALUE: " + value);
+
+        if (!value || value == "") {
+            setFriendMatchesCopy(friendMatches);
+            setFriendsCopy(friends);
+        }
+
+        const searchFriendMatches: Friend[] = []
+        const searchFriends: Friend[] = []
+
+        const regex = new RegExp(value, 'i');
+        let index;
+
+        for (const friend of friendMatches) {
+            const fullName = friend.first_name + " " + friend.last_name;
+            index = fullName.search(regex);
+            if (index !== -1) {
+                searchFriendMatches.push(friend);
+                continue;
+            }
+
+            index = friend.bio.search(regex);
+            if (index !== -1) {
+                searchFriendMatches.push(friend);
+                continue;
+            }
+        }
+
+        for (const friend of friends) {
+            const fullName = friend.first_name + " " + friend.last_name;
+            index = fullName.search(regex);
+            if (index !== -1) {
+                searchFriends.push(friend);
+                continue;
+            }
+
+            index = friend.bio.search(regex);
+            if (index !== -1) {
+                searchFriends.push(friend);
+                continue;
+            }
+        }
+        setFriendMatchesCopy(searchFriendMatches);
+        setFriendsCopy(searchFriends);
     }
 
     return (
@@ -280,7 +337,7 @@ const Home = () => {
                 {activeTab === 'events' && 
                 <div className="flex flex-col items-center mt-4 space-y-4 w-full max-w-screen-lg mx-auto">
 
-     {/* filter tabs */}
+    {/* filter tabs */}
     <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
         {/* location */}
         <FilterEventsTabs name="Location" onClick={handleLocationTab} />
@@ -415,8 +472,8 @@ const Home = () => {
                             Current Friends
                         </button>
                     </div>
-                    {suggestionState && friendMatches && friendMatches.length > 0 && (<div className="mt-8 w-full">
-                        {friendMatches.map((friend) => (
+                    {suggestionState && friendMatchesCopy && friendMatchesCopy.length > 0 && (<div className="mt-8 w-full">
+                        {friendMatchesCopy.map((friend) => (
                             <div className="">
                                 <ProfileCard
                                     pfp={friend.profile_pic}
@@ -431,8 +488,8 @@ const Home = () => {
                         ))}
                     </div>)}
 
-                    {!suggestionState && friends && friends.length > 0 && (<div className="mt-8 w-full">
-                        {friends.map((friend) => (
+                    {!suggestionState && friendsCopy && friendsCopy.length > 0 && (<div className="mt-8 w-full">
+                        {friendsCopy.map((friend) => (
                             <div className="">
                                 <ProfileCard
                                     pfp={friend.profile_pic}
