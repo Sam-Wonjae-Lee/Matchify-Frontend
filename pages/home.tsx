@@ -51,6 +51,10 @@ const Home = () => {
 
     const [areYouSureFunc, setAreYouSureFunc] = useState(null);
 
+    // State for messages sub-tabs
+    type MessagesSubTab = 'messages' | 'requests';
+    const [activeMessagesSubTab, setActiveMessagesSubTab] = useState<MessagesSubTab>('messages');
+
     // Fetch concert recommendations
     // TODO: Implement the get the user's profile data from session storage and pass it to the API
     // theres still more to be done here
@@ -153,6 +157,10 @@ const Home = () => {
         // HERE WE NEED TO ACCESS SESSION STORAGE
         const user_id = sessionStorage.getItem("userId") || "Anon"
         router.push('/profile/' + user_id);
+    }
+
+    const handleCreateNewChat = () => {
+        router.push('/create_new_chat');
     }
 
     const handleAttendingTab = () => {
@@ -459,6 +467,46 @@ const Home = () => {
                     }}
                 />
             )}
+            {activeTab === 'messages' && (
+                <div className="flex flex-col items-center mt-4 min-h-screen">
+                    {/* Messages Sub-Tab Navigation */}
+                    <div className="w-full flex">
+                        <button
+                            onClick={() => setActiveMessagesSubTab('messages')}
+                            className={`w-1/2 mt-4 rounded-l-md flex text-xs items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: activeMessagesSubTab === 'messages' ? '#1DB954' : '#535353'}}
+                        >
+                            Messages
+                        </button>
+                        <button
+                            onClick={() => setActiveMessagesSubTab('requests')}
+                            className={`w-1/2 mt-4 rounded-r-md flex text-xs items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: activeMessagesSubTab === 'requests' ? '#1DB954' : '#535353'}}
+                        >
+                            Requests
+                        </button>
+                    </div>
+
+                    {/* Messages Sub-Tab Content */}
+                    {activeMessagesSubTab === 'messages' && (
+                        <div className="relative w-full">
+                            <button
+                                className="fixed bottom-24 right-4 text-white font-bold py-3 px-7 rounded z-10"
+                                style={{ background: 'linear-gradient(45deg, #0D5326, #1DB954)', borderRadius: '50px' }}
+                                onClick={handleCreateNewChat}
+                            >
+                                <img src="/create_chat_logo.svg" alt="Create Chat"/>
+                            </button>
+                        </div>
+                    )}
+                    {/* Requests Content */}
+                    {activeMessagesSubTab === 'requests' && (
+                        <div>
+                            <p>Requests Content</p>
+                        </div>
+                    )}
+                </div>
+                )}
             </div>
 
             {/* Navigation Bar */}
