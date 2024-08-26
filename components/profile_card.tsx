@@ -111,7 +111,7 @@ const ProfileCard: React.FC<FriendCardProps> = ({bio, name, pfp, userID, enterSt
                 {/* Bio for now unless we want to use matching statistics here later on */}
                 <p className="text-white text-xs">{bio}</p>
             </div>
-            <button className="w-1/3 bg-[#0094CA] h-7 z-10 rounded-lg text-center z-10 text-xs" 
+            <button className="w-1/3 bg-[#0094CA] h-7 z-10 rounded-lg text-center text-xs text-white" 
             onClick={handleStateClick}
             onTouchStart={(event) => event.stopPropagation()}
             onTouchEnd={(event) => event.stopPropagation()}
