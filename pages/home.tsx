@@ -320,7 +320,7 @@ const Home = () => {
                                 </div>
                             ))}
                         </div>}
-                        {(!friends || friends.length == 0) && (<div className="w-full text-center font-bold mt-40">
+                        {(!friends || friends.length == 0) && (<div className="w-full text-white text-center font-bold mt-40">
                             Go Make Some Friends!
                             </div>)}
                     </div>}
