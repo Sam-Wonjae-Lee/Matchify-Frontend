@@ -18,6 +18,10 @@ const CreateNewChat = () => {
         router.push('/home');
     };
 
+    const handleCreateNewGroupChat = () => {
+        router.push('/create_new_group_chat')
+    };
+
     const handleMessagesSearch = () => {
         console.log('Messages Search:', messagesSearch);
         // TODO: Handle search logic here
@@ -60,6 +64,7 @@ const CreateNewChat = () => {
 
                 <div className="flex justify-center mt-6">
                     <button className="font-bold bg-spotify-green text-white py-2 px-4 rounded-lg shadow-md flex items-center justify-center w-full"
+                    onClick={handleCreateNewGroupChat}
                     >   
                         <img src="/group_logo.svg" alt="Group Logo" className="mr-4 w-6 h-6" />
                         Create a group chat

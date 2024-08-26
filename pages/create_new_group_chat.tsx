@@ -45,7 +45,7 @@ const CreateNewGroupChat = () => {
                     />
                 </button>
                 <h1 className="font-bold text-2xl z-10 text-white mb-12">
-                    Create New Chat
+                    Create New Group Chat
                 </h1>
 
                 <SearchBar
