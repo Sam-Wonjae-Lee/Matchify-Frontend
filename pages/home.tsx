@@ -21,7 +21,7 @@ const Home = () => {
     const router = useRouter();
 
     // for search inputs
-    const [eventSearch, setEventSearch] = useState('');
+    const [eventSearchString, setEventSearchString] = useState('');
     const [headerText, setHeaderText] = useState('Your Events');
 
     const [friendSearch, setFriendSearch] = useState('');
@@ -34,7 +34,7 @@ const Home = () => {
     const [currentfriendState, setIsCurrentFriendToggled] = useState(false);
 
 
-    const [recommendations, setRecommendations] = useState([]);
+    const [concertList, setConcertList] = useState([]);
 
 
     // Fetch concert recommendations
@@ -52,7 +52,7 @@ const Home = () => {
 
             if (response.data && response.data.success) {
                 console.log("response.data.concerts:", response.data.concerts);
-                setRecommendations(response.data.concerts); // Assuming the API returns a "concerts" array
+                setConcertList(response.data.concerts); // Assuming the API returns a "concerts" array
                 // console.log("your recs:", recommendations);
                 sessionStorage.removeItem("profileData");
             }
@@ -87,11 +87,14 @@ const Home = () => {
         });
     };
 
-    const handleEventSearch = () => {
-        console.log('Event Search:', eventSearch);
+    const handleEventSearch = async() => {
+        console.log('Event Search:', eventSearchString);
 
         setHeaderText('Search Results');
         // TODO: Handle event search logic here
+        const response = await axios.post("http://localhost:8888/search_concerts", { concert_name: eventSearchString });
+        console.log("response data:", response.data);
+        setConcertList(response.data);
     };
 
     const handleFriendSearch = () => {
@@ -233,7 +236,7 @@ const Home = () => {
                     {activeTab === 'events' && (
                         <SearchBar
                             placeholder="Search"
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => setEventSearchString(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     handleEventSearch();
@@ -279,9 +282,9 @@ const Home = () => {
             <div className="flex flex-wrap justify-center mt-4 space-y-4">
                 {/* Map over concertRecommendations to render EventCard for each concert */}
 
-                    {recommendations.length > 0 ? (
-                        console.log(recommendations),
-                                recommendations.map((event: any) => (
+                    {concertList.length > 0 ? (
+                        console.log(concertList),
+                                concertList.map((event: any) => (
                                     console.log(event),
                                     <div className="flex-shrink-0" key={event.concert_id} >
                                         <EventCard
@@ -301,53 +304,6 @@ const Home = () => {
                             ) : (
                                 <p className="text-white">No events found</p>
                             )}
-                    {/* <div className="flex-shrink-0">
-                        <EventCard
-                            key={1}
-                            eventName="Kanye West"
-                            eventDate="June 24, 2022"
-                            eventLocation="New York City"
-                            eventImage="/kanye.jpeg"
-                            friendImage1="/default_pfp.png"
-                            friendImage2="/default_pfp.png"
-                            friendName1="John Doe"
-                            friendName2="Jane Doe"
-                            additionalCount={999}
-                            onClick={() => handleEventClick(1)}
-                        />
-                    </div>
-
-                    <div className="flex-shrink-0">
-                        <EventCard
-                            key={2}
-                            eventName="UFC 214"
-                            eventDate="June 26, 2022"
-                            eventLocation="Las Vegas"
-                            eventImage="/UFC214.jpg"
-                            friendImage1="/default_pfp.png"
-                            // friendImage2="/default_pfp.png"
-                            friendName1="John Doe"
-                            // friendName2="Jane Doe"
-                            additionalCount={999}
-                            onClick={() => handleEventClick(2)}
-                        />
-                    </div>
-
-                    <div className="flex-shrink-0">
-                        <EventCard
-                            key={3}
-                            eventName="Olypic Basketball Finals"
-                            eventDate="August 10, 2024"
-                            eventLocation="Paris"
-                            eventImage="/olympic_basketball_final.jpg"
-                            friendImage1="/default_pfp.png"
-                            // friendImage2="/default_pfp.png"
-                            friendName1="John Doe"
-                            // friendName2="Jane Doe"
-                            additionalCount={999}
-                            onClick={() => handleEventClick(3)}
-                        />
-                    </div> */}
             </div>
         </div>
         </div>}

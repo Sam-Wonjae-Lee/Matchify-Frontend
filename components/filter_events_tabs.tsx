@@ -10,7 +10,7 @@ const EventCard: React.FC<EventCardProps> = ({ name, onClick }) => {
 
 
     const handleClick = () => {
-        setBgColor('#535353'); // Toggle color to #535353
+        setBgColor(prevColor => prevColor === '#535353' ? '#1DB954' : '#535353'); // Toggle color
         onClick();
     };
 
