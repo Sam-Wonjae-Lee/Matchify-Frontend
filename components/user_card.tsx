@@ -9,7 +9,7 @@ interface UserCardProps {
 const UserCard: React.FC<UserCardProps> = ({ profilePicture, username, songName }) => {
     return (
         <div className="flex flex-col items-center p-4 rounded-lg shadow-md mb-4" style={{ backgroundColor: '#535353' }}>
-            <img src={profilePicture} alt={`${username}'s profile`} className="w-10 h-10 rounded-full mb-2" />
+            <img src={profilePicture} alt={`${username}'s profile`} className="w-10 h-10 mb-2 rounded-full border-2 border-spotify-green object-cover" />
             <h2 className="text-base font-bold text-white mb-1">{username}</h2>
             <p className="text-white text-xs">Listening to: {songName}</p>
         </div>
