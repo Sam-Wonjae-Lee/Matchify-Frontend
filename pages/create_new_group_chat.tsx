@@ -28,7 +28,7 @@ const CreateNewGroupChat = () => {
     }
 
     return (
-        <div className="min-h-screen w-screen" style={{ backgroundColor: '#282828' }}>
+        <div className="min-h-screen w-screen create-new-group-chat" style={{ backgroundColor: '#282828' }}>
             <Head>
                 <title>Create New Group Chat</title>
                 <meta name="description" content="Profile Content"/>
