@@ -1,7 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import Head from "next/head";
-
-
 import { GetServerSideProps, NextPage } from 'next';
 import Background from "@/components/background";
 
@@ -30,7 +28,7 @@ const Home = () => {
     const router = useRouter();
 
     // for search inputs
-    const [eventSearchString, setEventSearchString] = useState('');
+    const [eventSearch, setEventSearch] = useState('');
     const [headerText, setHeaderText] = useState('Your Events');
 
     const [friendSearch, setFriendSearch] = useState('');
@@ -43,7 +41,7 @@ const Home = () => {
 
     const [suggestionState, setSuggestionState] = useState(true);
 
-    const [concertList, setConcertList] = useState([]);
+    const [recommendations, setRecommendations] = useState([]);
 
     const [friendMatches, setFriendMatches] = useState<Friend[]>([]);
     const [friendMatchesCopy, setFriendMatchesCopy] = useState<Friend[]>([]);
@@ -77,7 +75,7 @@ const Home = () => {
 
             if (response.data && response.data.success) {
                 console.log("response.data.concerts:", response.data.concerts);
-                setConcertList(response.data.concerts); // Assuming the API returns a "concerts" array
+                setRecommendations(response.data.concerts); // Assuming the API returns a "concerts" array
                 // console.log("your recs:", recommendations);
                 sessionStorage.removeItem("profileData");
             }
@@ -133,36 +131,15 @@ const Home = () => {
     }, [suggestionState]);
 
     // For handling event clicks
-    const handleEventClick = (event: any) => {
-        console.log('Event clicked:', event);
-        // Destructure event details
-        const { concert_id, concert_name, concert_date, concert_location, concert_image, venue, link} = event;
+    const handleEventClick = (eventID: string) => {
+        console.log('Event ID:', eventID);
+    }
 
-        // Navigate to event_details page with query parameters
-        router.push({
-            pathname: '/event_details',
-            query: {
-                concert_id, 
-                concert_name,
-                concert_date,
-                concert_location,
-                concert_image,
-                venue,
-                link
-
-            }
-        });
-    };
-
-
-    const handleEventSearch = async() => {
-        console.log('Event Search:', eventSearchString);
+    const handleEventSearch = () => {
+        console.log('Event Search:', eventSearch);
 
         setHeaderText('Search Results');
         // TODO: Handle event search logic here
-        const response = await axios.post("http://localhost:8888/search_concerts", { concert_name: eventSearchString });
-        console.log("response data:", response.data);
-        setConcertList(response.data);
     };
 
     const handleFriendSearch = () => {
@@ -352,7 +329,7 @@ const Home = () => {
                     {activeTab === 'events' && (
                         <SearchBar
                             placeholder="Search"
-                            onChange={(e) => setEventSearchString(e.target.value)}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     handleEventSearch();
@@ -380,84 +357,94 @@ const Home = () => {
                             {/* genre */}
                             <FilterEventsTabs name="Genre" onClick={handleGenreTab} />
 
-        {/* attending */}
-        <FilterEventsTabs name="Attending" onClick={handleAttendingTab} />
-        </div>
-        
+                            {/* friend_attending */}
+                            <FilterEventsTabs name="Friends Attending" onClick={handleFriendsAttendingTab} />
 
-        {/* for events, their event id is unique and is used to identify them in the database */}
-        <div className="flex flex-col items-start w-full h-screen ">
-            <h1 className="text-2xl font-bold text-white">{headerText}</h1>
-            {/* Your events content goes here */}
+                            {/* attending */}
+                            <FilterEventsTabs name="Attending" onClick={handleAttendingTab} />
+                        </div>
 
-            
 
-            <div className="flex flex-wrap justify-center mt-4 space-y-4">
-                {/* Map over concertRecommendations to render EventCard for each concert */}
+                        {/* for events, their event id is unique and is used to identify them in the database */}
+                        <div className="flex flex-col items-start w-full h-screen ">
+                            <h1 className="text-2xl font-bold text-white">{headerText}</h1>
+                            {/* Your events content goes here */}
 
-                    {concertList.length > 0 ? (
-                        console.log(concertList),
-                                concertList.map((event: any) => (
-                                    console.log(event),
-                                    <div className="flex-shrink-0" key={event.concert_id} >
-                                        <EventCard
-                                            eventName={event.concert_name}
-                                            eventDate={event.concert_date}
-                                            eventLocation={event.concert_location}
-                                            eventImage={event.concert_image}
-                                            friendImage1={event.friendImage1}
-                                            friendImage2={event.friendImage2}
-                                            friendName1={event.friendName1}
-                                            friendName2={event.friendName2}
-                                            additionalCount={event.additionalCount}
-                                            onClick={() => handleEventClick(event)}
-                                        />
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-white">No events found</p>
-                            )}
-            </div>
-        </div>
-        </div>}
-            {/* Friends Search Bar */}
-            {activeTab === 'friends' && (
-                <SearchBar
-                    placeholder="Search"
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleFriendSearch();
-                        }
-                    }}
-                />
-            )}
-            {activeTab === 'friends' && 
-                <div className="flex flex-col items-center mt-4">
-                    <div className="w-full flex">
-                        <button
-                            onClick={() => toggleButton()}
-                            className={`w-1/2 px-4 py-2 mt-4 rounded-l-md flex items-center justify-center text-white font-bold`}
-                            style={{ height: '45px', backgroundColor: currentfriendState === false ? '#1DB954' : '#535353'}}
-                        >
-                            {newFriendState ? 'Suggestions' : 'Suggestions'}
-                        </button>
-                        <button
-                            onClick={() => toggleButton()}
-                            className={`w-1/2 px-4 py-2 mt-4 rounded-r-md flex items-center justify-center text-white font-bold`}
-                            style={{ height: '45px', backgroundColor: currentfriendState === true ? '#1DB954' : '#535353'}}
-                        >
-                            {currentfriendState ? 'Friends' : 'Friends'}
-                        </button>
+
+
+                            <div className="flex flex-wrap justify-center mt-4 space-y-4">
+                                {/* Map over concertRecommendations to render EventCard for each concert */}
+
+                                {recommendations.length > 0 ? (
+                                    console.log(recommendations),
+                                    recommendations.map((event: any) => (
+                                        console.log(event),
+                                        <div className="flex-shrink-0" >
+                                            <EventCard
+                                                key={event.concert_id}
+                                                eventName={event.concert_name}
+                                                eventDate={event.concert_date}
+                                                eventLocation={event.concert_location}
+                                                eventImage={event.concert_image}
+                                                friendImage1={event.friendImage1}
+                                                friendImage2={event.friendImage2}
+                                                friendName1={event.friendName1}
+                                                friendName2={event.friendName2}
+                                                additionalCount={event.additionalCount}
+                                                onClick={() => handleEventClick(event.id)}
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-white">No events found</p>
+                                )}
+                                {/* <div className="flex-shrink-0">
+                        <EventCard
+                            key={1}
+                            eventName="Kanye West"
+                            eventDate="June 24, 2022"
+                            eventLocation="New York City"
+                            eventImage="/kanye.jpeg"
+                            friendImage1="/default_pfp.png"
+                            friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            friendName2="Jane Doe"
+                            additionalCount={999}
+                            onClick={() => handleEventClick(1)}
+                        />
                     </div>
-                    <div className="mt-8 w-full px-4">
-                        <ul className="space-y-4">
-                            {friends.map((friend, index) => (
-                                <div key={index} className="flex-shrink-0">
-                                    <FriendCard
-                                        friendImage={friend.friendImage}
-                                        friendName={friend.friendName}
-                                        suggested={friend.suggested}
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            key={2}
+                            eventName="UFC 214"
+                            eventDate="June 26, 2022"
+                            eventLocation="Las Vegas"
+                            eventImage="/UFC214.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                            onClick={() => handleEventClick(2)}
+                        />
+                    </div>
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            key={3}
+                            eventName="Olypic Basketball Finals"
+                            eventDate="August 10, 2024"
+                            eventLocation="Paris"
+                            eventImage="/olympic_basketball_final.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                            onClick={() => handleEventClick(3)}
+                        />
+                    </div> */}
                             </div>
                         </div>
                     </div>}

@@ -1,53 +1,7 @@
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-interface EventDetailsProps {
-    concert_id: string;
-    concert_image: string;
-    concert_name: string;
-    concert_date: string;
-    concert_location: string;
-    venue: string;
-    link: string;
-}
 
-const EventDetails: React.FC = () => {
-    const router = useRouter();
-    const [eventDetails, setEventDetails] = useState<EventDetailsProps | null>(null);
-
-    useEffect(() => {
-        if (router.query) {
-            const { concert_id, concert_image, concert_name, concert_date, concert_location, venue, link } = router.query;
-            setEventDetails({
-                concert_id: concert_id as string,
-                concert_image: concert_image as string,
-                concert_name: concert_name as string,
-                concert_date: concert_date as string,
-                concert_location: concert_location as string,
-                venue: venue as string,
-                link: link as string
-            });
-        }
-    }, [router.query]);
-
-    if (!eventDetails) {
-        return <div>Loading...</div>;
-    }
-
-    const { concert_image, concert_name, concert_date, concert_location, venue, link } = eventDetails;
-
-    const handleTicketButtonPress = () => {
-        window.open(link);
-    };
-
-    const handleBackButtonPress = () => {
-        router.back();
-    };
-
-    const handleAttendButtonPress = () => {
-        // TODO: Implement
-    }
-
+const EventDetails = () => {
     return (
         <div 
             className="flex flex-col min-h-screen w-screen" 
@@ -55,8 +9,7 @@ const EventDetails: React.FC = () => {
             <div 
                 className="absolute inset-0"
                 style={{ 
-                    // backgroundImage: "url('olympic_basketball_final.svg')",
-                    backgroundImage: `url(${concert_image})`,
+                    backgroundImage: "url('olympic_basketball_final.svg')",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
@@ -68,18 +21,16 @@ const EventDetails: React.FC = () => {
             
             {/* Back Icon */}
             <div className="p-4">
-                <button className="text-white py-2 px-4 rounded-full" onClick={handleBackButtonPress}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                </button>
             </div>
 
             {/* Event Details */}
             <div className="p-4 text-white ">
-                <h1 className="text-3xl font-bold">{concert_name}</h1>
-                <p className="text-white mt-1">{concert_date}</p>
-                <p className="text-white">{concert_location} - {venue}</p>
+                <h1 className="text-3xl font-bold">Travis Scott Concert</h1>
+                <p className="text-white mt-1">September 10, 2024</p>
+                <p className="text-white">Toronto, ON - Scotiabank Arena</p>
                 <p className="text-white mt-4">
                     Lorem ipsum dolor sit amet consectetur. Pellentesque sodales tristique rutrum ut urna sed lorem risus. Eget risus bibendum sed sed. Sit et at purus aliquam laoreet vestibulum massa. Id purus magna ut tortor quis libero. Eget.
                 </p>
@@ -88,7 +39,7 @@ const EventDetails: React.FC = () => {
                 {/* Action Buttons */}
                 <div className="flex justify-between p-10">
                     <button className="bg-green-600 text-white py-2 px-4 w-2/5">Attending?</button>
-                    <button className="bg-white text-green-600 py-2 px-4 w-2/5 border border-green-600" onClick={handleTicketButtonPress}>Tickets</button>
+                    <button className="bg-white text-green-600 py-2 px-4 w-2/5 border border-green-600">Tickets</button>
                 </div>
 
                 {/* Attendees Section */}
