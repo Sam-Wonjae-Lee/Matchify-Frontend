@@ -114,7 +114,7 @@ input:checked + .slider:before {
 }
 
 /* For checkbox input used in message user card which only shows in create new group chat page*/
-.create-new-group-chat .custom-checkbox {
+.custom-checkbox {
   appearance: none;
   width: 20px;
   height: 20px;
@@ -125,7 +125,7 @@ input:checked + .slider:before {
   transition: background-color 0.3s ease;
 }
 
-.create-new-group-chat .custom-checkbox:checked {
+.custom-checkbox:checked {
   background-color: #1DB954; 
   border: transparent;
 }

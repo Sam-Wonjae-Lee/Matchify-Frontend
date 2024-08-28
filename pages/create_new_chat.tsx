@@ -5,7 +5,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import SearchBar from "@/components/search_bar";
-import MessageUserCard from "@/components/message_user_card";
+import CreateNewChatCard from "@/components/create_new_chat_card";
 
 
 const CreateNewChat = () => {
@@ -33,13 +33,6 @@ const CreateNewChat = () => {
         throw new Error("Function not implemented.");
     };
 
-    const handleUserSelect = (name: string) => {
-        setSelectedUsers((prevSelectedUsers) =>
-            prevSelectedUsers.includes(name)
-                ? prevSelectedUsers.filter((user) => user !== name)
-                : [...prevSelectedUsers, name]
-        );
-    };
 
     return (
         <div className="min-h-screen w-screen" style={{ backgroundColor: '#282828' }}>
@@ -86,19 +79,15 @@ const CreateNewChat = () => {
                     Start a chat with:
                 </h1>
 
-                {/* Example usage of MessageUserCard */}
+                {/* Example usage of CreateNewChatCard */}
                 <div className="mt-4">
-                    <MessageUserCard
+                    <CreateNewChatCard
                         pfp="/path/to/profile_picture.jpg"
                         name="John Doe"
-                        selectState={selectedUsers.includes("John Doe")}
-                        onSelect={() => handleUserSelect("John Doe")}
                     />
-                    <MessageUserCard
+                    <CreateNewChatCard
                         pfp="/path/to/profile_picture2.jpg"
                         name="Jane Smith"
-                        selectState={selectedUsers.includes("Jane Smith")}
-                        onSelect={() => handleUserSelect("Jane Smith")}
                     />
                 </div>
 
