@@ -4,38 +4,65 @@ import Background from "@/components/background";
 import React from "react";
 import { useRouter } from "next/router";
 import RequestCard from "@/components/request_card";
+import axios from "axios";
+
+interface FriendRequest {
+    username: string,
+    description: string,
+    image: string
+}
 
 const FriendRequests = () => {
     // Used for redirecting to another page
     const router = useRouter();
 
     const [accepted, setAccepted] = useState(false);
-    const [requests, setRequests] = useState([
-        { username: "Greg Wang", description: "Attended the same Imagine Dragons concert in June 24", image: "default_pfp.png"},
-        { username: "Victor Yu", description: "Attended the same Imagine Dragons concert in June 24", image: "default_pfp.png"},
-        { username: "Victor Yu", description: "Attended the same Imagine Dragons concert in June 24", image: "default_pfp.png" },
-        { username: "Victor Yu", description: "Attended the same Imagine Dragons concert in June 24", image: "default_pfp.png" },
-    ]);
+    const [requests, setRequests] = useState<FriendRequest[]>([]);
+
+    useEffect(() => {
+        const fetchFriendRequests = async () => {
+            try {
+                const response = await axios.post("http://localhost:8888/friend_request/get_user_friend_requests", {receiverID: sessionStorage.getItem("userId")});
+                const friendRequests = response.data.map((request: { sender: string, profile_pic: string}) => ({
+                    username: request.sender,
+                    description: "Hey! I'd like to be your friend.",
+                    image: request.profile_pic
+                }));
+                setRequests(friendRequests);
+            } catch (error) {
+                console.error("Failed to fetch friend requests:", error);
+            }
+        };
+
+        fetchFriendRequests();
+    }, []);
 
     // Specified for home.tsx page
     const handleHomeRedirect = () => {
         router.push('/home');
     };
 
-    const handleAccept = () => {
+    const handleAccept = async (index: number) => {
         if (!accepted) {
             setTimeout(() => setAccepted(false), 1000);
         }
         setAccepted(true);
-        // TODO: Handle accept logic here
-        console.log('Accepted');
-    };
-
-    const handleDecline = (index: number) => {
         let req_copy = [...requests];
         req_copy.splice(index, 1)
         setRequests(req_copy);
-        // TODO: Handle decline logic here
+
+        const id = sessionStorage.getItem("userId");
+        const response = await axios.post("http://localhost:8888/request_decision/accept", {receiver_id: id, sender_id: requests[index].username})
+        console.log('Accepted');
+    };
+
+    const handleDecline = async (index: number) => {
+        let req_copy = [...requests];
+        req_copy.splice(index, 1)
+        setRequests(req_copy);
+        
+        const id = sessionStorage.getItem("userId");
+        const response = await axios.post("http://localhost:8888/request_decision/decline", {receiver_id: id, sender_id: requests[index].username})
         console.log('Declined ' + index);
     };
 
@@ -57,24 +84,32 @@ const FriendRequests = () => {
                     />
                 </button>
                 <h1 className="font-bold text-2xl z-10 text-white mb-4">
-                    Requests ({requests.length})
+                    Friend Requests ({requests.length})
                 </h1>
+
+                {/* If there's no friend requests left */}
                 {requests && requests.length == 0 && (<div className="flex justify-center">
                     <div className="text-center text-2xl text-white mt-20 w-1/2"> You Have No Requests!</div>
                 </div>)}
+
                 {requests && requests.length > 0 && requests.map((request, index) => (
                     <RequestCard 
                         key={index}
                         image={request.image}
                         username={request.username} 
                         description={request.description} 
-                        onAccept={handleAccept} 
+                        onAccept={() => handleAccept(index)} 
                         onDecline={() => handleDecline(index)} 
                     />
                 ))}
-                {accepted && (<div className="fixed z-100 bottom-0 h-8 text-lg rounded-lg shadow-md w-[calc(100vw-4rem)] text-center bg-spotify-green mb-8">
-                    Accepted Friend Request!
-                </div>)}
+
+                {/* Accepted Popup */}
+                {accepted && (
+                    <div className="fixed z-100 bottom-0 h-16 text-lg rounded-lg shadow-md w-[calc(100vw-4rem)] text-center bg-spotify-green text-white mb-8 flex items-center justify-center">
+                        <span>Accepted Request!</span>
+                        <img src="/white_checkmark.svg" alt="Accepted" className="h-6 w-6 ml-2" />
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -112,3 +112,20 @@ input:checked + .slider:before {
 .no-scrollbar::-webkit-scrollbar {
   display: none;  /* Safari and Chrome */
 }
+
+/* For checkbox input used in message user card which only shows in create new group chat page*/
+.custom-checkbox {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid white; 
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.custom-checkbox:checked {
+  background-color: #1DB954; 
+  border: transparent;
+}
