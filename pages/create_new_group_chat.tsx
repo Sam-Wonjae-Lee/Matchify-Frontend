@@ -5,6 +5,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import SearchBar from "@/components/search_bar";
+import CreateNewGroupChatCard from "@/components/create_new_group_chat_card";
 
 
 const CreateNewGroupChat = () => {
@@ -12,10 +13,10 @@ const CreateNewGroupChat = () => {
     const router = useRouter();
 
     const [messagesSearch, setMessagesSearch] = useState('');
+    const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
-    // Specified for home.tsx page
-    const handleHomeRedirect = () => {
-        router.push('/home');
+    const handleCreateNewChat = () => {
+        router.push('/create_new_chat');
     };
 
     const handleMessagesSearch = () => {
@@ -27,8 +28,16 @@ const CreateNewGroupChat = () => {
         throw new Error("Function not implemented.");
     }
 
+    const handleUserSelect = (name: string) => {
+        setSelectedUsers((prevSelectedUsers) =>
+            prevSelectedUsers.includes(name)
+                ? prevSelectedUsers.filter((user) => user !== name)
+                : [...prevSelectedUsers, name]
+        );
+    };
+
     return (
-        <div className="min-h-screen w-screen" style={{ backgroundColor: '#282828' }}>
+        <div className="min-h-screen w-screen create-new-group-chat" style={{ backgroundColor: '#282828' }}>
             <Head>
                 <title>Create New Group Chat</title>
                 <meta name="description" content="Profile Content"/>
@@ -36,7 +45,7 @@ const CreateNewGroupChat = () => {
             </Head>
             <div className="relative h-full w-full p-8 overflow-default">
                 {/* Back Arrow */}
-                <button className="mb-4" onClick={handleHomeRedirect}>
+                <button className="mb-4" onClick={handleCreateNewChat}>
                     <img src="/left_arrow.svg" alt="Left Arrow" className="w-8 h-8"
                         // Hover animation
                         style={{ transition: 'filter 0.3s ease' }}
@@ -62,6 +71,22 @@ const CreateNewGroupChat = () => {
                     Start a chat with:
                 </h1>
 
+                {/* Example usage of CreateNewChatCard */}
+                <div className="mt-4">
+                    <CreateNewGroupChatCard
+                        pfp="/path/to/profile_picture.jpg"
+                        name="John Doe"
+                        selectState={selectedUsers.includes("John Doe")}
+                        onSelect={() => handleUserSelect("John Doe")}
+                    />
+                    <CreateNewGroupChatCard
+                        pfp="/path/to/profile_picture2.jpg"
+                        name="Jane Smith"
+                        selectState={selectedUsers.includes("Jane Smith")}
+                        onSelect={() => handleUserSelect("Jane Smith")}
+                    />
+                </div>
+                
             </div>
         </div>
     );

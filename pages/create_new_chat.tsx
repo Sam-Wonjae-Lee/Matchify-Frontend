@@ -5,6 +5,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import SearchBar from "@/components/search_bar";
+import CreateNewChatCard from "@/components/create_new_chat_card";
 
 
 const CreateNewChat = () => {
@@ -12,6 +13,7 @@ const CreateNewChat = () => {
     const router = useRouter();
 
     const [messagesSearch, setMessagesSearch] = useState('');
+    const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
     // Specified for home.tsx page
     const handleHomeRedirect = () => {
@@ -29,7 +31,8 @@ const CreateNewChat = () => {
 
     function setSearchQuery(value: string): void {
         throw new Error("Function not implemented.");
-    }
+    };
+
 
     return (
         <div className="min-h-screen w-screen" style={{ backgroundColor: '#282828' }}>
@@ -75,6 +78,18 @@ const CreateNewChat = () => {
                 <h1 className="font-bold text-xl z-10 text-white mt-12">
                     Start a chat with:
                 </h1>
+
+                {/* Example usage of CreateNewChatCard */}
+                <div className="mt-4">
+                    <CreateNewChatCard
+                        pfp="/path/to/profile_picture.jpg"
+                        name="John Doe"
+                    />
+                    <CreateNewChatCard
+                        pfp="/path/to/profile_picture2.jpg"
+                        name="Jane Smith"
+                    />
+                </div>
 
             </div>
         </div>
