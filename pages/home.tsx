@@ -9,6 +9,7 @@ import FilterEventsTabs from "@/components/filter_events_tabs";
 import EventCard from "@/components/event_card";
 import FriendCard from "@/components/friend_card";
 import SearchBar from "@/components/search_bar";
+import FilterPopUp from "@/components/filter_pop_ups";
 
 import { concertRecommendations } from "@/api/api";
 import axios from 'axios';
@@ -186,6 +187,31 @@ const Home = () => {
         { key: 3, suggested: false, friendImage: "/default_pfp.png", friendName: "george floyd", bio: "Sigma 3" },
     ];
 
+    // filter options for the filter tabs
+    const location_options: string[] = ["NYC", "SF", "Seatle"];
+    const date_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+    const artist_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+    const genre_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+    const attending_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+    const friends_attending_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+
+
+
     function setSearchQuery(value: string): void {
         throw new Error("Function not implemented.");
     }
@@ -253,22 +279,23 @@ const Home = () => {
      {/* filter tabs */}
     <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
         {/* location */}
-        <FilterEventsTabs name="Location" onClick={handleLocationTab} />
+        {/* <FilterEventsTabs name="Location" onClick={handleLocationTab} /> */}
+        <FilterEventsTabs name="Location" options_lst={location_options} onClick={handleLocationTab} />
 
         {/* date */}
-        <FilterEventsTabs name="Date" onClick={handleDateTab} />
+        <FilterEventsTabs name="Date" options_lst={date_options} onClick={handleDateTab} />
 
         {/* artist */}
-        <FilterEventsTabs name="Artist" onClick={handleArtistTab} />
+        <FilterEventsTabs name="Artist" options_lst={artist_options} onClick={handleArtistTab} />
 
         {/* genre */}
-        <FilterEventsTabs name="Genre" onClick={handleGenreTab} />
+        <FilterEventsTabs name="Genre" options_lst={genre_options} onClick={handleGenreTab} />
         
         {/* friend_attending */}
-        <FilterEventsTabs name="Friends Attending" onClick={handleFriendsAttendingTab} />
+        <FilterEventsTabs name="Friends Attending" options_lst={friends_attending_options} onClick={handleFriendsAttendingTab} />
 
         {/* attending */}
-        <FilterEventsTabs name="Attending" onClick={handleAttendingTab} />
+        <FilterEventsTabs name="Attending" options_lst={attending_options} onClick={handleAttendingTab} />
         </div>
         
 
