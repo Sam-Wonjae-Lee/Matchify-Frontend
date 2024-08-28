@@ -2,7 +2,6 @@ import React from 'react';
 import SmallProfileImages from './small_profile_images';
 
 interface EventCardProps {
-    key:string;
     eventName: string;
     eventDate: string;
     eventLocation: string;
