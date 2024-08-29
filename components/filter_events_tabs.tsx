@@ -5,14 +5,14 @@ import FilterPopUp from './filter_pop_ups';
 interface EventCardProps {
     name: string;
     onClick: () => void;
-    options_lst: string[];
+    // options_lst: string[];
 }
     const options = [
         'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
         'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
     ]; // Example options, you can customize these
 
-const EventCard: React.FC<EventCardProps> = ({ name, onClick, options_lst }) => {
+const EventCard: React.FC<EventCardProps> = ({ name, onClick }) => {
     const [bgColor, setBgColor] = useState('#535353');
     const [isPopUpVisible, setIsPopUpVisible] = useState(false);
     const [popUpStyle, setPopUpStyle] = useState({});
