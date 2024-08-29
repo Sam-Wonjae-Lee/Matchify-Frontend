@@ -1,8 +1,25 @@
 import type { NextPage } from "next"
 import Head from "next/head"
 import Background from "@/components/background"
+import { useState } from "react";
 
 const Settings = () => {
+    // Track if any buttons have been selected
+    const [isChanged, setIsChanged] = useState(false);
+    // Track if Apply Changes button has been pressed
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const handleCheckboxChange = () => {
+        setIsChanged(true);
+    };
+
+    const handleApplyChanges = () => {
+        // Handle apply changes logic here
+        setIsChanged(false);
+        setIsModalVisible(true);
+        setTimeout(() => setIsModalVisible(false), 3000); // Hide popup after 3 seconds
+    };
+
     return (
         <div className="h-screen w-screen" style={{ backgroundColor: '#282828' }}>
             <Head>
@@ -30,7 +47,7 @@ const Settings = () => {
                         <div className="flex items-center">
                             <p className="text-white">Dark Mode</p>
                             <label className="switch ml-auto">
-                                <input type="checkbox" />
+                                <input type="checkbox" onChange={handleCheckboxChange} />
                                 <span className="slider round"></span>
                             </label>
                         </div>
@@ -41,14 +58,14 @@ const Settings = () => {
                         <div className="flex items-center">
                             <p className="text-white">Allow only friends to message you</p>
                             <label className="switch ml-auto">
-                                <input type="checkbox" />
+                                <input type="checkbox" onChange={handleCheckboxChange} />
                                 <span className="slider round"></span>
                             </label>
                         </div>
                         <div className="flex items-center">
                             <p className="text-white">Profile visible to friends only</p>
                             <label className="switch ml-auto">
-                                <input type="checkbox" />
+                                <input type="checkbox" onChange={handleCheckboxChange} />
                                 <span className="slider round"></span>
                             </label>
                         </div>
@@ -59,28 +76,28 @@ const Settings = () => {
                         <div className="flex items-center">
                             <p className="text-white">Friend Requests</p>
                             <label className="switch ml-auto">
-                                <input type="checkbox" />
+                                <input type="checkbox" onChange={handleCheckboxChange} />
                                 <span className="slider round"></span>
                             </label>
                         </div>
                         <div className="flex items-center">
                             <p className="text-white">Playlist Updates</p>
                             <label className="switch ml-auto">
-                                <input type="checkbox" />
+                                <input type="checkbox" onChange={handleCheckboxChange} />
                                 <span className="slider round"></span>
                             </label>
                         </div>
                         <div className="flex items-center">
                             <p className="text-white">New Events</p>
                             <label className="switch ml-auto">
-                                <input type="checkbox" />
+                                <input type="checkbox" onChange={handleCheckboxChange} />
                                 <span className="slider round"></span>
                             </label>
                         </div>
                         <div className="flex items-center">
                             <p className="text-white">Event Reminders</p>
                             <label className="switch ml-auto">
-                                <input type="checkbox" />
+                                <input type="checkbox" onChange={handleCheckboxChange} />
                                 <span className="slider round"></span>
                             </label>
                         </div>
@@ -112,9 +129,24 @@ const Settings = () => {
                         </div>
                     </div>
 
+                    <div className="flex justify-center mt-4">
+                    {isChanged && !isModalVisible && (
+                        <button
+                            className="font-bold bg-green-500 text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full"
+                            onClick={handleApplyChanges}
+                        >
+                            Apply Changes
+                        </button>
+                    )}
+
+                    {isModalVisible && (
+                        <div className="font-bold bg-spotify-green text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full">
+                            <span>Changes Made!</span>
+                            <img src="/white_checkmark.svg" alt="Changes Made" className="h-6 w-6 ml-2" />
+                        </div>
+                    )}
                 </div>
-
-
+                </div>
             </div>
         </div>
     );

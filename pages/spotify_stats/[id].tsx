@@ -31,13 +31,14 @@ interface ArtistData {
 }
 
 interface SpotifyStatsProps {
+    id: string;
     profileData: ProfileData;
     topTracks: { items: TrackData[] };
     topArtists: { items: ArtistData[] };
     topGenres: { [genre: string]: number };
 }
 
-const SpotifyStats: NextPage<SpotifyStatsProps> = ( { profileData, topTracks, topArtists, topGenres }) => {
+const SpotifyStats: NextPage<SpotifyStatsProps> = ( { id, profileData, topTracks, topArtists, topGenres }) => {
     const router = useRouter();
 
     const [activeTab, setActiveTab] = useState('top tracks');
@@ -45,8 +46,7 @@ const SpotifyStats: NextPage<SpotifyStatsProps> = ( { profileData, topTracks, to
 
     const handleProfileRedirect = () => {
         // HERE WE NEED TO ACCESS SESSION STORAGE
-        const user_id = sessionStorage.getItem("userId") || "Anon"
-        router.push('/profile/' + user_id);
+        router.push('/profile/' + id);
     }
 
     return (
@@ -135,7 +135,7 @@ const SpotifyStats: NextPage<SpotifyStatsProps> = ( { profileData, topTracks, to
                         )}
                         {activeTab === 'top genres' && (
                             <div>
-                                {/* {topGenres.items.map((genre, index) => (
+                                {/* {Object.entries(topGenres).map(([genre, count], index) => (
                                     <GenreCard 
                                         key={index} 
                                         genreKey={index + 1}
@@ -165,6 +165,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const topArtists = await axios.get(`http://localhost:8888/spotify/user/${id}/top-artists`);
     const topGenres = await axios.get(`http://localhost:8888/spotify/user/${id}/top-genres`);
 
+    // // Create items array
+    // var items = Object.keys(topGenres.data).map(function(key) {
+    //     return [key, topGenres.data[key]];
+    // });
+
+    // // Sort array 
+    // items.sort(function(a, b) {
+    //     return b[1] - a[1];
+    // });
+
+    // // Convert the sorted array back to an object
+    // var sortedTopGenres = Object.fromEntries(items);
 
     const profileData = {
         name: profile.data.username,
@@ -175,20 +187,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         pfp: profile.data.profile_pic, 
         fav_playlist: profile.data.favourite_playlist}
 
-    // const topTracksData = topTracks.data.items.map((track: any) => ({
-    //     trackName: track.name,
-    //     artistName: track.artists[0].name,
-    //     albumImageUrl: track.album.images[0].url,
-    //     // artistNames: track.artists.map((artist: any) => artist.name).join(', ')
-    // }));
-
     return {
         props: {
             id,
             profileData,
             topTracks: topTracks.data,
             topArtists: topArtists.data,
-            topGenres: topGenres.data,
+            // topGenres: topGenres,
         },
     };
 };

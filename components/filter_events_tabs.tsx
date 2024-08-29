@@ -21,6 +21,7 @@ const EventCard: React.FC<EventCardProps> = ({ name, onClick, options_lst }) => 
     const popUpRef = useRef<HTMLDivElement>(null);
 
     const handleClick = () => {
+
         setBgColor(prevColor => prevColor === '#535353' ? '#1DB954' : '#535353'); // Toggle color
         setIsPopUpVisible(!isPopUpVisible); // Toggle pop-up visibility
 
@@ -35,6 +36,7 @@ const EventCard: React.FC<EventCardProps> = ({ name, onClick, options_lst }) => 
                 zIndex: 50,
             });
         }
+
 
         onClick();
     };

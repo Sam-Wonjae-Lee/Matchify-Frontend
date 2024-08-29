@@ -14,14 +14,25 @@ const NotificationsPage = () => {
         router.push('/home');
     };
 
+    const handleFriendRequestRedirect = () => {
+        router.push('/friend_requests');
+    };
+
     const [notifications, setNotifications] = useState([
-        { iconPath: '/heart_icon.svg', message: 'You are now friends with Janet Yu' },
-        { iconPath: '/event_icon.svg', message: 'There is an upcoming concert' },
-        // Add more notifications as needed
+        { id: 1, iconPath: '/heart_icon.svg', message: 'You are now friends with Janet Yu' },
+        { id: 2, iconPath: '/event_icon.svg', message: 'There is an upcoming concert' },
     ]);
 
+    const handleDeleteAll = () => {
+        setNotifications([]);
+    };
+
+    const handleDelete = (id: number) => {
+        setNotifications(notifications.filter(notification => notification.id !== id));
+    };
+
     return (
-        <div className="h-full w-full p-8" style={{ backgroundColor: '#282828' }}>
+        <div className="min-h-screen w-full p-8 flex flex-col" style={{ backgroundColor: '#282828' }}>
             <Head>
                 <title>Notifications</title>
                 <meta name="description" content="Notifications"/>
@@ -39,13 +50,38 @@ const NotificationsPage = () => {
             <h1 className="font-bold text-2xl z-10 text-white mb-4">
                 Notifications ({notifications.length})
             </h1>
-            {notifications.map((notification, index) => (
-                <NotificationCard 
-                    key={index}
-                    iconPath={notification.iconPath}
-                    message={notification.message}
-                />
-            ))}
+
+            {/* View Requests Button */}
+            <div className="flex justify-center mt-4">
+                <button className="font-bold bg-spotify-green text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full"
+                    onClick={handleFriendRequestRedirect}
+                >
+                    View Requests
+                    <img src="/heart_icon.svg" alt="Heart Icon" className="ml-4 w-8 h-8" />
+                </button>
+            </div>
+            
+            {/* flex-grow pushes the delete all button to the bottom */}
+            <div className="flex-grow mt-4">
+                {notifications.map(notification => (
+                    <NotificationCard
+                        key={notification.id}
+                        iconPath={notification.iconPath}
+                        message={notification.message}
+                        onDelete={() => handleDelete(notification.id)}
+                    />
+                ))}
+            </div>
+
+            {/* Delete All Notifications Button */}
+            <div className="flex justify-center mt-4">
+                <button className="font-bold bg-red-500 text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full"
+                    onClick={handleDeleteAll}
+                >
+                    Delete All Notifications
+                    <img src="/trashcan_icon.svg" alt="Trash Can Icon" className="ml-4 w-8 h-8" />
+                </button>
+            </div>
         </div>
     );
 };

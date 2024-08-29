@@ -2,10 +2,11 @@ interface AreYouSureCardProps {
     id: string;
     text: string;
     buttonName: string;
-    buttonFunc: () => void;
+    buttonFunc?: any;
 }
 
 const showAreYouSureCard = (id: string) => {
+
     const sliderElement = document.getElementById(id);
 
     if (sliderElement) {
@@ -56,7 +57,7 @@ const AreYouSureCard: React.FC<AreYouSureCardProps> = ({ id, text, buttonName, b
             <div className="flex w-full justify-center space-x-4 mt-2 mb-4">
                 <button className="bg-red-500 text-white py-2 px-4 rounded text-sm" onClick={ () => {
                     removeSlider();
-                    buttonFunc();
+                    buttonFunc ? buttonFunc() : console.log("Button has no action");
                 }}>{buttonName}</button>
                 <button className="bg-white text-[#535353] py-2 px-4 rounded text-sm" onClick={() => {
                     removeSlider();

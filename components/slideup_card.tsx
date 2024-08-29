@@ -61,11 +61,11 @@ const SlideupCard: React.FC<SlideupCardProps> = ({ id, first, second, third, fir
           onTouchStart={() => pressDownHighlight(id + "1")} onTouchEnd={() => pressUpHighlight(id + "1")}>
               <div className="w-1/4 h-4 bg-gray-100 rounded-lg mt-4">
               </div>
-              <div className="mt-2">
+              <div className="mt-2 text-white font-bold">
                   {first}
               </div>
           </button>
-          <button id={id + "2"} className="w-full h-[33%]" onTouchStart={() => pressDownHighlight(id + "2")} onTouchEnd={() => pressUpHighlight(id + "2")} onClick={() => {
+          <button id={id + "2"} className="w-full h-[33%] text-white" onTouchStart={() => pressDownHighlight(id + "2")} onTouchEnd={() => pressUpHighlight(id + "2")} onClick={() => {
             removeSlider();
             secondFunc();
           }}>

@@ -1,28 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Head from "next/head";
-
+import { GetServerSideProps, NextPage } from 'next';
 import Background from "@/components/background";
 
 import { useRouter } from "next/router";
 import UserCard from "@/components/user_card";
 import FilterEventsTabs from "@/components/filter_events_tabs";
 import EventCard from "@/components/event_card";
-import FriendCard from "@/components/friend_card";
+import ProfileCard from "@/components/profile_card";
 import SearchBar from "@/components/search_bar";
 import FilterPopUp from "@/components/filter_pop_ups";
 
-import { concertRecommendations } from "@/api/api";
+import { AreYouSureCard, showAreYouSureCard } from "@/components/are_you_sure_card";
+
 import axios from 'axios';
 import { profile } from "console";
 
-
+interface Friend {
+    first_name: string,
+    last_name: string,
+    profile_pic: string,
+    bio: string,
+    user_id: string
+}
 
 const Home = () => {
     // Used for redirecting to another page
     const router = useRouter();
 
     // for search inputs
-    const [eventSearchString, setEventSearchString] = useState('');
+    const [eventSearch, setEventSearch] = useState('');
     const [headerText, setHeaderText] = useState('Your Events');
 
     const [friendSearch, setFriendSearch] = useState('');
@@ -31,12 +38,28 @@ const Home = () => {
     type Tab = 'events' | 'friends' | 'home' | 'friends' | 'messages';
     const [activeTab, setActiveTab] = useState<Tab>('home');
 
-    const [newFriendState, setIsNewFriendToggled] = useState(true);
-    const [currentfriendState, setIsCurrentFriendToggled] = useState(false);
+    const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
+    const [suggestionState, setSuggestionState] = useState(true);
 
-    const [concertList, setConcertList] = useState([]);
+    const [recommendations, setRecommendations] = useState([]);
 
+    const [friendMatches, setFriendMatches] = useState<Friend[]>([]);
+    const [friendMatchesCopy, setFriendMatchesCopy] = useState<Friend[]>([]);
+
+    const [friends, setFriends] = useState<Friend[]>([]);
+    const [friendsCopy, setFriendsCopy] = useState<Friend[]>([]);
+
+    const [areYouSureText, setAreYouSureText] = useState("");
+
+    const [areYouSureFunc, setAreYouSureFunc] = useState(null);
+
+    const initialLoadFriendMatches = useRef(true);
+    const initialLoadFriend = useRef(true);
+
+    // State for messages sub-tabs
+    type MessagesSubTab = 'messages' | 'requests';
+    const [activeMessagesSubTab, setActiveMessagesSubTab] = useState<MessagesSubTab>('messages');
 
     // Fetch concert recommendations
     // TODO: Implement the get the user's profile data from session storage and pass it to the API
@@ -53,12 +76,43 @@ const Home = () => {
 
             if (response.data && response.data.success) {
                 console.log("response.data.concerts:", response.data.concerts);
-                setConcertList(response.data.concerts); // Assuming the API returns a "concerts" array
+                setRecommendations(response.data.concerts); // Assuming the API returns a "concerts" array
                 // console.log("your recs:", recommendations);
                 sessionStorage.removeItem("profileData");
             }
         }
     };
+
+    const getProfilePic = async () => {
+        const id = sessionStorage.getItem("userId");
+        const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
+        setProfilePicture(profile.data.profile_pic);
+    };
+
+    const getSuggestions = async () => {
+        const response = await axios.post("http://localhost:8888/match/get_matches", { user_id: sessionStorage.getItem("userId") });
+        setFriendMatches(response.data);
+        if (initialLoadFriendMatches.current) {
+            setFriendMatchesCopy(response.data);
+            initialLoadFriendMatches.current = false;
+        }
+    };
+
+    const getFriends = async () => {
+        const id = sessionStorage.getItem("userId");
+        const response = await axios.get(`http://localhost:8888/user/get_user_friends/${id}`);
+        console.log(response.data);
+        setFriends(response.data);
+        if (initialLoadFriend.current) {
+            setFriendsCopy(response.data);
+            initialLoadFriend.current = false;
+        }
+    };
+
+    useEffect(() => {
+        getProfilePic();
+        getFriends();
+    }, []);
 
     useEffect(() => {
         if (activeTab === 'events') {
@@ -66,36 +120,27 @@ const Home = () => {
         }
     }, [activeTab]);
 
+    useEffect(() => {
+
+        if (suggestionState) {
+            getSuggestions();
+        }
+        else {
+            getFriends();
+        }
+
+    }, [suggestionState]);
+
     // For handling event clicks
-    const handleEventClick = (event: any) => {
-        console.log('Event clicked:', event);
-        // Destructure event details
-        const { concert_id, concert_name, concert_date, concert_location, concert_image, venue, link} = event;
+    const handleEventClick = (eventID: string) => {
+        console.log('Event ID:', eventID);
+    }
 
-        // Navigate to event_details page with query parameters
-        router.push({
-            pathname: '/event_details',
-            query: {
-                concert_id, 
-                concert_name,
-                concert_date,
-                concert_location,
-                concert_image,
-                venue,
-                link
-
-            }
-        });
-    };
-
-    const handleEventSearch = async() => {
-        console.log('Event Search:', eventSearchString);
+    const handleEventSearch = () => {
+        console.log('Event Search:', eventSearch);
 
         setHeaderText('Search Results');
         // TODO: Handle event search logic here
-        const response = await axios.post("http://localhost:8888/search_concerts", { concert_name: eventSearchString });
-        console.log("response data:", response.data);
-        setConcertList(response.data);
     };
 
     const handleFriendSearch = () => {
@@ -129,6 +174,10 @@ const Home = () => {
         router.push('/profile/' + user_id);
     }
 
+    const handleCreateNewChat = () => {
+        router.push('/create_new_chat');
+    }
+
     const handleAttendingTab = () => {
         console.log('Attending pressed!');
     };
@@ -153,11 +202,6 @@ const Home = () => {
         console.log('Friends Attending pressed!');
     }
 
-    const toggleButton = () => {
-        setIsNewFriendToggled(!newFriendState);
-        setIsCurrentFriendToggled(!currentfriendState);
-    };
-
     // For changing the page text on top left
     const getTabTitle = () => {
         switch (activeTab) {
@@ -180,6 +224,7 @@ const Home = () => {
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
     ];
+
 
     const friends = [
         { key: 1, suggested: true, friendImage: "/default_pfp.png", friendName: "John Doe", bio: "Sigma" },
@@ -213,56 +258,111 @@ const Home = () => {
 
 
     function setSearchQuery(value: string): void {
-        throw new Error("Function not implemented.");
+
+        console.log("VALUE: " + value);
+
+        if (!value || value == "") {
+            setFriendMatchesCopy(friendMatches);
+            setFriendsCopy(friends);
+        }
+
+        const searchFriendMatches: Friend[] = []
+        const searchFriends: Friend[] = []
+
+        const regex = new RegExp(value, 'i');
+        let index;
+
+        for (const friend of friendMatches) {
+            const fullName = friend.first_name + " " + friend.last_name;
+            index = fullName.search(regex);
+            if (index !== -1) {
+                searchFriendMatches.push(friend);
+                continue;
+            }
+
+            index = friend.bio.search(regex);
+            if (index !== -1) {
+                searchFriendMatches.push(friend);
+                continue;
+            }
+        }
+
+        for (const friend of friends) {
+            const fullName = friend.first_name + " " + friend.last_name;
+            index = fullName.search(regex);
+            if (index !== -1) {
+                searchFriends.push(friend);
+                continue;
+            }
+
+            index = friend.bio.search(regex);
+            if (index !== -1) {
+                searchFriends.push(friend);
+                continue;
+            }
+        }
+        setFriendMatchesCopy(searchFriendMatches);
+        setFriendsCopy(searchFriends);
     }
 
     return (
-        
+
         <div className="bg-gray-900 flex flex-col min-h-screen w-screen overflow-y-auto" style={{ backgroundColor: '#282828', marginBottom: '4.5rem' }}>
             <Head>
                 <title>{getTabTitle()}</title>
-                <meta name="description" content="Home Screen"/>
+                <meta name="description" content="Home Screen" />
                 <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
             </Head>
             <div className="h-full w-full p-8">
                 <div className="mb-4 flex justify-between items-center">
                     <p className="text-spotify-green font-bold text-2xl">{getTabTitle()}</p>
                     <div className="flex space-x-4">
+
+                        {/* Friend Requests Button */}
                         <img src="/heart_icon.svg" alt="Heart Icon" className="w-6 h-6"
                             style={{ transition: 'filter 0.3s ease' }}
                             onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
                             onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
                             onClick={handleFriendRequestsRedirect}
                         />
+
+                        {/* Notifications Button */}
                         <img src="/bell_icon.svg" alt="Bell Icon" className="w-6 h-6"
                             style={{ transition: 'filter 0.3s ease' }}
                             onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
                             onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
                             onClick={handleNotificationsRedirect}
                         />
-                        <img src="/default_pfp_v2.png" alt="Profile Icon" className="w-7 h-8" onClick={handleProfileRedirect}/>
+
+                        {/* Profile Button */}
+                        <img src={profilePicture ?? ''} alt="Profile Icon" className="z-10 w-[7vw] h-[7vw] rounded-full border-2 border-spotify-green object-cover" onClick={handleProfileRedirect} />
                     </div>
                 </div>
 
                 {/* Home Page */}
-                {activeTab === 'home' && 
-                <div className="flex overflow-x-auto no-scrollbar space-x-4">
-                    {users.map((user, index) => (
-                        <div key={index} className="flex-shrink-0">
-                            <UserCard 
-                                profilePicture={user.profilePicture} 
-                                username={user.username} 
-                                songName={user.songName} 
-                            />
-                        </div>
-                    ))}
-                </div>}
+                {activeTab === 'home' &&
+                    <div>
+                        {friends && friends.length > 0 && <div className="flex overflow-x-auto no-scrollbar space-x-4">
+                            {friends.map((friend, index) => (
+                                <div key={index}>
+                                    <UserCard
+                                        profilePicture={friend.profile_pic}
+                                        username={friend.first_name + " " + friend.last_name}
+                                        userId={friend.user_id}
+                                    />
+                                </div>
+                            ))}
+                        </div>}
+                        {(!friends || friends.length == 0) && (<div className="w-full text-white text-center font-bold mt-40">
+                            Go Make Some Friends!
+                            </div>)}
+                    </div>}
                 <div>
                     {/* Conditionally render the search bar */}
                     {activeTab === 'events' && (
                         <SearchBar
                             placeholder="Search"
-                            onChange={(e) => setEventSearchString(e.target.value)}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     handleEventSearch();
@@ -271,10 +371,11 @@ const Home = () => {
                         />
                     )}
                 </div>
-                
+
                 {/* Events Page */}
-                {activeTab === 'events' && 
-                <div className="flex flex-col items-center mt-4 space-y-4 w-full max-w-screen-lg mx-auto">
+                {activeTab === 'events' &&
+                    <div className="flex flex-col items-center mt-4 space-y-4 w-full max-w-screen-lg mx-auto">
+
 
      {/* filter tabs */}
     <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
@@ -348,53 +449,179 @@ const Home = () => {
             )}
             {activeTab === 'friends' && 
                 <div className="flex flex-col items-center mt-4">
-                    <div className="w-full flex">
-                        <button
+<!--                     <div className="w-full flex"> -->
+<!--                         <button
                             onClick={() => toggleButton()}
                             className={`w-1/2 px-4 py-2 mt-4 rounded-l-md flex items-center justify-center text-white font-bold`}
                             style={{ height: '45px', backgroundColor: currentfriendState === false ? '#1DB954' : '#535353'}}
                         >
-                            {newFriendState ? 'Suggestions' : 'Suggestions'}
+//                             {newFriendState ? 'Suggestions' : 'Suggestions'}
                         </button>
                         <button
                             onClick={() => toggleButton()}
                             className={`w-1/2 px-4 py-2 mt-4 rounded-r-md flex items-center justify-center text-white font-bold`}
                             style={{ height: '45px', backgroundColor: currentfriendState === true ? '#1DB954' : '#535353'}}
                         >
-                            {currentfriendState ? 'Friends' : 'Friends'}
-                        </button>
+//                             {currentfriendState ? 'Friends' : 'Friends'}
+                        </button> -->
+<!--                     </div> -->
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            key={2}
+                            eventName="UFC 214"
+                            eventDate="June 26, 2022"
+                            eventLocation="Las Vegas"
+                            eventImage="/UFC214.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                            onClick={() => handleEventClick(2)}
+                        />
                     </div>
-                    <div className="mt-8 w-full px-4">
-                        <ul className="space-y-4">
-                            {friends.map((friend, index) => (
-                                <div key={index} className="flex-shrink-0">
-                                    <FriendCard
-                                        friendImage={friend.friendImage}
-                                        friendName={friend.friendName}
-                                        suggested={friend.suggested}
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            key={3}
+                            eventName="Olypic Basketball Finals"
+                            eventDate="August 10, 2024"
+                            eventLocation="Paris"
+                            eventImage="/olympic_basketball_final.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                            onClick={() => handleEventClick(3)}
+                        />
+                    </div> */}
+                            </div>
+                        </div>
+                    </div>}
+                {/* Friends Search Bar */}
+                {activeTab === 'friends' && (
+                    <SearchBar
+                        placeholder="Search"
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleFriendSearch();
+                            }
+                        }}
+                    />
+                )}
+                {activeTab === 'friends' &&
+                    <div className="flex flex-col items-center mt-4">
+                        <div className="w-full flex">
+                            <button
+                                onClick={() => setSuggestionState(true)}
+                                className={`w-1/2 mt-4 rounded-l-md flex text-xs items-center justify-center text-white font-bold`}
+                                style={{ height: '45px', backgroundColor: suggestionState === true ? '#1DB954' : '#535353' }}
+                            >
+                                Matchify Suggestions
+                            </button>
+                            <button
+                                onClick={() => setSuggestionState(false)}
+                                className={`w-1/2 mt-4 rounded-r-md flex text-xs items-center justify-center text-white font-bold`}
+                                style={{ height: '45px', backgroundColor: suggestionState === false ? '#1DB954' : '#535353' }}
+                            >
+                                Current Friends
+                            </button>
+                        </div>
+                        {suggestionState && friendMatchesCopy && friendMatchesCopy.length > 0 && (<div className="mt-8 w-full">
+                            {friendMatchesCopy.map((friend) => (
+                                <div className="">
+                                    <ProfileCard
+                                        pfp={friend.profile_pic}
+                                        name={friend.first_name + " " + friend.last_name}
+                                        enterState={"Request"}
                                         bio={friend.bio}
-                                        key={friend.key}
-                                        onClick={() => console.log('Friend clicked')}
+                                        userID={friend.user_id}
+                                        setAreYouSureText={setAreYouSureText}
+                                        setAreYouSureFunc={setAreYouSureFunc}
                                     />
                                 </div>
                             ))}
-                        </ul>
-                    </div>
-                </div>
-            }
+                        </div>)}
 
-            {/* Conditionally render the search bar */}
-            {activeTab === 'messages' && (
-                <SearchBar
-                    placeholder="Search"
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleMessagesSearch();
-                        }
-                    }}
-                />
-            )}
+                        {!suggestionState && friendsCopy && friendsCopy.length > 0 && (<div className="mt-8 w-full">
+                            {friendsCopy.map((friend) => (
+                                <div className="">
+                                    <ProfileCard
+                                        pfp={friend.profile_pic}
+                                        name={friend.first_name + " " + friend.last_name}
+                                        enterState={"Friend"}
+                                        bio={friend.bio}
+                                        userID={friend.user_id}
+                                        setAreYouSureText={setAreYouSureText}
+                                        setAreYouSureFunc={setAreYouSureFunc}
+                                    />
+                                </div>
+                            ))}
+                        </div>)}
+                        {!suggestionState && friends && friends.length == 0 && (<p className="mt-20 text-xl font-bold text-white">You have no friends!</p>)}
+
+                        <AreYouSureCard id="unfriend_popup" text={areYouSureText} buttonName="Unfriend" buttonFunc={areYouSureFunc}>
+                        </AreYouSureCard>
+                        <AreYouSureCard id="cancel_popup" text={areYouSureText} buttonName="Okay" buttonFunc={areYouSureFunc}>
+                        </AreYouSureCard>
+                    </div>
+                }
+
+                {/* Conditionally render the search bar */}
+                {activeTab === 'messages' && (
+                    <SearchBar
+                        placeholder="Search"
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleMessagesSearch();
+                            }
+                        }}
+                    />
+                )}
+                {activeTab === 'messages' && (
+                    <div className="flex flex-col items-center mt-4 min-h-screen">
+                        {/* Messages Sub-Tab Navigation */}
+                        <div className="w-full flex">
+                            <button
+                                onClick={() => setActiveMessagesSubTab('messages')}
+                                className={`w-1/2 mt-4 rounded-l-md flex text-xs items-center justify-center text-white font-bold`}
+                                style={{ height: '45px', backgroundColor: activeMessagesSubTab === 'messages' ? '#1DB954' : '#535353' }}
+                            >
+                                Messages
+                            </button>
+                            <button
+                                onClick={() => setActiveMessagesSubTab('requests')}
+                                className={`w-1/2 mt-4 rounded-r-md flex text-xs items-center justify-center text-white font-bold`}
+                                style={{ height: '45px', backgroundColor: activeMessagesSubTab === 'requests' ? '#1DB954' : '#535353' }}
+                            >
+                                Requests
+                            </button>
+                        </div>
+
+                        {/* Messages Sub-Tab Content */}
+                        {activeMessagesSubTab === 'messages' && (
+                            <div className="relative w-full">
+                                <button
+                                    className="fixed bottom-24 right-4 text-white font-bold py-3 px-7 rounded z-10"
+                                    style={{ background: 'linear-gradient(45deg, #0D5326, #1DB954)', borderRadius: '50px' }}
+                                    onClick={handleCreateNewChat}
+                                >
+                                    <img src="/create_chat_logo.svg" alt="Create Chat" />
+                                </button>
+                            </div>
+                        )}
+                        {/* Requests Content */}
+                        {activeMessagesSubTab === 'requests' && (
+                            <div>
+                                <p>Requests Content</p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Navigation Bar */}
@@ -402,7 +629,7 @@ const Home = () => {
                 <div className="flex justify-around">
                     <div className="flex flex-col items-center" onClick={() => setActiveTab('home')}>
                         <img src="/home_icon.svg" alt="Home Icon" className="w-6 h-6"
-                            style={{ 
+                            style={{
                                 transition: 'filter 0.3s ease',
                                 filter: activeTab === 'home' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
                             }}
@@ -411,7 +638,7 @@ const Home = () => {
                     </div>
                     <div className="flex flex-col items-center" onClick={() => setActiveTab('events')}>
                         <img src="/event_icon.svg" alt="Event Icon" className="w-6 h-6"
-                            style={{ 
+                            style={{
                                 transition: 'filter 0.3s ease',
                                 filter: activeTab === 'events' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
                             }}
@@ -420,7 +647,7 @@ const Home = () => {
                     </div>
                     <div className="flex flex-col items-center" onClick={() => setActiveTab('friends')}>
                         <img src="/heart_outline_icon.svg" alt="Heart Icon" className="w-6 h-6"
-                            style={{ 
+                            style={{
                                 transition: 'filter 0.3s ease',
                                 filter: activeTab === 'friends' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
                             }}
@@ -429,7 +656,7 @@ const Home = () => {
                     </div>
                     <div className="flex flex-col items-center" onClick={() => setActiveTab('messages')}>
                         <img src="/message_icon.svg" alt="Message Icon" className="w-6 h-6"
-                            style={{ 
+                            style={{
                                 transition: 'filter 0.3s ease',
                                 filter: activeTab === 'messages' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
                             }}
