@@ -135,4 +135,5 @@ const EventDetails: React.FC = () => {
         </div>
     );
 }
+
 export default EventDetails;

@@ -397,6 +397,7 @@ const Home = () => {
                             <div className="flex flex-wrap justify-center mt-4 space-y-4">
                                 {/* Map over concertRecommendations to render EventCard for each concert */}
 
+
                                 {concertList.length > 0 ? (
                                     console.log(concertList),
                                     concertList.map((event: any) => (
@@ -414,12 +415,62 @@ const Home = () => {
                                                 friendName2={event.friendName2}
                                                 additionalCount={event.additionalCount}
                                                 onClick={() => handleEventClick(event)}
+
                                             />
                                         </div>
                                     ))
                                 ) : (
                                     <p className="text-white">No events found</p>
                                 )}
+
+                                {/* <div className="flex-shrink-0">
+                        <EventCard
+                            key={1}
+                            eventName="Kanye West"
+                            eventDate="June 24, 2022"
+                            eventLocation="New York City"
+                            eventImage="/kanye.jpeg"
+                            friendImage1="/default_pfp.png"
+                            friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            friendName2="Jane Doe"
+                            additionalCount={999}
+                            onClick={() => handleEventClick(1)}
+                        />
+                    </div>
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            key={2}
+                            eventName="UFC 214"
+                            eventDate="June 26, 2022"
+                            eventLocation="Las Vegas"
+                            eventImage="/UFC214.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                            onClick={() => handleEventClick(2)}
+                        />
+                    </div>
+
+                    <div className="flex-shrink-0">
+                        <EventCard
+                            key={3}
+                            eventName="Olypic Basketball Finals"
+                            eventDate="August 10, 2024"
+                            eventLocation="Paris"
+                            eventImage="/olympic_basketball_final.jpg"
+                            friendImage1="/default_pfp.png"
+                            // friendImage2="/default_pfp.png"
+                            friendName1="John Doe"
+                            // friendName2="Jane Doe"
+                            additionalCount={999}
+                            onClick={() => handleEventClick(3)}
+                        />
+                    </div> */}
+
                             </div>
                         </div>
                     </div>}

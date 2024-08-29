@@ -1,4 +1,6 @@
+
 import React, { useState, useRef, useEffect } from 'react';
+
 
 
 interface EventCardProps {
@@ -35,7 +37,6 @@ const EventCard: React.FC<EventCardProps> = ({ name, onClick }) => {
                 zIndex: 50,
             });
         }
-
 
         onClick();
     };
