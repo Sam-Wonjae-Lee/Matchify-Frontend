@@ -365,6 +365,42 @@ const Home = () => {
                         </div>
 
 
+
+                        {/* for events, their event id is unique and is used to identify them in the database */}
+                        <div className="flex flex-col items-start w-full h-screen ">
+                            <h1 className="text-2xl font-bold text-white">{headerText}</h1>
+                            {/* Your events content goes here */}
+
+
+
+                            <div className="flex flex-wrap justify-center mt-4 space-y-4">
+                                {/* Map over concertRecommendations to render EventCard for each concert */}
+
+                                {recommendations.length > 0 ? (
+                                    console.log(recommendations),
+                                    recommendations.map((event: any) => (
+                                        console.log(event),
+                                        <div className="flex-shrink-0" >
+                                            <EventCard
+                                                key={event.concert_id}
+                                                eventName={event.concert_name}
+                                                eventDate={event.concert_date}
+                                                eventLocation={event.concert_location}
+                                                eventImage={event.concert_image}
+                                                friendImage1={event.friendImage1}
+                                                friendImage2={event.friendImage2}
+                                                friendName1={event.friendName1}
+                                                friendName2={event.friendName2}
+                                                additionalCount={event.additionalCount}
+                                                onClick={() => handleEventClick(event.id)}
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-white">No events found</p>
+                                )}
+
+
                         {/* for events, their event id is unique and is used to identify them in the database */}
                         <div className="flex flex-col items-start w-full h-screen ">
                             <h1 className="text-2xl font-bold text-white">{headerText}</h1>
