@@ -88,8 +88,6 @@ const EventDetails = () => {
             </div>
         </div>
     );
-    };
-
-};
+}
 
 export default EventDetails;
