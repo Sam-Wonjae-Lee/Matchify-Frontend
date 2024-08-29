@@ -1,4 +1,95 @@
-import React from 'react';
+
+import { useRouter } from 'next/router';
+import React, { use, useEffect, useState } from 'react';
+import axios from 'axios';
+
+interface EventDetailsProps {
+    concert_id: string;
+    concert_image: string;
+    concert_name: string;
+    concert_date: string;
+    concert_location: string;
+    venue: string;
+    link: string;
+}
+
+const EventDetails: React.FC = () => {
+    const router = useRouter();
+    const [eventDetails, setEventDetails] = useState<EventDetailsProps | null>(null);
+    const [isAttending, setIsAttending] = useState<boolean>(false);
+    const userID = 'a';
+
+    useEffect(() => {
+        if (router.query) {
+            const { concert_id, concert_image, concert_name, concert_date, concert_location, venue, link } = router.query;
+            setEventDetails({
+                concert_id: concert_id as string,
+                concert_image: concert_image as string,
+                concert_name: concert_name as string,
+                concert_date: concert_date as string,
+                concert_location: concert_location as string,
+                venue: venue as string,
+                link: link as string
+            });
+            // const userID = 'a';
+            // Check if the user is attending the concert
+            isUserAttendingConcert(concert_id as string, userID).then(attending => {
+                setIsAttending(attending);
+            });
+        }
+    }, [router.query]);
+
+const isUserAttendingConcert = async (concertID: string, userID: string): Promise<boolean> => {
+    try {
+        const response = await axios.post('http://localhost:8888/attend_concert/is_attending', {
+            userID: userID,
+            concertID: concertID
+        });
+        console.log('Response:', response.data);
+        //  1 means user is attending, 0 means user is not attending
+        if (response.data == 1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    } catch (error) {
+        console.error('Error checking attendance:', error);
+        return false;
+    }
+};
+
+    if (!eventDetails) {
+        return <div>Loading...</div>;
+    }
+
+    const { concert_image, concert_name, concert_date, concert_location, venue, link } = eventDetails;
+
+    const handleTicketButtonPress = () => {
+        window.open(link);
+    };
+
+    const handleBackButtonPress = () => {
+        router.back();
+    };
+
+    const handleAttendButtonPress = () => {
+        try {
+            const response = axios.post('http://localhost:8888/attend_concert/add_attendee', {
+                userID: userID,
+                concertID: eventDetails.concert_id
+            });
+            console.log('Response:', response);
+            setIsAttending(true);
+        } catch (error) {
+            console.error('Error attending concert:', error);
+        }
+    }
+
+    const handleUnattendButtonPress = () => {
+        // implement this
+    }
 
 
 const EventDetails = () => {
@@ -38,8 +129,17 @@ const EventDetails = () => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-between p-10">
-                    <button className="bg-green-600 text-white py-2 px-4 w-2/5">Attending?</button>
-                    <button className="bg-white text-green-600 py-2 px-4 w-2/5 border border-green-600">Tickets</button>
+
+                    <button className="bg-green-600 text-white py-2 px-4 w-2/5">
+                        {isAttending ? (
+                            <button onClick={handleUnattendButtonPress}>Unattend</button>
+                        ) : (
+                            <button onClick={handleAttendButtonPress}>Attend</button>
+                        )}
+                    </button>
+
+                    <button className="bg-white text-green-600 py-2 px-4 w-2/5 border border-green-600" onClick={handleTicketButtonPress}>Tickets</button>
+
                 </div>
 
                 {/* Attendees Section */}

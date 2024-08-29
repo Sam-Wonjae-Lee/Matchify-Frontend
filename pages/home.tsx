@@ -9,6 +9,7 @@ import FilterEventsTabs from "@/components/filter_events_tabs";
 import EventCard from "@/components/event_card";
 import ProfileCard from "@/components/profile_card";
 import SearchBar from "@/components/search_bar";
+import FilterPopUp from "@/components/filter_pop_ups";
 
 import { AreYouSureCard, showAreYouSureCard } from "@/components/are_you_sure_card";
 
@@ -224,6 +225,38 @@ const Home = () => {
         { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
     ];
 
+
+    const friends = [
+        { key: 1, suggested: true, friendImage: "/default_pfp.png", friendName: "John Doe", bio: "Sigma" },
+        { key: 2, suggested: true, friendImage: "/default_pfp.png", friendName: "Hitler", bio: "Sigma 2" },
+        { key: 3, suggested: false, friendImage: "/default_pfp.png", friendName: "george floyd", bio: "Sigma 3" },
+    ];
+
+    // filter options for the filter tabs
+    const location_options: string[] = ["NYC", "SF", "Seatle"];
+    const date_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+    const artist_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+    const genre_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+    const attending_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+    const friends_attending_options = [
+        'Action', 'Comedy', 'Fantasy', 'Horror', 'Adventure', 'Drama', 
+        'Sci-Fi', 'Mystery', 'Romance', 'Slice of Life'
+    ];
+
+
+
     function setSearchQuery(value: string): void {
 
         console.log("VALUE: " + value);
@@ -343,76 +376,95 @@ const Home = () => {
                 {activeTab === 'events' &&
                     <div className="flex flex-col items-center mt-4 space-y-4 w-full max-w-screen-lg mx-auto">
 
-                        {/* filter tabs */}
-                        <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
-                            {/* location */}
-                            <FilterEventsTabs name="Location" onClick={handleLocationTab} />
 
-                            {/* date */}
-                            <FilterEventsTabs name="Date" onClick={handleDateTab} />
+     {/* filter tabs */}
+    <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
+        {/* location */}
+        {/* <FilterEventsTabs name="Location" onClick={handleLocationTab} /> */}
+        <FilterEventsTabs name="Location" options_lst={location_options} onClick={handleLocationTab} />
 
-                            {/* artist */}
-                            <FilterEventsTabs name="Artist" onClick={handleArtistTab} />
+        {/* date */}
+        <FilterEventsTabs name="Date" options_lst={date_options} onClick={handleDateTab} />
 
-                            {/* genre */}
-                            <FilterEventsTabs name="Genre" onClick={handleGenreTab} />
+        {/* artist */}
+        <FilterEventsTabs name="Artist" options_lst={artist_options} onClick={handleArtistTab} />
 
-                            {/* friend_attending */}
-                            <FilterEventsTabs name="Friends Attending" onClick={handleFriendsAttendingTab} />
+        {/* genre */}
+        <FilterEventsTabs name="Genre" options_lst={genre_options} onClick={handleGenreTab} />
+        
+        {/* friend_attending */}
+        <FilterEventsTabs name="Friends Attending" options_lst={friends_attending_options} onClick={handleFriendsAttendingTab} />
 
-                            {/* attending */}
-                            <FilterEventsTabs name="Attending" onClick={handleAttendingTab} />
-                        </div>
+        {/* attending */}
+        <FilterEventsTabs name="Attending" options_lst={attending_options} onClick={handleAttendingTab} />
+        </div>
+        
 
+        {/* for events, their event id is unique and is used to identify them in the database */}
+        <div className="flex flex-col items-start w-full h-screen ">
+            <h1 className="text-2xl font-bold text-white">{headerText}</h1>
+            {/* Your events content goes here */}
 
-                        {/* for events, their event id is unique and is used to identify them in the database */}
-                        <div className="flex flex-col items-start w-full h-screen ">
-                            <h1 className="text-2xl font-bold text-white">{headerText}</h1>
-                            {/* Your events content goes here */}
+            
 
+            <div className="flex flex-wrap justify-center mt-4 space-y-4">
+                {/* Map over concertRecommendations to render EventCard for each concert */}
 
-
-                            <div className="flex flex-wrap justify-center mt-4 space-y-4">
-                                {/* Map over concertRecommendations to render EventCard for each concert */}
-
-                                {recommendations.length > 0 ? (
-                                    console.log(recommendations),
-                                    recommendations.map((event: any) => (
-                                        console.log(event),
-                                        <div className="flex-shrink-0" >
-                                            <EventCard
-                                                key={event.concert_id}
-                                                eventName={event.concert_name}
-                                                eventDate={event.concert_date}
-                                                eventLocation={event.concert_location}
-                                                eventImage={event.concert_image}
-                                                friendImage1={event.friendImage1}
-                                                friendImage2={event.friendImage2}
-                                                friendName1={event.friendName1}
-                                                friendName2={event.friendName2}
-                                                additionalCount={event.additionalCount}
-                                                onClick={() => handleEventClick(event.id)}
-                                            />
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-white">No events found</p>
-                                )}
-                                {/* <div className="flex-shrink-0">
-                        <EventCard
-                            key={1}
-                            eventName="Kanye West"
-                            eventDate="June 24, 2022"
-                            eventLocation="New York City"
-                            eventImage="/kanye.jpeg"
-                            friendImage1="/default_pfp.png"
-                            friendImage2="/default_pfp.png"
-                            friendName1="John Doe"
-                            friendName2="Jane Doe"
-                            additionalCount={999}
-                            onClick={() => handleEventClick(1)}
-                        />
-                    </div>
+                    {concertList.length > 0 ? (
+                        console.log(concertList),
+                                concertList.map((event: any) => (
+                                    console.log(event),
+                                    <div className="flex-shrink-0" key={event.concert_id} >
+                                        <EventCard
+                                            eventName={event.concert_name}
+                                            eventDate={event.concert_date}
+                                            eventLocation={event.concert_location}
+                                            eventImage={event.concert_image}
+                                            friendImage1={event.friendImage1}
+                                            friendImage2={event.friendImage2}
+                                            friendName1={event.friendName1}
+                                            friendName2={event.friendName2}
+                                            additionalCount={event.additionalCount}
+                                            onClick={() => handleEventClick(event)}
+                                        />
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-white">No events found</p>
+                            )}
+            </div>
+        </div>
+        </div>}
+            {/* Friends Search Bar */}
+            {activeTab === 'friends' && (
+                <SearchBar
+                    placeholder="Search"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleFriendSearch();
+                        }
+                    }}
+                />
+            )}
+            {activeTab === 'friends' && 
+                <div className="flex flex-col items-center mt-4">
+<!--                     <div className="w-full flex"> -->
+<!--                         <button
+                            onClick={() => toggleButton()}
+                            className={`w-1/2 px-4 py-2 mt-4 rounded-l-md flex items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: currentfriendState === false ? '#1DB954' : '#535353'}}
+                        >
+//                             {newFriendState ? 'Suggestions' : 'Suggestions'}
+                        </button>
+                        <button
+                            onClick={() => toggleButton()}
+                            className={`w-1/2 px-4 py-2 mt-4 rounded-r-md flex items-center justify-center text-white font-bold`}
+                            style={{ height: '45px', backgroundColor: currentfriendState === true ? '#1DB954' : '#535353'}}
+                        >
+//                             {currentfriendState ? 'Friends' : 'Friends'}
+                        </button> -->
+<!--                     </div> -->
 
                     <div className="flex-shrink-0">
                         <EventCard
