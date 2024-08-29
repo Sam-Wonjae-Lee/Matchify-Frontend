@@ -28,7 +28,9 @@ const Home = () => {
     const router = useRouter();
 
     // for search inputs
-    const [eventSearch, setEventSearch] = useState('');
+    const [eventSearchString, setEventSearchString] = useState('');
+    const [concertList, setConcertList] = useState([]);
+
     const [headerText, setHeaderText] = useState('Your Events');
 
     const [friendSearch, setFriendSearch] = useState('');
@@ -75,7 +77,7 @@ const Home = () => {
 
             if (response.data && response.data.success) {
                 console.log("response.data.concerts:", response.data.concerts);
-                setRecommendations(response.data.concerts); // Assuming the API returns a "concerts" array
+                setConcertList(response.data.concerts); // Assuming the API returns a "concerts" array
                 // console.log("your recs:", recommendations);
                 sessionStorage.removeItem("profileData");
             }
@@ -131,15 +133,35 @@ const Home = () => {
     }, [suggestionState]);
 
     // For handling event clicks
-    const handleEventClick = (eventID: string) => {
-        console.log('Event ID:', eventID);
-    }
+    const handleEventClick = (event: any) => {
+        console.log('Event clicked:', event);
+        // Destructure event details
+        const { concert_id, concert_name, concert_date, concert_location, concert_image, venue, link} = event;
 
-    const handleEventSearch = () => {
-        console.log('Event Search:', eventSearch);
+        // Navigate to event_details page with query parameters
+        router.push({
+            pathname: '/event_details',
+            query: {
+                concert_id, 
+                concert_name,
+                concert_date,
+                concert_location,
+                concert_image,
+                venue,
+                link
+
+            }
+        });
+    };
+
+    const handleEventSearch = async() => {
+        console.log('Event Search:', eventSearchString);
 
         setHeaderText('Search Results');
         // TODO: Handle event search logic here
+        const response = await axios.post("http://localhost:8888/search_concerts", { concert_name: eventSearchString });
+        console.log("response data:", response.data);
+        setConcertList(response.data);
     };
 
     const handleFriendSearch = () => {
@@ -329,7 +351,7 @@ const Home = () => {
                     {activeTab === 'events' && (
                         <SearchBar
                             placeholder="Search"
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => setEventSearchString(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     handleEventSearch();
@@ -375,11 +397,12 @@ const Home = () => {
                             <div className="flex flex-wrap justify-center mt-4 space-y-4">
                                 {/* Map over concertRecommendations to render EventCard for each concert */}
 
-                                {recommendations.length > 0 ? (
-                                    console.log(recommendations),
-                                    recommendations.map((event: any) => (
+
+                                {concertList.length > 0 ? (
+                                    console.log(concertList),
+                                    concertList.map((event: any) => (
                                         console.log(event),
-                                        <div className="flex-shrink-0" >
+                                        <div key={event.concert_id} className="flex-shrink-0" >
                                             <EventCard
                                                 key={event.concert_id}
                                                 eventName={event.concert_name}
@@ -391,13 +414,15 @@ const Home = () => {
                                                 friendName1={event.friendName1}
                                                 friendName2={event.friendName2}
                                                 additionalCount={event.additionalCount}
-                                                onClick={() => handleEventClick(event.id)}
+                                                onClick={() => handleEventClick(event)}
+
                                             />
                                         </div>
                                     ))
                                 ) : (
                                     <p className="text-white">No events found</p>
                                 )}
+
                                 {/* <div className="flex-shrink-0">
                         <EventCard
                             key={1}
@@ -445,6 +470,7 @@ const Home = () => {
                             onClick={() => handleEventClick(3)}
                         />
                     </div> */}
+
                             </div>
                         </div>
                     </div>}
