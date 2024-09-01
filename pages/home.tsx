@@ -14,6 +14,7 @@ import { AreYouSureCard, showAreYouSureCard } from "@/components/are_you_sure_ca
 
 import axios from 'axios';
 import { profile } from "console";
+import FriendsPlaylistCard from "@/components/friends_playlist";
 
 interface Friend {
     first_name: string,
@@ -21,6 +22,8 @@ interface Friend {
     profile_pic: string,
     bio: string,
     user_id: string
+    favourite_playlist: string,
+    playlistpic: string,
 }
 
 const Home = () => {
@@ -238,13 +241,6 @@ const Home = () => {
                 return 'Home';
         }
     };
-    const users = [
-        { profilePicture: "/default_pfp.png", username: "Top G", songName: "I love smoking" },
-        { profilePicture: "/default_pfp.png", username: "Jane Doe", songName: "teenage dream by Olivia Rodrigo" },
-        { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
-        { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
-        { profilePicture: "/default_pfp.png", username: "Jack", songName: "bandaids by Keshi" },
-    ];
 
     function setSearchQuery(value: string): void {
 
@@ -331,17 +327,34 @@ const Home = () => {
                 {/* Home Page */}
                 {activeTab === 'home' &&
                     <div>
-                        {friends && friends.length > 0 && <div className="flex overflow-x-auto no-scrollbar space-x-4">
-                            {friends.map((friend, index) => (
-                                <div key={index}>
-                                    <UserCard
-                                        profilePicture={friend.profile_pic}
-                                        username={friend.first_name + " " + friend.last_name}
-                                        userId={friend.user_id}
-                                    />
+                        {friends && friends.length > 0 && (
+                            <div>
+                                <div className="flex overflow-x-auto no-scrollbar space-x-4">
+                                    {friends.map((friend, index) => (
+                                        <div key={index}>
+                                            <UserCard
+                                                profilePicture={friend.profile_pic}
+                                                username={friend.first_name + " " + friend.last_name}
+                                                userId={friend.user_id}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>}
+                                <div className="text-white font-bold text-2xl mt-4 mb-8">Your Friends' Playlists</div> 
+                                <div className="flex overflow-x-auto no-scrollbar space-x-4">
+                                    {friends.map((friend, index) => (
+                                        <div key={index}>
+                                            <FriendsPlaylistCard
+                                                playlistImage="playlistImage"
+                                                playlistName="playlistName"
+                                                userImage={friend.profile_pic}
+                                                userName={friend.first_name + " " + friend.last_name}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                         {(!friends || friends.length == 0) && (<div className="w-full text-white text-center font-bold mt-40">
                             Go Make Some Friends!
                             </div>)}
