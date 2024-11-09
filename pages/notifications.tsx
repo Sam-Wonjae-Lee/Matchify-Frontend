@@ -53,7 +53,8 @@ const NotificationsPage = () => {
 
             {/* View Requests Button */}
             <div className="flex justify-center mt-4">
-                <button className="font-bold bg-spotify-green text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full"
+                <button className="font-bold bg-spotify-green text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full
+                                    sm:w-3/4 lg:w-1/2 mx-auto mb-4"
                     onClick={handleFriendRequestRedirect}
                 >
                     View Requests
@@ -64,18 +65,23 @@ const NotificationsPage = () => {
             {/* flex-grow pushes the delete all button to the bottom */}
             <div className="flex-grow mt-4">
                 {notifications.map(notification => (
-                    <NotificationCard
+                    <div
                         key={notification.id}
-                        iconPath={notification.iconPath}
-                        message={notification.message}
-                        onDelete={() => handleDelete(notification.id)}
-                    />
+                        className="w-full sm:w-3/4 lg:w-1/2 mx-auto mb-4" // Responsive width
+                    >
+                        <NotificationCard
+                            iconPath={notification.iconPath}
+                            message={notification.message}
+                            onDelete={() => handleDelete(notification.id)}
+                        />
+                    </div>
                 ))}
             </div>
 
             {/* Delete All Notifications Button */}
             <div className="flex justify-center mt-4">
-                <button className="font-bold bg-red-500 text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full"
+                <button className="font-bold bg-red-500 text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full
+                                    sm:w-3/4 lg:w-1/2 mx-auto mb-4"
                     onClick={handleDeleteAll}
                 >
                     Delete All Notifications
