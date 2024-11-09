@@ -85,7 +85,7 @@ This is how to set up the project locally. To get a local copy running, follow t
     ```
 
 4. **Run the project**\
-    The project backend needs to run as well. More information can be found [here]("https://github.com/Sam-Wonjae-Lee/Matchify-Backend").
+    The project backend needs to run as well. More information can be found [here](https://github.com/Sam-Wonjae-Lee/Matchify-Backend).
     ```bash
     npm run
     ```
