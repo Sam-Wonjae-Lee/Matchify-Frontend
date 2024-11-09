@@ -151,23 +151,6 @@ const Home = () => {
             }
         });
     };
-        const { concert_id, concert_name, concert_date, concert_location, concert_image, venue, link} = event;
-
-        // Navigate to event_details page with query parameters
-        router.push({
-            pathname: '/event_details',
-            query: {
-                concert_id, 
-                concert_name,
-                concert_date,
-                concert_location,
-                concert_image,
-                venue,
-                link
-
-            }
-        });
-    };
 
     const handleEventSearch = () => {
         console.log('Event Search:', eventSearch);
@@ -409,30 +392,30 @@ const Home = () => {
                             <div className="flex flex-wrap justify-center mt-4 space-y-4">
                                 {/* Map over concertRecommendations to render EventCard for each concert */}
 
-                                {recommendations.length > 0 ? (
-                                    console.log(recommendations),
-                                    recommendations.map((event: any) => (
-                                        console.log(event),
-                                        <div className="flex-shrink-0" >
-                                            <EventCard
-                                                key={event.concert_id}
-                                                eventName={event.concert_name}
-                                                eventDate={event.concert_date}
-                                                eventLocation={event.concert_location}
-                                                eventImage={event.concert_image}
-                                                friendImage1={event.friendImage1}
-                                                friendImage2={event.friendImage2}
-                                                friendName1={event.friendName1}
-                                                friendName2={event.friendName2}
-                                                additionalCount={event.additionalCount}
+                    {recommendations.length > 0 ? (
+                        console.log(recommendations),
+                                recommendations.map((event: any) => (
+                                    console.log(event),
+                                    <div className="flex-shrink-0" >
+                                        <EventCard
+                                            key={event.concert_id}
+                                            eventName={event.concert_name}
+                                            eventDate={event.concert_date}
+                                            eventLocation={event.concert_location}
+                                            eventImage={event.concert_image}
+                                            friendImage1={event.friendImage1}
+                                            friendImage2={event.friendImage2}
+                                            friendName1={event.friendName1}
+                                            friendName2={event.friendName2}
+                                            additionalCount={event.additionalCount}
                                             onClick={() => handleEventClick(event)}
-                                            />
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-white">No events found</p>
-                                )}
-                                {/* <div className="flex-shrink-0">
+                                        />
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-white">No events found</p>
+                            )}
+                    {/* <div className="flex-shrink-0">
                         <EventCard
                             key={1}
                             eventName="Kanye West"
