@@ -14,6 +14,7 @@ import { AreYouSureCard, showAreYouSureCard } from "@/components/are_you_sure_ca
 
 import axios from 'axios';
 import { profile } from "console";
+import FriendsPlaylistCard from "@/components/friends_playlist";
 
 interface Friend {
     first_name: string,
