@@ -13,15 +13,15 @@ const Entry: NextPage = () => {
     }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center" style={{ backgroundColor: '#1C1C1C' }}>
-      <div className="w-[261px] h-[565px] bg-[#282828] relative">
-        <Head>
-          <title>Welcome to Matchify</title>
-          <meta name="description" content="Entry point"/>
-          <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
-        </Head>
+    <div className="min-h-screen w-screen flex items-center justify-center" style={{ backgroundColor: '#1C1C1C'}}>
+      <Head>
+        <title>Welcome to Matchify</title>
+        <meta name="description" content="Entry point"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
+      </Head>
+      <div className="max-w-[100vw] w-full sm:w-[80%] md:w-[261px] h-[565px] bg-[#282828] relative">
         <img src="/bg1.jpg" alt="Concert Background" className="absolute w-full h-full object-cover object-center z-0"></img>
-        {/* Make background image darker */}
         <div className="dark-overlay"></div>
         <div className="flex flex-col h-full w-full justify-center items-center z-10">
           <div className="z-10">
@@ -33,8 +33,6 @@ const Entry: NextPage = () => {
           <div className="text-center w-3/4 z-10 mt-5">
             <p className="text-white text-sm">Meet new people and attend events based on your music tastes using your Spotify profile!</p>
           </div>
-
-          {/* Continue With Spotify Button */}
           <button className="w-3/4 bg-spotify-green h-10 z-10 rounded text-center mt-10" onClick={handleSpotifyAuth}>
             <div className="flex w-full h-full z-10">
               <div className="flex w-full items-center justify-center">
@@ -49,4 +47,4 @@ const Entry: NextPage = () => {
   )
 }
 
-export default Entry
+export default Entry;
