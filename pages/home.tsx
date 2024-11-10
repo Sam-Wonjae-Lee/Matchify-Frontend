@@ -94,7 +94,7 @@ const Home = () => {
         setFriendMatches(response.data);
         console.log("MATCHES: ", response.data);
         if (initialLoadFriendMatches.current) {
-            setFriendMatchesCopy([response.data]);
+            setFriendMatchesCopy(response.data);
             initialLoadFriendMatches.current = false;
         }
     };
