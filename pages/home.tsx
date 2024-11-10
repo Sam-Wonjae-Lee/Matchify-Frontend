@@ -83,6 +83,31 @@ const Home = () => {
         }
     };
 
+    const fetchFriends = async () => {
+        try {
+            const response = await axios.get("http://localhost:8888/user/get_user_friends/" + sessionStorage.getItem("userId"));
+            const friendIds = response.data;
+            console.log("User IDs:", friendIds);
+
+            const userPromises = friendIds.map((userId: string) => 
+                axios.get(`http://localhost:8888/user/get/${userId}`)
+            );
+
+            const usersResponses = await Promise.all(userPromises);
+            const users = usersResponses.map(res => res.data);
+
+            setFriends(users);
+            console.log("Friends:", users);
+
+            if (initialLoadFriend.current) {
+                setFriendsCopy(users);
+                initialLoadFriend.current = false;
+            }
+        } catch (error) {
+            console.error("Error fetching friends:", error);
+        }
+    }
+
     // const getProfilePic = async () => {
     //     const id = sessionStorage.getItem("userId");
     //     const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
@@ -114,9 +139,17 @@ const Home = () => {
     //     getFriends();
     // }, []);
 
+    // useEffect(() => {
+    //     if (activeTab === 'events') {
+    //         fetchConcertRecommendations(); // Fetch recommendations when 'events' tab is active
+    //     }
+    // }, [activeTab]);
+
     useEffect(() => {
         if (activeTab === 'events') {
             fetchConcertRecommendations(); // Fetch recommendations when 'events' tab is active
+        } else if (activeTab === 'friends' || activeTab === 'messages') {
+            fetchFriends(); // Fetch friends when 'friends' or 'messages' tab is active
         }
     }, [activeTab]);
 
@@ -570,7 +603,19 @@ const Home = () => {
 
                         {/* Messages Sub-Tab Content */}
                         {activeMessagesSubTab === 'messages' && (
-                            <div className="relative w-full">
+                            <div className="relative w-full flex flex-col  mt-4"> {/* Added mt-4 for margin-top */}
+                                {friends.map((friend) => (
+                                    <ProfileCard
+                                        key={friend.user_id}
+                                        pfp={friend.profile_pic}
+                                        name={friend.first_name + " " + friend.last_name}
+                                        enterState="Message"
+                                        bio={friend.bio}
+                                        userID={friend.user_id}
+                                        setAreYouSureText={setAreYouSureText}
+                                        setAreYouSureFunc={setAreYouSureFunc}
+                                    />
+                                ))}
                                 <button
                                     className="fixed bottom-24 right-4 text-white font-bold py-3 px-7 rounded z-10"
                                     style={{ background: 'linear-gradient(45deg, #0D5326, #1DB954)', borderRadius: '50px' }}
@@ -580,6 +625,8 @@ const Home = () => {
                                 </button>
                             </div>
                         )}
+
+
                         {/* Requests Content */}
                         {activeMessagesSubTab === 'requests' && (
                             <div>

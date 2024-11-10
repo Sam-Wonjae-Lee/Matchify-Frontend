@@ -12,9 +12,8 @@ interface FriendCardProps {
     userID: string;
     setAreYouSureText: any;
     setAreYouSureFunc: any;
-    enterState: 'Friend' | 'Request' | 'Cancel';
+    enterState: 'Friend' | 'Request' | 'Cancel' | 'Message';
 }
-
 
 const ProfileCard: React.FC<FriendCardProps> = ({bio, name, pfp, userID, enterState = 'Friend', setAreYouSureText, setAreYouSureFunc}) => {
 
@@ -23,8 +22,20 @@ const ProfileCard: React.FC<FriendCardProps> = ({bio, name, pfp, userID, enterSt
     const [state, setState] = useState(enterState);
     const [buttonColor, setButtonColor] = useState("#1DB954");
 
-    const handleProfileRedirect = () => {
-        router.push("/profile/" + userID);
+    const handleProfileRedirect = async () => {
+        if (state === 'Message') {
+            try {
+                const user1ID = sessionStorage.getItem("userId");
+                const response = await axios.get(`http://localhost:8888/thread/getdirectthread?user1ID=${user1ID}&user2ID=${userID}`);
+
+                const threadID = response.data;
+                router.push(`/direct_message/${threadID}`);
+            } catch (error) {
+                console.error("Error fetching thread ID:", error);
+            }
+        } else {
+            router.push("/profile/" + userID);
+        }
     }
 
     const handleStateClick = (event: any) => {
@@ -111,13 +122,15 @@ const ProfileCard: React.FC<FriendCardProps> = ({bio, name, pfp, userID, enterSt
                 {/* Bio for now unless we want to use matching statistics here later on */}
                 <p className="text-white text-xs">{bio}</p>
             </div>
-            <button className="w-1/3 bg-[#0094CA] h-7 z-10 rounded-lg text-center text-xs text-white" 
-            onClick={handleStateClick}
-            onTouchStart={(event) => event.stopPropagation()}
-            onTouchEnd={(event) => event.stopPropagation()}
-            style={{backgroundColor: buttonColor}}>
-                {state}
-            </button>
+            {state !== 'Message' && (
+                <button className="w-1/3 bg-[#0094CA] h-7 z-10 rounded-lg text-center text-xs text-white" 
+                onClick={handleStateClick}
+                onTouchStart={(event) => event.stopPropagation()}
+                onTouchEnd={(event) => event.stopPropagation()}
+                style={{backgroundColor: buttonColor}}>
+                    {state}
+                </button>
+            )}
         </div>
     );
 };
