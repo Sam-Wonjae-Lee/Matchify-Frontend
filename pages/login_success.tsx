@@ -26,7 +26,7 @@ const LoginSuccess = () => {
 
     return (
         <div className="min-h-screen w-full flex items-center justify-center" style={{ backgroundColor: '#1C1C1C' }}>
-            <div className="w-[261px] h-[565px] bg-[#282828] relative">
+            <div className="w-full h-screen sm:h-[565px] sm:w-[261px] bg-[#282828] relative overflow-hidden">
                 <Head>
                     <title>Login Success</title>
                     <meta name="description" content="Profile Creation Screen"/>
