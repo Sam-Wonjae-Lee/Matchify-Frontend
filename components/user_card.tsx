@@ -28,7 +28,7 @@ const UserCard: React.FC<UserCardProps> = ({ profilePicture, username, userId}) 
             <img src={profilePicture} alt={`${username}'s profile`} className="w-10 h-10 mb-2 rounded-full border-2 border-spotify-green object-cover" />
             <h2 className="text-sm font-bold text-white mb-1">{username}</h2>
             <p className="text-white text-xs overflow-hidden">
-                {songName && songName.length > 0 ? "Listening to:" + songName : "Not Listening at the Moment"}
+                {songName && songName.length > 0 ? "Listening to: " + songName : "Not Listening at the Moment"}
             </p>
         </div>
     );

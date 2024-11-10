@@ -3,6 +3,7 @@ import Head from "next/head";
 import Background from "@/components/background";
 import React from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const LoginSuccess = () => {
     // Used for redirecting to another page
@@ -16,13 +17,72 @@ const LoginSuccess = () => {
      or the login successful page */
     const [isCreation, setIsCreation] = useState(false);
 
+    const updateUserVector = async () => {
+        const topTracks = await axios.get(`http://localhost:8888/spotify/user/${sessionStorage.getItem("userId")}/top-tracks`);
+        const trackIDs = topTracks.data.items.map((song : any) => song.id);
+        console.log(trackIDs);
+
+        const audioFeaturesResponse = await axios.get(`http://localhost:8888/spotify/audio-features`, {
+            params: {
+                ids: trackIDs,
+                user_id: sessionStorage.getItem("userId"),
+            }
+        });
+
+        console.log(audioFeaturesResponse.data);
+
+
+        // Extract relevant features from the audio features data
+        const audioFeatures = audioFeaturesResponse.data.audio_features;
+
+        // Now, calculate the average values for the user vector
+        const userVector = {
+            popularity: 0,
+            danceability: 0,
+            energy: 0,
+            valence: 0,
+            acousticness: 0,
+            speechiness: 0,
+            instrumentalness: 0
+        };
+
+        topTracks.data.items.forEach((song: any) => {
+            userVector.popularity += song.popularity;
+        })
+
+        audioFeatures.forEach((feature: any ) => {
+            userVector.danceability += feature.danceability;
+            userVector.energy += feature.energy;
+            userVector.valence += feature.valence;
+            userVector.acousticness += feature.acousticness;
+            userVector.speechiness += feature.speechiness;
+            userVector.instrumentalness += feature.instrumentalness;
+        });
+
+        // Average out the values
+        for (let key in userVector) {
+            userVector[key] /= 5;
+        }
+
+        console.log("User Vector:", userVector);
+
+        const res = await axios.post(`http://localhost:8888/user/vector/${sessionStorage.getItem("userId")}`, {
+            body: {
+                vector: userVector,
+            }
+        });
+
+        console.log(res.data)
+    }
+
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
+        updateUserVector();
         const isCreation = params.get('isCreation');
         if (isCreation == "true") {
             setIsCreation(true);
         }
-    })
+    }, [])
 
     return (
         <div className="h-screen w-screen">
