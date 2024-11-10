@@ -90,10 +90,11 @@ const Home = () => {
     };
 
     const getSuggestions = async () => {
-        const response = await axios.post("http://localhost:8888/match/get_matches", { user_id: sessionStorage.getItem("userId") });
+        const response = await axios.get(`http://localhost:8888/user/get_user_match/${sessionStorage.getItem("userId")}`);
         setFriendMatches(response.data);
+        console.log("MATCHES: ", response.data);
         if (initialLoadFriendMatches.current) {
-            setFriendMatchesCopy(response.data);
+            setFriendMatchesCopy([response.data]);
             initialLoadFriendMatches.current = false;
         }
     };
