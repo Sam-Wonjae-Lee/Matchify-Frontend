@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -48,11 +48,12 @@ const DirectMessage = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userID: userId, // Replace with actual user ID
-                    threadID: thread_id,
+                    user_id: userId, 
+                    thread_id: thread_id,
                     content: messageContent,
                 }),
             });
+            console.log(typeof(userId), typeof(thread_id), messageContent);
 
             if (!response.ok) {
                 const errorText = await response.text();

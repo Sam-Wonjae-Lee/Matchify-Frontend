@@ -86,7 +86,7 @@ const Home = () => {
     const fetchFriends = async () => {
         try {
             const response = await axios.get("http://localhost:8888/user/get_user_friends/" + sessionStorage.getItem("userId"));
-            const friendIds = response.data;
+            const friendIds = response.data.user_id;
             console.log("User IDs:", friendIds);
 
             const userPromises = friendIds.map((userId: string) => 
@@ -139,12 +139,6 @@ const Home = () => {
         getProfilePic();
         getFriends();
     }, []);
-
-    // useEffect(() => {
-    //     if (activeTab === 'events') {
-    //         fetchConcertRecommendations(); // Fetch recommendations when 'events' tab is active
-    //     }
-    // }, [activeTab]);
 
     useEffect(() => {
         if (activeTab === 'events') {
