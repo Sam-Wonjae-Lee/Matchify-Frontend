@@ -65,11 +65,11 @@ const FriendRequests = () => {
     return (
         <div className="min-h-screen w-full flex items-center justify-center" style={{ backgroundColor: '#1C1C1C' }}>
             {/* Container scaled down to mimic mobile view */}
-            <div className="w-[261px] h-[565px] bg-[#282828] relative">
+            <div className="w-full h-screen sm:h-[565px] sm:w-[261px] bg-[#282828] relative">
                 <div className="p-4 flex flex-col h-full">
                     {/* Back Arrow */}
                     <button className="mb-4" onClick={handleHomeRedirect}>
-                        <img src="/left_arrow.svg" alt="Left Arrow" className="w-4 h-4" />
+                        <img src="/left_arrow.svg" alt="Left Arrow" className="sm:w-8 sm:h-8 lg:w-6 lg:h-6" />
                     </button>
 
                     <Head>
@@ -78,14 +78,14 @@ const FriendRequests = () => {
                         <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16" />
                     </Head>
 
-                    <h1 className="font-bold text-base text-white mb-4">
+                    <h1 className="font-bold text-2xl sm:text-2xl lg:text-base text-white mb-4">
                         Friend Requests ({requests.length})
                     </h1>
 
                     {/* If there's no friend requests left */}
                     {requests && requests.length === 0 && (
                         <div className="flex justify-center">
-                            <div className="text-center text-white text-base mt-20">You Have No Requests!</div>
+                            <div className="text-center text-white text-xl sm:text-xl lg:text-base mt-20">You Have No Requests!</div>
                         </div>
                     )}
 
@@ -103,7 +103,7 @@ const FriendRequests = () => {
 
                     {/* Accepted Popup */}
                     {accepted && (
-                        <div className="fixed z-100 bottom-0 h-16 text-sm rounded-lg shadow-md w-[calc(100vw-4rem)] text-center bg-spotify-green text-white mb-4 flex items-center justify-center">
+                        <div className="fixed lg:absolute z-100 bottom-0 lg:left-1/2 lg:transform lg:-translate-x-1/2 h-16 lg:h-10 text-sm rounded-lg shadow-md w-[calc(100vw-4rem)] lg:w-[calc(100% - 2rem)] lg:max-w-[90%] text-center bg-spotify-green text-white mb-4 flex items-center justify-center">
                             <span>Accepted Request!</span>
                             <img src="/white_checkmark.svg" alt="Accepted" className="h-5 w-5 ml-2" />
                         </div>
