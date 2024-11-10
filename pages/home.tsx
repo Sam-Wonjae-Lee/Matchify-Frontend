@@ -83,36 +83,36 @@ const Home = () => {
         }
     };
 
-    // const getProfilePic = async () => {
-    //     const id = sessionStorage.getItem("userId");
-    //     const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
-    //     setProfilePicture(profile.data.profile_pic);
-    // };
+    const getProfilePic = async () => {
+        const id = sessionStorage.getItem("userId");
+        const profile = await axios.get(`http://localhost:8888/user/get/${id}`);
+        setProfilePicture(profile.data.profile_pic);
+    };
 
-    // const getSuggestions = async () => {
-    //     const response = await axios.post("http://localhost:8888/match/get_matches", { user_id: sessionStorage.getItem("userId") });
-    //     setFriendMatches(response.data);
-    //     if (initialLoadFriendMatches.current) {
-    //         setFriendMatchesCopy(response.data);
-    //         initialLoadFriendMatches.current = false;
-    //     }
-    // };
+    const getSuggestions = async () => {
+        const response = await axios.post("http://localhost:8888/match/get_matches", { user_id: sessionStorage.getItem("userId") });
+        setFriendMatches(response.data);
+        if (initialLoadFriendMatches.current) {
+            setFriendMatchesCopy(response.data);
+            initialLoadFriendMatches.current = false;
+        }
+    };
 
-    // const getFriends = async () => {
-    //     const id = sessionStorage.getItem("userId");
-    //     const response = await axios.get(`http://localhost:8888/user/get_user_friends/${id}`);
-    //     console.log(response.data);
-    //     setFriends(response.data);
-    //     if (initialLoadFriend.current) {
-    //         setFriendsCopy(response.data);
-    //         initialLoadFriend.current = false;
-    //     }
-    // };
+    const getFriends = async () => {
+        const id = sessionStorage.getItem("userId");
+        const response = await axios.get(`http://localhost:8888/user/get_user_friends/${id}`);
+        console.log(response.data);
+        setFriends(response.data);
+        if (initialLoadFriend.current) {
+            setFriendsCopy(response.data);
+            initialLoadFriend.current = false;
+        }
+    };
 
-    // useEffect(() => {
-    //     getProfilePic();
-    //     getFriends();
-    // }, []);
+    useEffect(() => {
+        getProfilePic();
+        getFriends();
+    }, []);
 
     useEffect(() => {
         if (activeTab === 'events') {
@@ -120,16 +120,16 @@ const Home = () => {
         }
     }, [activeTab]);
 
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     if (suggestionState) {
-    //         getSuggestions();
-    //     }
-    //     else {
-    //         getFriends();
-    //     }
+        if (suggestionState) {
+            getSuggestions();
+        }
+        else {
+            getFriends();
+        }
 
-    // }, [suggestionState]);
+    }, [suggestionState]);
 
     // For handling event clicks
     const handleEventClick = (event: any) => {
