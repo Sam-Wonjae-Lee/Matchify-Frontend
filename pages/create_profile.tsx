@@ -38,7 +38,7 @@ const CreateProfile: NextPage = () => {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center" style={{ backgroundColor: '#1C1C1C' }}>
-      <div className="w-[261px] h-[565px] bg-[#282828] relative">
+      <div className="w-full h-screen sm:h-[565px] sm:w-[261px] bg-[#282828] relative overflow-hidden">
         <Head>
           <title>Create Profile</title>
           <meta name="description" content="Profile Creation Screen"/>
@@ -50,23 +50,23 @@ const CreateProfile: NextPage = () => {
         {!firstHalfDone && (<div className="flex flex-col items-center h-full w-full z-10">
           <h1 className="mb-5 font-bold text-2xl z-10 mt-20 text-white">Create Profile</h1>
           <img id="profilepic" src="/default_pfp.png" className="z-10 w-16 h-16 mb-2"></img>
-          <div className="text-xs z-10">
+          <div className="text-sm sm:text-sm lg:text-xs z-10 mb-8 sm:mb-8 lg:mb-0">
             <label htmlFor="profilepic" className="text-white">Profile Picture</label>
           </div>
           <div className="flex flex-col items-center w-full z-10">
             <div className="w-2/3 text-xs">
               <label htmlFor="firstname" className="text-white">First Name</label>
             </div>
-            <input type="text" id="firstname" name="first name" placeholder="John" className="flex w-2/3 h-10 z-10 rounded mb-4 opacity-75 text-black" value={firstName} onChange={(e) => setFirstName(e.target.value)}></input>
+            <input type="text" id="firstname" name="first name" placeholder="John" className="flex w-2/3 h-8 z-10 rounded mb-6 sm:mb-6 lg:mb-4 opacity-75 text-black" value={firstName} onChange={(e) => setFirstName(e.target.value)}></input>
             <div className="w-2/3 text-xs">
               <label htmlFor="lastname" className="text-white">Last Name</label>
             </div>
-            <input type="text" id="lastname" name="last name" placeholder="Doe" className="flex w-2/3 h-10 z-10 rounded mb-4 opacity-75 text-black" value={lastName} onChange={(e) => setLastName(e.target.value)}></input>
+            <input type="text" id="lastname" name="last name" placeholder="Doe" className="flex w-2/3 h-8 z-10 rounded mb-6 sm:mb-6 lg:mb-4 opacity-75 text-black" value={lastName} onChange={(e) => setLastName(e.target.value)}></input>
             <div className="w-2/3 text-xs">
               <label htmlFor="email" className="text-white" opacity-75>Email</label>
             </div>
-            <input type="text" id="email" name="email" placeholder="JohnDoe@gmail.com" className="flex w-2/3 h-10 z-10 rounded mb-6 opacity-75 text-black" value={email} onChange={(e) => setEmail(e.target.value)}></input>
-            <button className="w-2/3 bg-spotify-green h-10 z-10 rounded text-center text-white" onClick={() => {setFirstHalfDone(true)}}>Next</button>
+            <input type="text" id="email" name="email" placeholder="JohnDoe@gmail.com" className="flex w-2/3 h-8 z-10 rounded mb-10 sm:mb-10 lg:mb-12 opacity-75 text-black" value={email} onChange={(e) => setEmail(e.target.value)}></input>
+            <button className="w-2/3 bg-spotify-green h-10 sm:h-10 lg:h-8 z-10 rounded text-center text-white" onClick={() => {setFirstHalfDone(true)}}>Next</button>
           </div>
         </div>)}
         {firstHalfDone && (<div className="flex flex-col items-center h-full w-full z-10">
