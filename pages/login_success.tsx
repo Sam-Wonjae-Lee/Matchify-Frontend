@@ -49,6 +49,7 @@ const LoginSuccess = () => {
         topTracks.data.items.forEach((song: any) => {
             userVector.popularity += song.popularity;
         })
+        userVector.popularity /= 100.0;
 
         audioFeatures.forEach((feature: any ) => {
             userVector.danceability += feature.danceability;
