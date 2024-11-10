@@ -6,10 +6,8 @@ import { useRouter } from "next/router";
 import NotificationCard from '@/components/notification_card';
 
 const NotificationsPage = () => {
-    // Used for redirecting to another page
     const router = useRouter();
 
-    // Specified for home.tsx page
     const handleHomeRedirect = () => {
         router.push('/home');
     };
@@ -18,6 +16,7 @@ const NotificationsPage = () => {
         router.push('/friend_requests');
     };
 
+    // Hard coded notifications
     const [notifications, setNotifications] = useState([
         { id: 1, iconPath: '/heart_icon.svg', message: 'You are now friends with Janet Yu' },
         { id: 2, iconPath: '/event_icon.svg', message: 'There is an upcoming concert' },
@@ -32,61 +31,60 @@ const NotificationsPage = () => {
     };
 
     return (
-        <div className="min-h-screen w-full p-8 flex flex-col" style={{ backgroundColor: '#282828' }}>
-            <Head>
-                <title>Notifications</title>
-                <meta name="description" content="Notifications"/>
-                <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
-            </Head>
-            {/* Back Arrow */}
-            <button className="mb-4" onClick={handleHomeRedirect}>
-                <img src="/left_arrow.svg" alt="Left Arrow" className="w-8 h-8"
-                    // Hover animation
-                    style={{ transition: 'filter 0.3s ease' }}
-                    onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
-                    onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
-                />
-            </button>
-            <h1 className="font-bold text-2xl z-10 text-white mb-4">
-                Notifications ({notifications.length})
-            </h1>
+        <div className="min-h-screen w-full flex items-center justify-center" style={{ backgroundColor: '#1C1C1C' }}>
+            {/* Container scaled down by ~67% to match the zoom level where it fits */}
+            <div className="w-[261px] h-[565px] bg-[#282828] relative">
+                <div className="p-4 flex flex-col h-full">
+                    {/* Back Arrow */}
+                    <button className="mb-4" onClick={handleHomeRedirect}>
+                        <img src="/left_arrow.svg" alt="Left Arrow" className="w-4 h-4" />
+                    </button>
 
-            {/* View Requests Button */}
-            <div className="flex justify-center mt-4">
-                <button className="font-bold bg-spotify-green text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full
-                                    sm:w-3/4 lg:w-1/2 mx-auto mb-4"
-                    onClick={handleFriendRequestRedirect}
-                >
-                    View Requests
-                    <img src="/heart_icon.svg" alt="Heart Icon" className="ml-4 w-8 h-8" />
-                </button>
-            </div>
-            
-            {/* flex-grow pushes the delete all button to the bottom */}
-            <div className="flex-grow mt-4">
-                {notifications.map(notification => (
-                    <div
-                        key={notification.id}
-                        className="w-full sm:w-3/4 lg:w-1/2 mx-auto mb-4" // Responsive width
+                    <Head>
+                        <title>Notifications</title>
+                        <meta name="description" content="Notifications"/>
+                        <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
+                    </Head>
+                    
+                    <h1 className="font-bold text-base text-white mb-4">
+                        Notifications ({notifications.length})
+                    </h1>
+
+                    {/* View Requests Button */}
+                    <button 
+                        className="bg-spotify-green text-white py-2 px-3 rounded-lg shadow-md flex items-center justify-center mb-4"
+                        onClick={handleFriendRequestRedirect}
                     >
-                        <NotificationCard
-                            iconPath={notification.iconPath}
-                            message={notification.message}
-                            onDelete={() => handleDelete(notification.id)}
-                        />
+                        <span className="font-semibold text-sm">View Requests</span>
+                        <img src="/heart_icon.svg" alt="Heart Icon" className="ml-2 w-4 h-4" />
+                    </button>
+                    
+                    {/* Notifications List */}
+                    <div className="flex-grow space-y-2">
+                        {notifications.map(notification => (
+                            <div 
+                                key={notification.id} 
+                                className="bg-[#3E3E3E] rounded-lg p-3 flex items-center justify-between"
+                            >
+                                <div className="flex items-center">
+                                    <img src={notification.iconPath} alt="Icon" className="w-4 h-4 mr-2" />
+                                    <span className="text-white text-sm">{notification.message}</span>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
 
-            {/* Delete All Notifications Button */}
-            <div className="flex justify-center mt-4">
-                <button className="font-bold bg-red-500 text-white py-4 px-6 rounded-lg shadow-md flex items-center justify-center w-full
-                                    sm:w-3/4 lg:w-1/2 mx-auto mb-4"
-                    onClick={handleDeleteAll}
-                >
-                    Delete All Notifications
-                    <img src="/trashcan_icon.svg" alt="Trash Can Icon" className="ml-4 w-8 h-8" />
-                </button>
+                    {/* Delete All Notifications Button */}
+                    <div className="mt-auto pt-4">
+                        <button 
+                            className="w-full bg-red-500 text-white py-2 px-3 rounded-lg shadow-md flex items-center justify-center"
+                            onClick={handleDeleteAll}
+                        >
+                            <span className="font-semibold text-sm">Delete All Notifications</span>
+                            <img src="/trashcan_icon.svg" alt="Trash Can Icon" className="ml-2 w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
