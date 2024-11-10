@@ -33,11 +33,11 @@ const NotificationsPage = () => {
     return (
         <div className="min-h-screen w-full flex items-center justify-center" style={{ backgroundColor: '#1C1C1C' }}>
             {/* Container scaled down by ~67% to match the zoom level where it fits */}
-            <div className="w-[261px] h-[565px] bg-[#282828] relative">
+            <div className="w-full h-screen sm:h-[565px] sm:w-[261px] bg-[#282828] relative">
                 <div className="p-4 flex flex-col h-full">
                     {/* Back Arrow */}
                     <button className="mb-4" onClick={handleHomeRedirect}>
-                        <img src="/left_arrow.svg" alt="Left Arrow" className="w-4 h-4" />
+                        <img src="/left_arrow.svg" alt="Left Arrow" className="w-8 h-8 sm:w-8 sm:h-8 lg:w-6 lg:h-6" />
                     </button>
 
                     <Head>
@@ -46,7 +46,7 @@ const NotificationsPage = () => {
                         <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
                     </Head>
                     
-                    <h1 className="font-bold text-base text-white mb-4">
+                    <h1 className="font-bold text-2xl sm:text-2xl lg:text-base text-white mb-4">
                         Notifications ({notifications.length})
                     </h1>
 
@@ -55,7 +55,7 @@ const NotificationsPage = () => {
                         className="bg-spotify-green text-white py-2 px-3 rounded-lg shadow-md flex items-center justify-center mb-4"
                         onClick={handleFriendRequestRedirect}
                     >
-                        <span className="font-semibold text-sm">View Requests</span>
+                        <span className="font-semibold text-base sm:text-base lg:text-sm">View Requests</span>
                         <img src="/heart_icon.svg" alt="Heart Icon" className="ml-2 w-4 h-4" />
                     </button>
                     
@@ -68,7 +68,7 @@ const NotificationsPage = () => {
                             >
                                 <div className="flex items-center">
                                     <img src={notification.iconPath} alt="Icon" className="w-4 h-4 mr-2" />
-                                    <span className="text-white text-sm">{notification.message}</span>
+                                    <span className="text-white text-base sm:text-base lg:text-xs">{notification.message}</span>
                                 </div>
                             </div>
                         ))}
@@ -80,7 +80,7 @@ const NotificationsPage = () => {
                             className="w-full bg-red-500 text-white py-2 px-3 rounded-lg shadow-md flex items-center justify-center"
                             onClick={handleDeleteAll}
                         >
-                            <span className="font-semibold text-sm">Delete All Notifications</span>
+                            <span className="font-semibold text-base sm:text-base lg:text-sm">Delete All Notifications</span>
                             <img src="/trashcan_icon.svg" alt="Trash Can Icon" className="ml-2 w-4 h-4" />
                         </button>
                     </div>

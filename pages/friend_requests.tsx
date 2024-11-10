@@ -69,7 +69,7 @@ const FriendRequests = () => {
                 <div className="p-4 flex flex-col h-full">
                     {/* Back Arrow */}
                     <button className="mb-4" onClick={handleHomeRedirect}>
-                        <img src="/left_arrow.svg" alt="Left Arrow" className="sm:w-8 sm:h-8 lg:w-6 lg:h-6" />
+                        <img src="/left_arrow.svg" alt="Left Arrow" className="w-8 h-8 sm:w-8 sm:h-8 lg:w-6 lg:h-6" />
                     </button>
 
                     <Head>
