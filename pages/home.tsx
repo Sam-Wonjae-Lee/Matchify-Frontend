@@ -291,345 +291,276 @@ const Home = () => {
     }
 
     return (
+        <div className="min-h-screen w-screen flex items-center justify-center bg-[#1C1C1C]">
+            <div className="w-full h-screen sm:h-[565px] sm:w-[261px] bg-[#282828] relative overflow-hidden flex flex-col">
+                <Head>
+                    <title>{getTabTitle()}</title>
+                    <meta name="description" content="Home Screen" />
+                    <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
+                </Head>
 
-        <div className="bg-gray-900 flex flex-col min-h-screen w-screen overflow-y-auto" style={{ backgroundColor: '#282828', marginBottom: '4.5rem' }}>
-            <Head>
-                <title>{getTabTitle()}</title>
-                <meta name="description" content="Home Screen" />
-                <link rel="icon" href="matchify_logo.svg" type="image/gif" sizes="16x16"></link>
-            </Head>
-            <div className="h-full w-full p-8">
-                <div className="mb-4 flex justify-between items-center">
-                    <p className="text-spotify-green font-bold text-2xl">{getTabTitle()}</p>
-                    <div className="flex space-x-4">
-
-                        {/* Friend Requests Button */}
-                        <img src="/heart_icon.svg" alt="Heart Icon" className="w-6 h-6"
-                            style={{ transition: 'filter 0.3s ease' }}
-                            onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
-                            onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
-                            onClick={handleFriendRequestsRedirect}
-                        />
-
-                        {/* Notifications Button */}
-                        <img src="/bell_icon.svg" alt="Bell Icon" className="w-6 h-6"
-                            style={{ transition: 'filter 0.3s ease' }}
-                            onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
-                            onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
-                            onClick={handleNotificationsRedirect}
-                        />
-
-                        {/* Profile Button */}
-                        <img src={profilePicture ?? ''} alt="Profile Icon" className="z-10 w-[7vw] h-[7vw] rounded-full border-2 border-spotify-green object-cover" onClick={handleProfileRedirect} />
+                {/* Header Section */}
+                <div className="flex-none p-8 sm:p-8 lg:p-4">
+                    <div className="mb-4 flex justify-between items-center">
+                        <p className="text-spotify-green font-bold text-2xl">{getTabTitle()}</p>
+                        <div className="flex space-x-4">
+                            <img src="/heart_icon.svg" alt="Heart Icon" 
+                                className="w-6 h-6 sm:w-6 sm:h-6 lg:w-5 lg:h-5"
+                                style={{ transition: 'filter 0.3s ease' }}
+                                onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
+                                onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
+                                onClick={handleFriendRequestsRedirect}
+                            />
+                            <img src="/bell_icon.svg" alt="Bell Icon" 
+                                className="w-6 h-6 sm:w-6 sm:h-6 lg:w-5 lg:h-5"
+                                style={{ transition: 'filter 0.3s ease' }}
+                                onMouseEnter={(e) => e.currentTarget.style.filter = 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)'}
+                                onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
+                                onClick={handleNotificationsRedirect}
+                            />
+                            <img src={profilePicture ?? ''} 
+                                alt="Profile Icon" 
+                                className="z-10 w-[7vw] h-[7vw] sm:w-[7vw] sm:h-[7vw] lg:w-[2vw] lg:h-[2vw] rounded-full border-2 border-spotify-green object-cover" 
+                                onClick={handleProfileRedirect} 
+                            />
+                        </div>
                     </div>
-                </div>
-
-                {/* Home Page */}
-                {activeTab === 'home' &&
-                    <div>
-                        {friends && friends.length > 0 && <div className="flex overflow-x-auto no-scrollbar space-x-4">
-                            {friends.map((friend, index) => (
-                                <div key={index}>
-                                    <UserCard
-                                        profilePicture={friend.profile_pic}
-                                        username={friend.first_name + " " + friend.last_name}
-                                        userId={friend.user_id}
-                                    />
-                                </div>
-                            ))}
-                        </div>}
-                        {(!friends || friends.length == 0) && (<div className="w-full text-white text-center font-bold mt-40">
-                            Go Make Some Friends!
-                            </div>)}
-                    </div>}
-                <div>
-                    {/* Conditionally render the search bar */}
-                    {activeTab === 'events' && (
-                        <SearchBar
-                            placeholder="Search"
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleEventSearch();
-                                }
-                            }}
-                        />
+                    
+                    {/* Search Bar Section */}
+                    {(activeTab === 'events' || activeTab === 'friends' || activeTab === 'messages') && (
+                        <div className="w-full px-4 sm:px-0">
+                            <SearchBar
+                                placeholder="Search"
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        activeTab === 'events' ? handleEventSearch() :
+                                        activeTab === 'friends' ? handleFriendSearch() :
+                                        handleMessagesSearch();
+                                    }
+                                }}
+                            />
+                        </div>
                     )}
                 </div>
 
-                {/* Events Page */}
-                {activeTab === 'events' &&
-                    <div className="flex flex-col items-center mt-4 space-y-4 w-full max-w-screen-lg mx-auto">
-
-                        {/* filter tabs */}
-                        <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
-                            {/* location */}
-                            <FilterEventsTabs name="Location" onClick={handleLocationTab} />
-
-                            {/* date */}
-                            <FilterEventsTabs name="Date" onClick={handleDateTab} />
-
-                            {/* artist */}
-                            <FilterEventsTabs name="Artist" onClick={handleArtistTab} />
-
-                            {/* genre */}
-                            <FilterEventsTabs name="Genre" onClick={handleGenreTab} />
-
-                            {/* friend_attending */}
-                            <FilterEventsTabs name="Friends Attending" onClick={handleFriendsAttendingTab} />
-
-                            {/* attending */}
-                            <FilterEventsTabs name="Attending" onClick={handleAttendingTab} />
-                        </div>
-
-
-                        {/* for events, their event id is unique and is used to identify them in the database */}
-                        <div className="flex flex-col items-start w-full h-screen ">
-                            <h1 className="text-2xl font-bold text-white">{headerText}</h1>
-                            {/* Your events content goes here */}
-
-
-
-                            <div className="flex flex-wrap justify-center mt-4 space-y-4">
-                                {/* Map over concertRecommendations to render EventCard for each concert */}
-
-                    {recommendations.length > 0 ? (
-                        console.log(recommendations),
-                                recommendations.map((event: any) => (
-                                    console.log(event),
-                                    <div className="flex-shrink-0" >
-                                        <EventCard
-                                            key={event.concert_id}
-                                            eventName={event.concert_name}
-                                            eventDate={event.concert_date}
-                                            eventLocation={event.concert_location}
-                                            eventImage={event.concert_image}
-                                            friendImage1={event.friendImage1}
-                                            friendImage2={event.friendImage2}
-                                            friendName1={event.friendName1}
-                                            friendName2={event.friendName2}
-                                            additionalCount={event.additionalCount}
-                                            onClick={() => handleEventClick(event)}
-                                        />
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-white">No events found</p>
-                            )}
-                    {/* <div className="flex-shrink-0">
-                        <EventCard
-                            key={1}
-                            eventName="Kanye West"
-                            eventDate="June 24, 2022"
-                            eventLocation="New York City"
-                            eventImage="/kanye.jpeg"
-                            friendImage1="/default_pfp.png"
-                            friendImage2="/default_pfp.png"
-                            friendName1="John Doe"
-                            friendName2="Jane Doe"
-                            additionalCount={999}
-                            onClick={() => handleEventClick(1)}
-                        />
-                    </div>
-
-                    <div className="flex-shrink-0">
-                        <EventCard
-                            key={2}
-                            eventName="UFC 214"
-                            eventDate="June 26, 2022"
-                            eventLocation="Las Vegas"
-                            eventImage="/UFC214.jpg"
-                            friendImage1="/default_pfp.png"
-                            // friendImage2="/default_pfp.png"
-                            friendName1="John Doe"
-                            // friendName2="Jane Doe"
-                            additionalCount={999}
-                            onClick={() => handleEventClick(2)}
-                        />
-                    </div>
-
-                    <div className="flex-shrink-0">
-                        <EventCard
-                            key={3}
-                            eventName="Olypic Basketball Finals"
-                            eventDate="August 10, 2024"
-                            eventLocation="Paris"
-                            eventImage="/olympic_basketball_final.jpg"
-                            friendImage1="/default_pfp.png"
-                            // friendImage2="/default_pfp.png"
-                            friendName1="John Doe"
-                            // friendName2="Jane Doe"
-                            additionalCount={999}
-                            onClick={() => handleEventClick(3)}
-                        />
-                    </div> */}
-                            </div>
-                        </div>
-                    </div>}
-                {/* Friends Search Bar */}
-                {activeTab === 'friends' && (
-                    <SearchBar
-                        placeholder="Search"
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                handleFriendSearch();
-                            }
-                        }}
-                    />
-                )}
-                {activeTab === 'friends' &&
-                    <div className="flex flex-col items-center mt-4">
-                        <div className="w-full flex">
-                            <button
-                                onClick={() => setSuggestionState(true)}
-                                className={`w-1/2 mt-4 rounded-l-md flex text-xs items-center justify-center text-white font-bold`}
-                                style={{ height: '45px', backgroundColor: suggestionState === true ? '#1DB954' : '#535353' }}
-                            >
-                                Matchify Suggestions
-                            </button>
-                            <button
-                                onClick={() => setSuggestionState(false)}
-                                className={`w-1/2 mt-4 rounded-r-md flex text-xs items-center justify-center text-white font-bold`}
-                                style={{ height: '45px', backgroundColor: suggestionState === false ? '#1DB954' : '#535353' }}
-                            >
-                                Current Friends
-                            </button>
-                        </div>
-                        {suggestionState && friendMatchesCopy && friendMatchesCopy.length > 0 && (<div className="mt-8 w-full">
-                            {friendMatchesCopy.map((friend) => (
-                                <div className="">
-                                    <ProfileCard
-                                        pfp={friend.profile_pic}
-                                        name={friend.first_name + " " + friend.last_name}
-                                        enterState={"Request"}
-                                        bio={friend.bio}
-                                        userID={friend.user_id}
-                                        setAreYouSureText={setAreYouSureText}
-                                        setAreYouSureFunc={setAreYouSureFunc}
-                                    />
-                                </div>
-                            ))}
-                        </div>)}
-
-                        {!suggestionState && friendsCopy && friendsCopy.length > 0 && (<div className="mt-8 w-full">
-                            {friendsCopy.map((friend) => (
-                                <div className="">
-                                    <ProfileCard
-                                        pfp={friend.profile_pic}
-                                        name={friend.first_name + " " + friend.last_name}
-                                        enterState={"Friend"}
-                                        bio={friend.bio}
-                                        userID={friend.user_id}
-                                        setAreYouSureText={setAreYouSureText}
-                                        setAreYouSureFunc={setAreYouSureFunc}
-                                    />
-                                </div>
-                            ))}
-                        </div>)}
-                        {!suggestionState && friends && friends.length == 0 && (<p className="mt-20 text-xl font-bold text-white">You have no friends!</p>)}
-
-                        <AreYouSureCard id="unfriend_popup" text={areYouSureText} buttonName="Unfriend" buttonFunc={areYouSureFunc}>
-                        </AreYouSureCard>
-                        <AreYouSureCard id="cancel_popup" text={areYouSureText} buttonName="Okay" buttonFunc={areYouSureFunc}>
-                        </AreYouSureCard>
-                    </div>
-                }
-
-                {/* Conditionally render the search bar */}
-                {activeTab === 'messages' && (
-                    <SearchBar
-                        placeholder="Search"
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                handleMessagesSearch();
-                            }
-                        }}
-                    />
-                )}
-                {activeTab === 'messages' && (
-                    <div className="flex flex-col items-center mt-4 min-h-screen">
-                        {/* Messages Sub-Tab Navigation */}
-                        <div className="w-full flex">
-                            <button
-                                onClick={() => setActiveMessagesSubTab('messages')}
-                                className={`w-1/2 mt-4 rounded-l-md flex text-xs items-center justify-center text-white font-bold`}
-                                style={{ height: '45px', backgroundColor: activeMessagesSubTab === 'messages' ? '#1DB954' : '#535353' }}
-                            >
-                                Messages
-                            </button>
-                            <button
-                                onClick={() => setActiveMessagesSubTab('requests')}
-                                className={`w-1/2 mt-4 rounded-r-md flex text-xs items-center justify-center text-white font-bold`}
-                                style={{ height: '45px', backgroundColor: activeMessagesSubTab === 'requests' ? '#1DB954' : '#535353' }}
-                            >
-                                Requests
-                            </button>
-                        </div>
-
-                        {/* Messages Sub-Tab Content */}
-                        {activeMessagesSubTab === 'messages' && (
-                            <div className="relative w-full">
-                                <button
-                                    className="fixed bottom-24 right-4 text-white font-bold py-3 px-7 rounded z-10"
-                                    style={{ background: 'linear-gradient(45deg, #0D5326, #1DB954)', borderRadius: '50px' }}
-                                    onClick={handleCreateNewChat}
-                                >
-                                    <img src="/create_chat_logo.svg" alt="Create Chat" />
-                                </button>
-                            </div>
-                        )}
-                        {/* Requests Content */}
-                        {activeMessagesSubTab === 'requests' && (
+                {/* Main Content Section - Scrollable */}
+                <div className="flex-1 overflow-y-auto">
+                    <div className="px-8 sm:px-8 lg:px-4">
+                        {/* Home Tab Content */}
+                        {activeTab === 'home' && (
                             <div>
-                                <p>Requests Content</p>
+                                {friends && friends.length > 0 ? (
+                                    <div className="flex overflow-x-auto no-scrollbar space-x-4">
+                                        {friends.map((friend, index) => (
+                                            <div key={index}>
+                                                <UserCard
+                                                    profilePicture={friend.profile_pic}
+                                                    username={friend.first_name + " " + friend.last_name}
+                                                    userId={friend.user_id}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="w-full text-white text-center font-bold mt-40">
+                                        Go Make Some Friends!
+                                    </div>
+                                )}
                             </div>
                         )}
-                    </div>
-                )}
-            </div>
 
-            {/* Navigation Bar */}
-            <div className="fixed bottom-0 w-full bg-gray-800 p-4">
-                <div className="flex justify-around">
-                    <div className="flex flex-col items-center" onClick={() => setActiveTab('home')}>
-                        <img src="/home_icon.svg" alt="Home Icon" className="w-6 h-6"
-                            style={{
-                                transition: 'filter 0.3s ease',
-                                filter: activeTab === 'home' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
-                            }}
-                        />
-                        <p className={`text-xs ${activeTab === 'home' ? 'text-spotify-green' : 'text-white'}`}>Home</p>
-                    </div>
-                    <div className="flex flex-col items-center" onClick={() => setActiveTab('events')}>
-                        <img src="/event_icon.svg" alt="Event Icon" className="w-6 h-6"
-                            style={{
-                                transition: 'filter 0.3s ease',
-                                filter: activeTab === 'events' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
-                            }}
-                        />
-                        <p className={`text-xs ${activeTab === 'events' ? 'text-spotify-green' : 'text-white'}`}>Events</p>
-                    </div>
-                    <div className="flex flex-col items-center" onClick={() => setActiveTab('friends')}>
-                        <img src="/heart_outline_icon.svg" alt="Heart Icon" className="w-6 h-6"
-                            style={{
-                                transition: 'filter 0.3s ease',
-                                filter: activeTab === 'friends' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
-                            }}
-                        />
-                        <p className={`text-xs ${activeTab === 'friends' ? 'text-spotify-green' : 'text-white'}`}>Friends</p>
-                    </div>
-                    <div className="flex flex-col items-center" onClick={() => setActiveTab('messages')}>
-                        <img src="/message_icon.svg" alt="Message Icon" className="w-6 h-6"
-                            style={{
-                                transition: 'filter 0.3s ease',
-                                filter: activeTab === 'messages' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
-                            }}
-                        />
-                        <p className={`text-xs ${activeTab === 'messages' ? 'text-spotify-green' : 'text-white'}`}>Messages</p>
+                        {/* Events Tab Content */}
+                        {activeTab === 'events' && (
+                            <div className="flex flex-col items-center space-y-4 w-full">
+                                <div className="flex overflow-x-auto no-scrollbar space-x-2 w-full">
+                                    <FilterEventsTabs name="Location" onClick={handleLocationTab} />
+                                    <FilterEventsTabs name="Date" onClick={handleDateTab} />
+                                    <FilterEventsTabs name="Artist" onClick={handleArtistTab} />
+                                    <FilterEventsTabs name="Genre" onClick={handleGenreTab} />
+                                    <FilterEventsTabs name="Friends Attending" onClick={handleFriendsAttendingTab} />
+                                    <FilterEventsTabs name="Attending" onClick={handleAttendingTab} />
+                                </div>
+
+                                <div className="w-full">
+                                    <h1 className="text-2xl font-bold text-white">{headerText}</h1>
+                                    <div className="flex flex-col items-center space-y-4 mt-4">
+                                        {recommendations.length > 0 ? (
+                                            recommendations.map((event: any) => (
+                                                <div key={event.concert_id} className="w-full">
+                                                    <EventCard
+                                                        eventName={event.concert_name}
+                                                        eventDate={event.concert_date}
+                                                        eventLocation={event.concert_location}
+                                                        eventImage={event.concert_image}
+                                                        friendImage1={event.friendImage1}
+                                                        friendImage2={event.friendImage2}
+                                                        friendName1={event.friendName1}
+                                                        friendName2={event.friendName2}
+                                                        additionalCount={event.additionalCount}
+                                                        onClick={() => handleEventClick(event)}
+                                                    />
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className="text-white">No events found</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Friends Tab Content */}
+                        {activeTab === 'friends' && (
+                            <div className="flex flex-col items-center mt-4">
+                                <div className="w-full flex">
+                                    <button
+                                        onClick={() => setSuggestionState(true)}
+                                        className={`w-1/2 h-[45px] sm:h-[45px] lg:h-[35px] rounded-l-md flex text-xs sm:text-xs lg:text-[10px] items-center justify-center text-white font-bold`}
+                                        style={{ backgroundColor: suggestionState ? '#1DB954' : '#535353' }}
+                                    >
+                                        Matchify Suggestions
+                                    </button>
+                                    <button
+                                        onClick={() => setSuggestionState(false)}
+                                        className={`w-1/2 h-[45px] sm:h-[45px] lg:h-[35px] rounded-r-md flex text-xs sm:text-xs lg:text-[10px] items-center justify-center text-white font-bold`}
+                                        style={{ backgroundColor: !suggestionState ? '#1DB954' : '#535353' }}
+                                    >
+                                        Current Friends
+                                    </button>
+                                </div>
+                                
+                                {suggestionState && friendMatchesCopy && friendMatchesCopy.length > 0 && (
+                                    <div className="mt-4 w-full space-y-2">
+                                        {friendMatchesCopy.map((friend) => (
+                                            <ProfileCard
+                                                key={friend.user_id}
+                                                pfp={friend.profile_pic}
+                                                name={`${friend.first_name} ${friend.last_name}`}
+                                                enterState="Request"
+                                                bio={friend.bio}
+                                                userID={friend.user_id}
+                                                setAreYouSureText={setAreYouSureText}
+                                                setAreYouSureFunc={setAreYouSureFunc}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+
+                                {!suggestionState && (
+                                    friendsCopy && friendsCopy.length > 0 ? (
+                                        <div className="mt-4 w-full space-y-2">
+                                            {friendsCopy.map((friend) => (
+                                                <ProfileCard
+                                                    key={friend.user_id}
+                                                    pfp={friend.profile_pic}
+                                                    name={`${friend.first_name} ${friend.last_name}`}
+                                                    enterState="Friend"
+                                                    bio={friend.bio}
+                                                    userID={friend.user_id}
+                                                    setAreYouSureText={setAreYouSureText}
+                                                    setAreYouSureFunc={setAreYouSureFunc}
+                                                />
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="mt-20 text-xl font-bold text-white">You have no friends!</p>
+                                    )
+                                )}
+                            </div>
+                        )}
+
+                        {/* Messages Tab Content */}
+                        {activeTab === 'messages' && (
+                            <div className="flex flex-col items-center mt-4">
+                                <div className="w-full flex">
+                                    <button
+                                        onClick={() => setActiveMessagesSubTab('messages')}
+                                        className={`w-1/2 h-[45px] rounded-l-md flex text-xs items-center justify-center text-white font-bold`}
+                                        style={{ backgroundColor: activeMessagesSubTab === 'messages' ? '#1DB954' : '#535353' }}
+                                    >
+                                        Messages
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveMessagesSubTab('requests')}
+                                        className={`w-1/2 h-[45px] rounded-r-md flex text-xs items-center justify-center text-white font-bold`}
+                                        style={{ backgroundColor: activeMessagesSubTab === 'requests' ? '#1DB954' : '#535353' }}
+                                    >
+                                        Requests
+                                    </button>
+                                </div>
+
+                                {activeMessagesSubTab === 'messages' && (
+                                    <div className="relative w-full mt-4">
+                                        {/* Messages content */}
+                                    </div>
+                                )}
+
+                                {activeMessagesSubTab === 'requests' && (
+                                    <div className="mt-4">
+                                        <p className="text-white">Requests Content</p>
+                                    </div>
+                                )}
+
+                                {activeMessagesSubTab === 'messages' && (
+                                    <button
+                                        className="fixed bottom-24 right-4 text-white font-bold py-3 px-7 rounded z-10"
+                                        style={{ background: 'linear-gradient(45deg, #0D5326, #1DB954)', borderRadius: '50px' }}
+                                        onClick={handleCreateNewChat}
+                                    >
+                                        <img src="/create_chat_logo.svg" alt="Create Chat" />
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
+
+                {/* Navigation Bar*/}
+                <div className="w-full bg-gray-800 p-4 mt-auto">
+                    <div className="flex justify-around">
+                        <div className="flex flex-col items-center" onClick={() => setActiveTab('home')}>
+                            <img src="/home_icon.svg" alt="Home Icon" className="w-6 h-6 sm:w-6 sm:h-6 lg:w-5 lg:h-5"
+                                style={{
+                                    transition: 'filter 0.3s ease',
+                                    filter: activeTab === 'home' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
+                                }}
+                            />
+                            <p className={`text-xs ${activeTab === 'home' ? 'text-spotify-green' : 'text-white'}`}>Home</p>
+                        </div>
+                        <div className="flex flex-col items-center" onClick={() => setActiveTab('events')}>
+                            <img src="/event_icon.svg" alt="Event Icon" className="w-6 h-6 sm:w-6 sm:h-6 lg:w-5 lg:h-5"
+                                style={{
+                                    transition: 'filter 0.3s ease',
+                                    filter: activeTab === 'events' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
+                                }}
+                            />
+                            <p className={`text-xs ${activeTab === 'events' ? 'text-spotify-green' : 'text-white'}`}>Events</p>
+                        </div>
+                        <div className="flex flex-col items-center" onClick={() => setActiveTab('friends')}>
+                            <img src="/heart_outline_icon.svg" alt="Heart Icon" className="w-6 h-6 sm:w-6 sm:h-6 lg:w-5 lg:h-5"
+                                style={{
+                                    transition: 'filter 0.3s ease',
+                                    filter: activeTab === 'friends' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
+                                }}
+                            />
+                            <p className={`text-xs ${activeTab === 'friends' ? 'text-spotify-green' : 'text-white'}`}>Friends</p>
+                        </div>
+                        <div className="flex flex-col items-center" onClick={() => setActiveTab('messages')}>
+                            <img src="/message_icon.svg" alt="Message Icon" className="w-6 h-6 sm:w-6 sm:h-6 lg:w-5 lg:h-5"
+                                style={{
+                                    transition: 'filter 0.3s ease',
+                                    filter: activeTab === 'messages' ? 'invert(35%) sepia(99%) saturate(748%) hue-rotate(86deg) brightness(92%) contrast(101%)' : 'none'
+                                }}
+                            />
+                            <p className={`text-xs ${activeTab === 'messages' ? 'text-spotify-green' : 'text-white'}`}>Messages</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Modal Components */}
+                <AreYouSureCard id="unfriend_popup" text={areYouSureText} buttonName="Unfriend" buttonFunc={areYouSureFunc} />
+                <AreYouSureCard id="cancel_popup" text={areYouSureText} buttonName="Okay" buttonFunc={areYouSureFunc} />
             </div>
         </div>
     );

@@ -1,8 +1,4 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-
-
-
 interface EventCardProps {
     name: string;
     onClick: () => void;
@@ -72,8 +68,8 @@ const EventCard: React.FC<EventCardProps> = ({ name, onClick }) => {
         <>
             <div
                 ref={tabRef}
-                className="flex flex-col items-center justify-center p-1 rounded-lg shadow-md mb-2 flex-1"
-                style={{ backgroundColor: bgColor, minWidth: '35%' }} // Ensure minimum width for each tab
+                className="flex flex-col items-center justify-center p-1 rounded-lg shadow-md mb-2 flex-1 min-w-[35%] sm:min-w-[35%] lg:min-w-[45%]"
+                style={{ backgroundColor: bgColor}} // Ensure minimum width for each tab
                 onClick={handleClick}
             >
                 <p className="text-white text-xs">{name}</p>
@@ -82,7 +78,7 @@ const EventCard: React.FC<EventCardProps> = ({ name, onClick }) => {
             {isPopUpVisible && (
                 <div
                     ref={popUpRef}
-                    className="fixed z-10 p-2 bg-white rounded-lg shadow-lg"
+                    className="fixed z-10 p-2 bg-white rounded-lg shadow-lg lg:max-w-[10vw]"
                     style={popUpStyle}
                 >
                     <div className="flex flex-col">

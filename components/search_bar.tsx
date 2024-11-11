@@ -10,8 +10,8 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({ placeholder, onChange, onKeyDown }) => {
     return (
         <div
-            style={{ backgroundColor: '#535353', color: '#535353', borderColor: '#535353', width: '325px' }}
-            className="flex items-center rounded-md px-4 py-2 w-80">
+            style={{ backgroundColor: '#535353', color: '#535353', borderColor: '#535353'}}
+            className="flex items-center rounded-md px-4 py-2 w-[80vw] h-[5vh] sm:w-[80vw] sm:h-[5vh] lg:w-[18vw] lg:h-[6vh]">
             <img src="/search_icon.svg" alt="Search Icon" className="w-4 h-4 mr-2" />
             <input
                 type="text"

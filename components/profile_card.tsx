@@ -100,18 +100,18 @@ const ProfileCard: React.FC<FriendCardProps> = ({bio, name, pfp, userID, enterSt
     }, [state])
 
     return (
-        <div id={"profile_card_" + userID} className="flex items-center p-4 mb-4 bg-[#535353] bg-opacity-60 rounded-lg" 
+        <div id={"profile_card_" + userID} className="flex items-center p-4 sm:p-4 lg:p-2 mb-4 bg-[#535353] bg-opacity-60 rounded-lg" 
         onClick={handleProfileRedirect}
         onTouchStart={() => pressUpHighlight("profile_card_" + userID)}
         onTouchEnd={() => pressDownHighlight("profile_card_" + userID)}>
-            <img src={pfp} alt={name} className="rounded-full w-12 h-12 border-2 border-spotify-green object-cover" />
+            <img src={pfp} alt={name} className="rounded-full w-12 h-12 sm:w-12 sm:h-12 lg:w-8 lg:h-8 border-2 border-spotify-green object-cover" />
             <div className="w-1/2 ml-4">
-                <h4 className="text-white font-bold">{name}</h4>
+                <h4 className="text-white font-bold text-base sm:text-base lg:text-xs">{name}</h4>
 
                 {/* Bio for now unless we want to use matching statistics here later on */}
-                <p className="text-white text-xs">{bio}</p>
+                <p className="text-white text-xs sm:text-xs lg:text-[10px]">{bio}</p>
             </div>
-            <button className="w-1/3 bg-[#0094CA] h-7 z-10 rounded-lg text-center text-xs text-white" 
+            <button className="w-1/3 bg-[#0094CA] h-7 z-10 rounded-lg text-center text-xs sm:text-xs lg:text-[10px] text-white" 
             onClick={handleStateClick}
             onTouchStart={(event) => event.stopPropagation()}
             onTouchEnd={(event) => event.stopPropagation()}

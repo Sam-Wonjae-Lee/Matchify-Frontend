@@ -52,8 +52,8 @@ const AreYouSureCard: React.FC<AreYouSureCardProps> = ({ id, text, buttonName, b
     // }
 
     return (
-        <div id={id} className="flex flex-col items-center justify-center hidden rounded-lg fixed w-[70%] bg-[#535353] mt-[15vh] z-20">
-            <p className="text-center w-3/4 mx-auto text-sm mt-2 text-[#DADEDB]">{text}</p>
+        <div id={id} className="flex flex-col items-center justify-center hidden rounded-lg fixed w-[70%] sm:w-[70%] lg:w-[15%] bg-[#535353] mt-[15vh] z-20">
+            <p className="text-center w-3/4 mx-auto text-sm sm:text-sm lg:text-xs mt-2 text-[#DADEDB]">{text}</p>
             <div className="flex w-full justify-center space-x-4 mt-2 mb-4">
                 <button className="bg-red-500 text-white py-2 px-4 rounded text-sm" onClick={ () => {
                     removeSlider();
