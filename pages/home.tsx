@@ -9,6 +9,7 @@ import FilterEventsTabs from "@/components/filter_events_tabs";
 import EventCard from "@/components/event_card";
 import ProfileCard from "@/components/profile_card";
 import SearchBar from "@/components/search_bar";
+import PlaylistDisplay from "@/components/playlist_display";
 
 import { AreYouSureCard, showAreYouSureCard } from "@/components/are_you_sure_card";
 
@@ -21,7 +22,8 @@ interface Friend {
     last_name: string,
     profile_pic: string,
     bio: string,
-    user_id: string
+    user_id: string,
+    username: string
 }
 
 const Home = () => {
@@ -61,6 +63,51 @@ const Home = () => {
     type MessagesSubTab = 'messages' | 'requests';
     const [activeMessagesSubTab, setActiveMessagesSubTab] = useState<MessagesSubTab>('messages');
 
+    // TODO
+    interface Playlist {
+        // Define the structure of your playlist object here
+        friend_username: string;
+        // Add other properties as needed
+        playlist_name: string;
+        playlist_image: string;
+        profile_pic: string;
+
+    }
+    
+    const [friendsMainPlaylist, setFriendsMainPlaylist] = useState<Playlist[]>([]);
+
+    const fetchFriendsPlaylists = async () => {
+        const friends_playlist = [];
+        if (friends.length > 0) {
+            for (let i = 0; i < friends.length; i++) {
+                const friend = friends[i];
+                console.log("Friend:", friend);
+                try {
+                    const friend_playlist = await axios.get(`http://localhost:8888/spotify/user/${friend.user_id}/random-playlist`);
+                    // console.log("Friend Playlist:", friend_playlist.data);
+                    if (friend_playlist.data.hasPlaylists) {
+                        // console.log(friend.username);
+                        // Add a new key to the friend_playlist object
+                        const playlistWithFriendName = {
+                            friend_username: friend.username, // Assuming friend object has a name property
+                            playlist_name: friend_playlist.data.playlist.name,
+                            playlist_image: friend_playlist.data.playlist.images[0].url,
+                            profile_pic: friend.profile_pic,
+                        };
+                        // console.log("Playlist with friend name:", playlistWithFriendName.friend_username);
+                        // console.log("Playlist with playlist name:", playlistWithFriendName.playlist_name);
+                        // console.log("Playlist with playlist image:", playlistWithFriendName.playlist_image);
+                        friends_playlist.push(playlistWithFriendName);
+                    }
+                } catch (error) {
+                    console.error(`Error fetching playlist for friend ${friend.user_id}:`, error);
+                }
+            }
+        }
+        console.log("Friends Playlists:", friends_playlist);
+        setFriendsMainPlaylist(friends_playlist); // Update state with the fetched playlists
+    };
+
     // Fetch concert recommendations
     // TODO: Implement the get the user's profile data from session storage and pass it to the API
     // theres still more to be done here
@@ -85,12 +132,16 @@ const Home = () => {
 
     const fetchFriends = async () => {
         try {
-            const response = await axios.get("http://localhost:8888/user/get_user_friends/" + sessionStorage.getItem("userId"));
-            const friendIds = response.data.user_id;
+            // sessionStorage.getItem("userId")
+            const response = await axios.get(`http://localhost:8888/user/get_user_friends/${sessionStorage.getItem("userId")}`);
+            const friendIds = [];
+            for (const user of response.data) {
+                friendIds.push(user.user_id);
+            }
             console.log("User IDs:", friendIds);
 
-            const userPromises = friendIds.map((userId: string) => 
-                axios.get(`http://localhost:8888/user/get/${userId}`)
+            const userPromises = friendIds.map((user_id: string) => 
+                axios.get(`http://localhost:8888/user/get/${user_id}`)
             );
 
             const usersResponses = await Promise.all(userPromises);
@@ -138,6 +189,8 @@ const Home = () => {
     useEffect(() => {
         getProfilePic();
         getFriends();
+        fetchFriendsPlaylists(); // Fetch playlists when the component mounts
+
     }, []);
 
     useEffect(() => {
@@ -145,6 +198,10 @@ const Home = () => {
             fetchConcertRecommendations(); // Fetch recommendations when 'events' tab is active
         } else if (activeTab === 'friends' || activeTab === 'messages') {
             fetchFriends(); // Fetch friends when 'friends' or 'messages' tab is active
+        } else if (activeTab === 'home') {
+            fetchConcertRecommendations();
+            fetchFriends();
+            fetchFriendsPlaylists();
         }
     }, [activeTab]);
 
@@ -381,8 +438,42 @@ const Home = () => {
                         {(!friends || friends.length == 0) && (<div className="w-full text-white text-center font-bold mt-40">
                             Go Make Some Friends!
                             </div>)}
+                                <h2 className="text-white text-xl font-poppins font-bold mb-4">Friends' Playlists</h2>
+
+                        {friendsMainPlaylist && friendsMainPlaylist.length > 0 ? (
+                            
+                            <div className="flex overflow-x-auto no-scrollbar space-x-4 w-full">
+                                {friendsMainPlaylist.map(({playlist_image, playlist_name, profile_pic, friend_username}, index) => (
+                                    <div key={index} className="flex-shrink-0">
+                                        <PlaylistDisplay
+                                            playlist_cover={playlist_image}
+                                            playlist_name={playlist_name}
+                                            profile_pic={profile_pic}
+                                            friend_name={friend_username}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="w-full text-white text-center font-bold mt-40">
+                                No Playlists Available
+                            </div>
+                        )}
                     </div>}
                 <div>
+
+
+
+
+
+
+
+
+
+
+
+
+                    
                     {/* Conditionally render the search bar */}
                     {activeTab === 'events' && (
                         <SearchBar

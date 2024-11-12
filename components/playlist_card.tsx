@@ -87,7 +87,7 @@ const Playlist: React.FC<PlaylistProps> = ({currFav, setCurrFav, playlists, user
       {currFav && Object.keys(currFav).length > 0 && (<div>
         <div className="flex items-center p-4 bg-[#535353] rounded-tl-md rounded-tr-md">
           <img
-            src={currFav.images[0].url} // Replace with your image URL
+            src={currFav.images[0].url} 
             alt="Playlist Cover"
             className="w-20 h-20 rounded-lg object-cover"
           />
