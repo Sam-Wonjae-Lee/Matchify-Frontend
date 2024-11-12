@@ -18,7 +18,7 @@ const PlaylistDisplay: React.FC<PlaylistDisplayProps> = ({ playlist_cover, playl
                     className="object-cover w-full h-full"
                 />
             </div>
-            <h2 className="text-left mt-2 text-sm md:text-base font-medium truncate pl-1">
+            <h2 className="text-left mt-2 text-lg md:text-xl font-medium truncate pl-0.5 font-poppins">
                 {playlist_name}
             </h2>
             <div className="mt-1">

@@ -10,6 +10,7 @@ import EventCard from "@/components/event_card";
 import ProfileCard from "@/components/profile_card";
 import SearchBar from "@/components/search_bar";
 import PlaylistDisplay from "@/components/playlist_display";
+import HomeConcertDisplay from "@/components/home_concert_display";
 
 import { AreYouSureCard, showAreYouSureCard } from "@/components/are_you_sure_card";
 
@@ -79,13 +80,15 @@ const Home = () => {
     const fetchFriendsPlaylists = async () => {
         const friends_playlist = [];
         if (friends.length > 0) {
-            for (let i = 0; i < friends.length; i++) {
+            let count = 0;
+            for (let i = 0; i < friends.length && count <= 10; i++) {
                 const friend = friends[i];
                 console.log("Friend:", friend);
                 try {
                     const friend_playlist = await axios.get(`http://localhost:8888/spotify/user/${friend.user_id}/random-playlist`);
                     // console.log("Friend Playlist:", friend_playlist.data);
                     if (friend_playlist.data.hasPlaylists) {
+                        count++;
                         // console.log(friend.username);
                         // Add a new key to the friend_playlist object
                         const playlistWithFriendName = {
@@ -128,6 +131,7 @@ const Home = () => {
                 sessionStorage.removeItem("profileData");
             }
         }
+        console.log("Recommendations:", recommendations);
     };
 
     const fetchFriends = async () => {
@@ -199,9 +203,10 @@ const Home = () => {
         } else if (activeTab === 'friends' || activeTab === 'messages') {
             fetchFriends(); // Fetch friends when 'friends' or 'messages' tab is active
         } else if (activeTab === 'home') {
-            fetchConcertRecommendations();
             fetchFriends();
             fetchFriendsPlaylists();
+            fetchConcertRecommendations();
+
         }
     }, [activeTab]);
 
@@ -441,9 +446,8 @@ const Home = () => {
                                 <h2 className="text-white text-xl font-poppins font-bold mb-4">Friends' Playlists</h2>
 
                         {friendsMainPlaylist && friendsMainPlaylist.length > 0 ? (
-                            
-                            <div className="flex overflow-x-auto no-scrollbar space-x-4 w-full">
-                                {friendsMainPlaylist.map(({playlist_image, playlist_name, profile_pic, friend_username}, index) => (
+                            <div className="flex overflow-x-auto no-scrollbar space-x-4 w-full mb-8 "> {/* Added responsive margin-bottom */}
+                                {friendsMainPlaylist.map(({ playlist_image, playlist_name, profile_pic, friend_username }, index) => (
                                     <div key={index} className="flex-shrink-0">
                                         <PlaylistDisplay
                                             playlist_cover={playlist_image}
@@ -457,6 +461,25 @@ const Home = () => {
                         ) : (
                             <div className="w-full text-white text-center font-bold mt-40">
                                 No Playlists Available
+                            </div>
+                        )}
+                        
+                        <h2 className="text-white text-xl font-poppins font-bold mb-4">Upcoming Concerts</h2>
+                        
+                        {recommendations && recommendations.length > 0 ? (
+                            <div className="flex overflow-x-auto no-scrollbar space-x-4 w-full "> {/* Added responsive margin-top */}
+                                {recommendations.map(({ concert_image, concert_name }, index) => (
+                                    <div key={index} className="flex-shrink-0">
+                                        <HomeConcertDisplay
+                                            concert_cover={concert_image}
+                                            concert_name={concert_name}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="w-full text-white text-center font-bold mt-40">
+                                No Concerts Available
                             </div>
                         )}
                     </div>}
