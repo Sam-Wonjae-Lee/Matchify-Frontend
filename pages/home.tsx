@@ -191,24 +191,16 @@ const Home = () => {
     };
 
     useEffect(() => {
-        getProfilePic();
-        getFriends();
-        fetchFriendsPlaylists(); // Fetch playlists when the component mounts
-
-    }, []);
+        if (friends.length > 0) {
+            fetchFriendsPlaylists();
+        }
+    }, [friends])
 
     useEffect(() => {
-        if (activeTab === 'events') {
-            fetchConcertRecommendations(); // Fetch recommendations when 'events' tab is active
-        } else if (activeTab === 'friends' || activeTab === 'messages') {
-            fetchFriends(); // Fetch friends when 'friends' or 'messages' tab is active
-        } else if (activeTab === 'home') {
-            fetchFriends();
-            fetchFriendsPlaylists();
-            fetchConcertRecommendations();
-
-        }
-    }, [activeTab]);
+        getProfilePic();
+        getFriends(); 
+        fetchConcertRecommendations();
+    }, []);
 
     useEffect(() => {
 
