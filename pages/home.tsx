@@ -193,8 +193,12 @@ const Home = () => {
         }
     };
 
+
+
     useEffect(() => {
         getProfilePic();
+        getFriends(); 
+        fetchConcertRecommendations();
         getFriends();
     }, []);
 
