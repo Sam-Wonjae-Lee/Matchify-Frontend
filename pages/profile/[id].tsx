@@ -326,9 +326,7 @@ const Profile: NextPage<ProfileProps> = ( {id, profileData, playlists} ) => {
                                 {viewer && (viewer != id) && (<div className="text-white">
                                     <p className="font-bold text-spotify-green">Matchify:</p>
                                     <ul className="list-disc">
-                                        <li className="text-sm ml-5 mt-[1vh]">You're both racist</li>
-                                        <li className="text-sm ml-5">You both are misogynists</li>
-                                        <li className="text-sm ml-5">You don't have a bugatti</li>
+                                        <li className="text-sm ml-5 mt-[1vh]">You both like Music</li>
                                     </ul>
                                 </div>)}
                                 
