@@ -77,13 +77,13 @@ const Home = () => {
     
     const [friendsMainPlaylist, setFriendsMainPlaylist] = useState<Playlist[]>([]);
 
-    const fetchFriendsPlaylists = async () => {
+    const fetchFriendsPlaylists = async (friends: Friend[]) => {
         const friends_playlist = [];
         if (friends.length > 0) {
             let count = 0;
             for (let i = 0; i < friends.length && count <= 10; i++) {
                 const friend = friends[i];
-                console.log("Friend:", friend);
+                // console.log("Friend:", friend);
                 try {
                     const friend_playlist = await axios.get(`http://localhost:8888/spotify/user/${friend.user_id}/random-playlist`);
                     // console.log("Friend Playlist:", friend_playlist.data);
@@ -158,10 +158,13 @@ const Home = () => {
                 setFriendsCopy(users);
                 initialLoadFriend.current = false;
             }
+            await fetchFriendsPlaylists(users);
+
         } catch (error) {
             console.error("Error fetching friends:", error);
         }
     };
+
 
     const getProfilePic = async () => {
         const id = sessionStorage.getItem("userId");
@@ -193,8 +196,6 @@ const Home = () => {
     useEffect(() => {
         getProfilePic();
         getFriends();
-        fetchFriendsPlaylists(); // Fetch playlists when the component mounts
-
     }, []);
 
     useEffect(() => {
@@ -204,8 +205,8 @@ const Home = () => {
             fetchFriends(); // Fetch friends when 'friends' or 'messages' tab is active
         } else if (activeTab === 'home') {
             fetchFriends();
-            fetchFriendsPlaylists();
             fetchConcertRecommendations();
+
 
         }
     }, [activeTab]);
@@ -473,6 +474,7 @@ const Home = () => {
                                         <HomeConcertDisplay
                                             concert_cover={concert_image}
                                             concert_name={concert_name}
+                                            onClick={() => handleEventClick(recommendations[index])}
                                         />
                                     </div>
                                 ))}

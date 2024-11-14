@@ -6,13 +6,14 @@ interface ConcertDisplayProps {
     concert_name: string;
     profile_pic?: string;
     friend_name?: string;
+    onClick: () => void;
 }
 
-const ConcertDisplay: React.FC<ConcertDisplayProps> = ({ concert_cover, concert_name, profile_pic, friend_name }) => {
+const ConcertDisplay: React.FC<ConcertDisplayProps> = ({ concert_cover, concert_name, profile_pic, friend_name, onClick }) => {
     return (
-        <div className="concert-display" style={{ width: '55vw', maxWidth: '500px' }}> {/* Responsive width */}
+        <div className="concert-display" style={{ width: '55vw', maxWidth: '500px' }} onClick={onClick}> {/* Responsive width */}
             <div 
-                className="relative overflow-hidden" 
+                className="relative overflow-hidden hover:brightness-110 transition duration-300" 
                 style={{ width: '100%', height: '35vw', maxHeight: '300px' }} /* Scales height with screen width */
             >
                 <img 
